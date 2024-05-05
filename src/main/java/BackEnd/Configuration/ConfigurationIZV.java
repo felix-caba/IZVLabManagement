@@ -3,7 +3,7 @@ package BackEnd.Configuration;
 import java.io.*;
 import java.util.Properties;
 
-public class Configuration {
+public class ConfigurationIZV {
 
     // Singleton Patron
 
@@ -13,21 +13,23 @@ public class Configuration {
     private String appearance;
     private String driver;
     private String bdName;
-    private Properties properties;
+    private static Properties properties;
 
 
-    private static Configuration instance = null;
+    private static ConfigurationIZV instance = null;
 
-    private Configuration() {
+    private ConfigurationIZV() {
 
-        properties = new Properties();
+
 
     }
 
-    public static Configuration getInstance() {
+    public static ConfigurationIZV getInstance() {
+
         if (instance == null) {
 
-                instance = new Configuration();
+                properties = new Properties();
+                instance = new ConfigurationIZV();
 
         }
         return instance;
@@ -86,7 +88,7 @@ public class Configuration {
 
 
             try {
-                properties.store(new FileWriter("src/main/java/BackEnd/Configuration/izvlab.config"), "Configuration file");
+                properties.store(new FileWriter("src/main/java/BackEnd/Configuration/izvlab.config"), "ConfigurationIZV file");
             } catch (IOException e) {
                 System.out.println("No se ha podido guardar la configuración. " +
                         "Revisa la existencia del archivo izvlab.config");
@@ -99,6 +101,8 @@ public class Configuration {
 
 
     }
+
+
 
     public String getUser() {
         return user;
@@ -124,7 +128,5 @@ public class Configuration {
         return bdName;
     }
 
-    public Properties getProperties() {
-        return properties;
-    }
+
 }
