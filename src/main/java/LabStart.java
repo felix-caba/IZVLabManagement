@@ -5,12 +5,9 @@
 
 import BackEnd.Configuration.ConfigurationIZV;
 import FrontEnd.MainMenu;
-import FrontEnd.Menu;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.icons.FlatMenuArrowIcon;
 import com.formdev.flatlaf.intellijthemes.FlatXcodeDarkIJTheme;
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
@@ -46,7 +43,7 @@ public class LabStart {
 
 */
             public void run() {
-                new Menu().setVisible(true);
+                new MainMenu().setVisible(true);
             }
 
         });
@@ -116,7 +113,7 @@ public class LabStart {
 
     public static void setPropertiesTheme() {
 
-        UIManager.put( "Button.arc", 45 );
+        UIManager.put( "Button.arc", 75 );
 
 
 

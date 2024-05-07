@@ -35,6 +35,8 @@ public class ConfigurationIZV {
         return instance;
     }
 
+
+    // Carga el archivo de configuracion, no la configuracion.
     public void loadConfigurationFile() {
 
         try{
@@ -42,6 +44,8 @@ public class ConfigurationIZV {
             FileReader fr = new FileReader("src/main/java/BackEnd/Configuration/izvlab.config");
 
             properties.load(fr);
+
+            // Carga la configuracion una vez abierto el archivo.
 
             loadConfiguration();
 
@@ -58,7 +62,7 @@ public class ConfigurationIZV {
 
     }
 
-
+    // Carga la configuracion en las variables de la clase.
     public void loadConfiguration() {
 
 
@@ -73,6 +77,7 @@ public class ConfigurationIZV {
 
 
 
+    // Guarda la configuracion en un archivo, posteriormente la carga.
     public void saveConfiguration(String newUser, String newPassword, String newUrl,
                                   String newBdName, String newAppearance, String newDriver) {
 

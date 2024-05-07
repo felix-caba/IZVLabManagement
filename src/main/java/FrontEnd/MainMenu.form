@@ -1,48 +1,155 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="FrontEnd.MainMenu">
-  <grid id="27dc6" binding="panelLogin" layout-manager="FormLayout">
+  <grid id="27dc6" binding="panelLogin" custom-create="true" layout-manager="FormLayout">
     <rowspec value="center:max(d;4px):noGrow"/>
-    <rowspec value="top:4dlu:noGrow"/>
-    <rowspec value="center:d:grow"/>
+    <rowspec value="top:10dlu:noGrow"/>
+    <rowspec value="fill:max(d;20dlu):noGrow"/>
+    <rowspec value="fill:45dlu:noGrow"/>
+    <rowspec value="fill:d:grow"/>
+    <rowspec value="fill:45dlu:noGrow"/>
+    <rowspec value="bottom:d:noGrow"/>
+    <rowspec value="top:10dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <colspec value="left:10dlu:noGrow"/>
     <colspec value="fill:d:grow"/>
-    <colspec value="left:4dlu:noGrow"/>
-    <colspec value="fill:d:grow"/>
+    <colspec value="fill:10dlu:noGrow"/>
     <constraints>
-      <xy x="20" y="20" width="586" height="660"/>
+      <xy x="613" y="20" width="808" height="520"/>
     </constraints>
-    <properties/>
-    <border type="none"/>
+    <properties>
+      <opaque value="true"/>
+    </properties>
+    <border type="none">
+      <font/>
+      <title-color color="-921103"/>
+    </border>
     <children>
-      <component id="9fd28" class="javax.swing.JButton" binding="loginbutton">
+      <grid id="83c10" class="FrontEnd.PanelRound" binding="panelRoundLoginButtons" layout-manager="FormLayout">
+        <rowspec value="center:d:grow"/>
+        <rowspec value="top:7dlu:noGrow"/>
+        <rowspec value="center:33px:noGrow"/>
+        <rowspec value="top:7dlu:noGrow"/>
+        <rowspec value="center:d:noGrow"/>
+        <colspec value="fill:max(d;4px):noGrow"/>
+        <colspec value="left:10dlu:noGrow"/>
+        <colspec value="fill:d:grow"/>
+        <colspec value="left:4dlu:noGrow"/>
+        <colspec value="fill:d:grow"/>
+        <colspec value="fill:10dlu:noGrow"/>
+        <colspec value="fill:max(d;4px):noGrow"/>
         <constraints>
-          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-          <forms/>
+          <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="2" fill="1" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false" defaultalign-vert="false"/>
         </constraints>
         <properties>
-          <horizontalAlignment value="0"/>
-          <horizontalTextPosition value="11"/>
-          <text value="Login"/>
+          <roundBottomLeft value="70"/>
+          <roundBottomRight value="70"/>
+          <roundTopLeft value="70"/>
+          <roundTopRight value="70"/>
         </properties>
-      </component>
-      <component id="40f60" class="javax.swing.JLabel" binding="login_label">
+        <border type="none"/>
+        <children>
+          <component id="d9113" class="javax.swing.JButton" binding="loginButton">
+            <constraints>
+              <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <forms defaultalign-horz="false"/>
+            </constraints>
+            <properties>
+              <borderPainted value="false"/>
+              <focusPainted value="false"/>
+              <text value="Login"/>
+            </properties>
+          </component>
+          <component id="691a6" class="javax.swing.JButton" binding="configLoginButton">
+            <constraints>
+              <grid row="2" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+              <forms defaultalign-horz="false" defaultalign-vert="false"/>
+            </constraints>
+            <properties>
+              <borderPainted value="false"/>
+              <horizontalTextPosition value="0"/>
+              <iconTextGap value="0"/>
+              <text value=""/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="c2cde" class="FrontEnd.PanelRound" binding="panelRoundLabelBienv" layout-manager="FormLayout">
+        <rowspec value="center:d:grow"/>
+        <colspec value="fill:max(d;4px):noGrow"/>
+        <colspec value="left:6dlu:noGrow"/>
+        <colspec value="fill:d:grow"/>
+        <colspec value="fill:10dlu:noGrow"/>
+        <colspec value="fill:max(d;4px):noGrow"/>
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-          <forms/>
+          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-vert="false"/>
         </constraints>
         <properties>
-          <text value="Bienvenido,"/>
+          <roundBottomLeft value="0"/>
+          <roundBottomRight value="50"/>
+          <roundTopLeft value="0"/>
+          <roundTopRight value="0"/>
         </properties>
-      </component>
-      <component id="7d1d6" class="javax.swing.JButton" binding="configLoginButton">
+        <border type="none"/>
+        <children>
+          <component id="40f60" class="javax.swing.JLabel" binding="login_label">
+            <constraints>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
+            <properties>
+              <doubleBuffered value="false"/>
+              <text value="Bienvenido,"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="96ab8" class="FrontEnd.PanelRound" binding="panelRoundLogo" layout-manager="FormLayout">
+        <rowspec value="fill:d:noGrow"/>
+        <rowspec value="center:d:noGrow"/>
+        <rowspec value="fill:d:grow"/>
+        <rowspec value="fill:d:grow"/>
+        <rowspec value="fill:d:grow"/>
+        <rowspec value="center:d:noGrow"/>
+        <rowspec value="fill:d:noGrow"/>
+        <colspec value="fill:max(d;4px):noGrow"/>
+        <colspec value="left:4dlu:noGrow"/>
+        <colspec value="fill:max(d;4px):grow"/>
+        <colspec value="left:4dlu:noGrow"/>
+        <colspec value="fill:max(d;4px):noGrow"/>
         <constraints>
-          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-          <forms/>
+          <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false" defaultalign-vert="false"/>
         </constraints>
         <properties>
-          <horizontalTextPosition value="10"/>
-          <text value=""/>
+          <maximumSize width="590" height="81"/>
+          <minimumSize width="590" height="81"/>
+          <opaque value="false"/>
+          <preferredSize width="590" height="81"/>
+          <roundBottomLeft value="50"/>
+          <roundBottomRight value="50"/>
+          <roundTopLeft value="50"/>
+          <roundTopRight value="50"/>
         </properties>
-      </component>
+        <border type="none"/>
+        <children>
+          <component id="9c467" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+              <forms defaultalign-horz="false" defaultalign-vert="false"/>
+            </constraints>
+            <properties>
+              <alignmentY value="0.0"/>
+              <horizontalAlignment value="10"/>
+              <icon value="photos/logoIZV.png"/>
+              <iconTextGap value="0"/>
+              <text value=""/>
+              <verticalAlignment value="0"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
     </children>
   </grid>
 </form>
