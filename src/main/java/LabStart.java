@@ -45,9 +45,15 @@ public class LabStart {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
 
+
+
             public void run() {
                 new MainMenu().setVisible(true);
             }
+
+
+
+
 
         });
 

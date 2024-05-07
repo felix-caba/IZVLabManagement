@@ -1,8 +1,6 @@
 package BackEnd.Configuration;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatLightLaf;
+import BackEnd.Extra.Encriptador;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 
@@ -13,11 +11,13 @@ public class ConfigurationIZV {
 
     // Singleton Patron
 
-    private String url;
+    private String ip;
     private String appearance;
-    private String driver;
     private String bdName;
     private static Properties properties;
+    private String user;
+    private String password;
+
 
 
     private static ConfigurationIZV instance = null;
@@ -69,32 +69,53 @@ public class ConfigurationIZV {
     // Carga la configuracion en las variables de la clase.
     public void loadConfiguration() {
 
-            url = properties.getProperty("url");
+            ip = properties.getProperty("ip");
             bdName = properties.getProperty("bdName");
             appearance = properties.getProperty("appearance");
-            driver = properties.getProperty("driver");
+            user = properties.getProperty("user");
+            password = properties.getProperty("password");
+
+        System.out.println(password);
+
+    }
+
+    // Set values
+
+    public void setIp(String ip) {
+
+        properties.setProperty("ip", ip);
+
+    }
+
+    public void setAppearance(String appearance) {
+
+        properties.setProperty("appearance", appearance);
+
+    }
+
+    public void setBdName(String bdName) {
+
+        properties.setProperty("bdName", bdName);
 
     }
 
 
 
+
+
+
+
     // Guarda la configuracion en un archivo, posteriormente la carga.
-    public void saveConfiguration(String newUrl, String newBdName, String newAppearance) {
+    public void saveConfiguration() {
 
 
 
-            properties.setProperty("url", newUrl);
-            properties.setProperty("bdName", newBdName);
-            properties.setProperty("appearance", newAppearance);
-
-
-
-            try {
-                properties.store(new FileWriter("src/main/java/BackEnd/Configuration/izvlab.config"), "ConfigurationIZV file");
-            } catch (IOException e) {
-                System.out.println("No se ha podido guardar la configuración. " +
-                        "Revisa la existencia del archivo izvlab.config");
-            }
+        try {
+            properties.store(new FileWriter("src/main/java/BackEnd/Configuration/izvlab.config"), "ConfigurationIZV file");
+        } catch (IOException e) {
+            System.out.println("No se ha podido guardar la configuración. " +
+                    "Revisa la existencia del archivo izvlab.config");
+        }
 
 
         loadConfiguration();
@@ -107,20 +128,34 @@ public class ConfigurationIZV {
 
 
 
-    public String getUrl() {
-        return url;
+    public String getIp() {
+        return ip;
     }
 
     public String getAppearance() {
         return appearance;
     }
 
-    public String getDriver() {
-        return driver;
-    }
-
     public String getBdName() {
         return bdName;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public String getPassword() {
+
+        try {
+
+            return Encriptador.desencriptar(password, Encriptador.claveSecreta);
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return null;
+
     }
 
     public static void LoadTheme() {

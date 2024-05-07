@@ -29,8 +29,12 @@
         <rowspec value="fill:d:grow"/>
         <rowspec value="top:10dlu:noGrow"/>
         <rowspec value="center:d:grow"/>
+        <rowspec value="top:4dlu:noGrow"/>
+        <rowspec value="center:d:grow"/>
         <rowspec value="top:10dlu:noGrow"/>
+        <rowspec value="top:d:grow"/>
         <rowspec value="center:max(d;4px):noGrow"/>
+        <rowspec value="center:10dlu:noGrow"/>
         <rowspec value="center:d:noGrow"/>
         <colspec value="fill:max(d;4px):noGrow"/>
         <colspec value="left:10dlu:noGrow"/>
@@ -68,7 +72,7 @@
               <forms defaultalign-horz="false"/>
             </constraints>
             <properties>
-              <text value="URL BD"/>
+              <text value="IP BD"/>
             </properties>
           </component>
           <component id="7ea4e" class="javax.swing.JLabel">
@@ -80,16 +84,7 @@
               <text value="Apariencia"/>
             </properties>
           </component>
-          <component id="cbed7" class="javax.swing.JButton" binding="saveConfigButton">
-            <constraints>
-              <grid row="9" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-              <forms/>
-            </constraints>
-            <properties>
-              <text value="Guardar"/>
-            </properties>
-          </component>
-          <component id="df886" class="javax.swing.JTextField" binding="urlBDField">
+          <component id="df886" class="javax.swing.JTextField" binding="ipBDField">
             <constraints>
               <grid row="5" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
@@ -119,14 +114,59 @@
               </model>
             </properties>
           </component>
-          <component id="e4049" class="javax.swing.JButton" binding="loadButton">
+          <component id="e4049" class="javax.swing.JButton" binding="backButton">
             <constraints>
-              <grid row="9" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-              <forms defaultalign-horz="false"/>
+              <grid row="13" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <forms defaultalign-horz="false" defaultalign-vert="false"/>
             </constraints>
             <properties>
-              <text value="Cargar"/>
+              <text value=""/>
             </properties>
+          </component>
+          <component id="cbed7" class="javax.swing.JButton" binding="saveConfigButton">
+            <constraints>
+              <grid row="13" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <forms defaultalign-vert="false"/>
+            </constraints>
+            <properties>
+              <text value="Guardar"/>
+            </properties>
+          </component>
+          <component id="fe1f1" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="9" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
+            <properties>
+              <text value="Usuario"/>
+            </properties>
+          </component>
+          <component id="7286c" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="11" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <forms/>
+            </constraints>
+            <properties>
+              <text value="Contraseña"/>
+            </properties>
+          </component>
+          <component id="86339" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+            <constraints>
+              <grid row="9" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <forms defaultalign-horz="false"/>
+            </constraints>
+            <properties/>
+          </component>
+          <component id="e679c" class="javax.swing.JTextField" binding="textField2" default-binding="true">
+            <constraints>
+              <grid row="11" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <forms defaultalign-horz="false"/>
+            </constraints>
+            <properties/>
           </component>
         </children>
       </grid>

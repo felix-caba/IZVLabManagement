@@ -8,10 +8,8 @@ import BackEnd.Configuration.ConfigurationIZV;
 import BackEnd.Extra.Checker;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatLaf;
-import com.formdev.flatlaf.intellijthemes.FlatNordIJTheme;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -20,26 +18,26 @@ public class SettingMenu extends JFrame implements Themeable, Validable{
     private PanelRound panelSettingsRound;
     private JLabel configLabelBDName;
     private JButton saveConfigButton;
-    private JButton loadButton;
-    private JTextField urlBDField;
+    private JButton backButton;
+    private JTextField ipBDField;
     private JTextField bdNameField;
     private JComboBox comboTheme;
+    private JTextField textField1;
+    private JTextField textField2;
     private JLabel temaLabel;
 
 
     public SettingMenu() {
 
         saveConfigButton.setName("saveConfigButton");
-        loadButton.setName("loadButton");
+        backButton.setName("backButton");
 
 
         panelSettingsRound.putClientProperty( FlatClientProperties.STYLE,
                 "background: lighten(@background,3%);");
 
 
-
         initComponents();
-
         setIcons(this);
 
 
@@ -47,35 +45,45 @@ public class SettingMenu extends JFrame implements Themeable, Validable{
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                if (areValuesCorrect()){
+                ConfigurationIZV configurationIZV = ConfigurationIZV.getInstance();
 
-                    ConfigurationIZV.getInstance().saveConfiguration(urlBDField.getText(), bdNameField.getText(), comboTheme.getSelectedItem().toString());
-                    System.out.println(comboTheme.getSelectedItem().toString());
 
-                }
+                    // if a textbox is empty, do not change the value
+
+                    if (!ipBDField.getText().isEmpty() && areValuesCorrect()) {
+
+                        configurationIZV.setIp(ipBDField.getText());
+
+
+                    }
+                    if (!bdNameField.getText().isEmpty()) {
+                        configurationIZV.setBdName(bdNameField.getText());
+                    }
+
+                    configurationIZV.setAppearance(comboTheme.getSelectedItem().toString());
+
+                    ConfigurationIZV.getInstance().saveConfiguration();
+
+                    ConfigurationIZV.getInstance().loadConfiguration();
+
+                    ConfigurationIZV.LoadTheme();
+
+                    FlatLaf.updateUI();
+
+                    setIcons(SettingMenu.this);
+
 
             }
 
         });
 
 
-        loadButton.addActionListener(new ActionListener() {
+        backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                ConfigurationIZV.getInstance().loadConfiguration();
-
-                System.out.println(ConfigurationIZV.getInstance().getAppearance());
-
-                ConfigurationIZV.LoadTheme();
-
-                FlatLaf.updateUI();
-
-                setIcons(SettingMenu.this);
-
-
-
-
+                dispose();
+                new MainMenu().setVisible(true);
 
 
             }
@@ -85,30 +93,28 @@ public class SettingMenu extends JFrame implements Themeable, Validable{
 
     public void initComponents() {
 
-        // set configLoginButton the same name as it is declared as, without using a literal string, so it is automated
 
-        setResizable(false);
+        /*Tamaño de la ventana y posicion*/
         setSize(800, 600);
         setMinimumSize(new java.awt.Dimension(600, 300));
+        setResizable(false);
+        setLocationRelativeTo(null);
+
         setTitle("IZV Lab Management Tool 2024");
-        setContentPane(panelSettings);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setVisible(true);
+        setContentPane(panelSettings);
+
         pack();
 
-
     }
 
-    @Override
-    public void setIcons(JFrame frame) {
-        Themeable.super.setIcons(frame);
-    }
+
 
 
 
     public boolean areValuesCorrect(){
 
-        if (isEmpty() && !Checker.isIP(urlBDField.getText())){
+        if (!Checker.isIP(ipBDField.getText())){
 
             JOptionPane.showMessageDialog(this, "Error en los valores introducidos", "Error", JOptionPane.ERROR_MESSAGE);
 
@@ -120,10 +126,10 @@ public class SettingMenu extends JFrame implements Themeable, Validable{
 
     }
 
-    @Override
-    public boolean isEmpty() {
-        return Validable.super.isEmpty();
-    }
+
+
+
+
 
 
 
