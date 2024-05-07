@@ -1,5 +1,11 @@
 package BackEnd.Configuration;
 
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
+
 import java.io.*;
 import java.util.Properties;
 
@@ -7,8 +13,6 @@ public class ConfigurationIZV {
 
     // Singleton Patron
 
-    private String user;
-    private String password;
     private String url;
     private String appearance;
     private String driver;
@@ -65,9 +69,6 @@ public class ConfigurationIZV {
     // Carga la configuracion en las variables de la clase.
     public void loadConfiguration() {
 
-
-            user = properties.getProperty("user");
-            password = properties.getProperty("password");
             url = properties.getProperty("url");
             bdName = properties.getProperty("bdName");
             appearance = properties.getProperty("appearance");
@@ -78,17 +79,13 @@ public class ConfigurationIZV {
 
 
     // Guarda la configuracion en un archivo, posteriormente la carga.
-    public void saveConfiguration(String newUser, String newPassword, String newUrl,
-                                  String newBdName, String newAppearance, String newDriver) {
+    public void saveConfiguration(String newUrl, String newBdName, String newAppearance) {
 
 
 
-            properties.setProperty("user", newUser);
-            properties.setProperty("password", newPassword);
             properties.setProperty("url", newUrl);
             properties.setProperty("bdName", newBdName);
             properties.setProperty("appearance", newAppearance);
-            properties.setProperty("driver", newDriver);
 
 
 
@@ -109,13 +106,6 @@ public class ConfigurationIZV {
 
 
 
-    public String getUser() {
-        return user;
-    }
-
-    public String getPassword() {
-        return password;
-    }
 
     public String getUrl() {
         return url;
@@ -131,6 +121,19 @@ public class ConfigurationIZV {
 
     public String getBdName() {
         return bdName;
+    }
+
+    public static void LoadTheme() {
+        switch (ConfigurationIZV.getInstance().getAppearance()) {
+            case "OSCURO":
+
+                FlatMacDarkLaf.setup();
+                break;
+            case "CLARO":
+                FlatMacLightLaf.setup();
+                break;
+
+        }
     }
 
 

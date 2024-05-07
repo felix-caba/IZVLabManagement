@@ -13,7 +13,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-
+import FrontEnd.PanelRound;
 
 public class MainMenu extends JFrame implements Themeable {
 
@@ -63,6 +63,12 @@ public class MainMenu extends JFrame implements Themeable {
             }
         });
 
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new LoginPanel().setVisible(true);
+            }
+        });
     }
 
 

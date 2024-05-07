@@ -4,11 +4,16 @@
  */
 
 import BackEnd.Configuration.ConfigurationIZV;
+import FrontEnd.LoginPanel;
 import FrontEnd.MainMenu;
+import FrontEnd.SettingMenu;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.intellijthemes.FlatXcodeDarkIJTheme;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import com.sun.tools.javac.Main;
+
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
@@ -26,7 +31,9 @@ public class LabStart {
 
             setFont();
             setPropertiesTheme();
-            setTheme();
+
+            ConfigurationIZV.LoadTheme();
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -36,54 +43,21 @@ public class LabStart {
 
 
         java.awt.EventQueue.invokeLater(new Runnable() {
-            /*
-            public void run() {
-                new MainMenu().setVisible(true);
-            }
 
-*/
+
             public void run() {
                 new MainMenu().setVisible(true);
             }
 
         });
 
-
-
     }
 
 
 
-    public static void setTheme() {
 
 
 
-
-        switch (ConfigurationIZV.getInstance().getAppearance()) {
-            case "OSCURO":
-
-
-
-                FlatDarkLaf.setup();
-                break;
-            case "DARCULA":
-
-                FlatDarculaLaf.setup();
-                break;
-            case "CLARO":
-
-                FlatLightLaf.setup();
-                break;
-            case "SPECIAL":
-
-                FlatXcodeDarkIJTheme.setup();
-                break;
-        }
-
-
-
-
-    }
 
 
     public static void setFont() throws IOException, FontFormatException {
@@ -107,13 +81,18 @@ public class LabStart {
         UIManager.put("TextField.font", fontComponentes);
         UIManager.put("TextArea.font", fontComponentes);
         UIManager.put("ComboBox.font", fontComponentes);
-
+        UIManager.put("OptionPane.messageFont", fontComponentes);
 
     }
 
     public static void setPropertiesTheme() {
 
+
         UIManager.put( "Button.arc", 75 );
+        UIManager.put( "TextComponent.arc", 75 );
+        UIManager.put( "ComboBox.selectionArc", 75 );
+        UIManager.put( "Component.arc", 75 );
+
 
 
 

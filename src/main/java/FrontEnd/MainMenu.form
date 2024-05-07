@@ -55,7 +55,8 @@
               <forms defaultalign-horz="false"/>
             </constraints>
             <properties>
-              <borderPainted value="false"/>
+              <borderPainted value="true"/>
+              <doubleBuffered value="true"/>
               <focusPainted value="false"/>
               <text value="Login"/>
             </properties>
@@ -66,7 +67,9 @@
               <forms defaultalign-horz="false" defaultalign-vert="false"/>
             </constraints>
             <properties>
-              <borderPainted value="false"/>
+              <borderPainted value="true"/>
+              <doubleBuffered value="true"/>
+              <hideActionText value="false"/>
               <horizontalTextPosition value="0"/>
               <iconTextGap value="0"/>
               <text value=""/>
