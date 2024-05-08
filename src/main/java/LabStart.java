@@ -6,6 +6,7 @@
 import BackEnd.Configuration.ConfigurationIZV;
 import FrontEnd.LoginPanel;
 import FrontEnd.MainMenu;
+import FrontEnd.MenuGeneral;
 import FrontEnd.SettingMenu;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -42,13 +43,13 @@ public class LabStart {
         }
 
 
+
         java.awt.EventQueue.invokeLater(new Runnable() {
 
 
 
-
             public void run() {
-                new MainMenu().setVisible(true);
+                new MenuGeneral(true, "fel").setVisible(true);
             }
 
 

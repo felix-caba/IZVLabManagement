@@ -13,8 +13,6 @@ public class MySQL{
     // Singleton Patron
 
     private static MySQL instance = null;
-
-
     private static String JDBC = "com.mysql.cj.jdbc.Driver";
     private static String DB_URL = "jdbc:mysql://";
     private static Connection connection;
@@ -122,12 +120,21 @@ public class MySQL{
         }
 
         return rs;
-
-
+        
 
     }
 
 
+
+
+
+
+
+
+
+    public Connection getConnection() {
+        return connection;
+    }
 
 
 

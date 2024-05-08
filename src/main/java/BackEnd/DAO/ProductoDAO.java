@@ -13,6 +13,7 @@ public interface ProductoDAO {
     void insert(Producto producto);
     void update(Producto producto);
     void delete(Producto producto);
-    ArrayList<Producto> select();
+    ArrayList<Producto> selectPType(TYPE type);
+    ArrayList<Producto> selectAllProducts();
 
 }

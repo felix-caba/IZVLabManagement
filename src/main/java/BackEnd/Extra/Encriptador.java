@@ -48,4 +48,16 @@ public class Encriptador {
         return new SecretKeySpec(tmp.getEncoded(), "AES");
     }
 
+
+    public static void main(String[] args) {
+        try {
+            String cadena = "root";
+            String cadenaEncriptada = encriptar(cadena, claveSecreta);
+            System.out.println("Cadena encriptada: " + cadenaEncriptada);
+            String cadenaDesencriptada = desencriptar(cadenaEncriptada, claveSecreta);
+            System.out.println("Cadena desencriptada: " + cadenaDesencriptada);
+        } catch (Exception e) {
+            e.printStackTrace();
+    }}
+
 }

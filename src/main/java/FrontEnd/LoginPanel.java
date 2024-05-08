@@ -4,14 +4,19 @@
 
 package FrontEnd;
 
+import BackEnd.DAO.UsuarioDAO;
+import BackEnd.DAO.UsuarioDAOImpl;
 import BackEnd.MySQL;
 import BackEnd.MySQLThread;
+import BackEnd.Usuario;
 import com.formdev.flatlaf.FlatClientProperties;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 public class LoginPanel extends JFrame implements Themeable {
     private PanelRound panelWindowLoginIn;
@@ -52,15 +57,12 @@ public class LoginPanel extends JFrame implements Themeable {
             public void actionPerformed(ActionEvent actionEvent) {
 
 
-                MySQL.getInstance().connect();
-                checkLogin(MySQL.getInstance().getTable("usuarios"));
+                JOptionPane dialog = new JOptionPane("Logging in...", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION);
 
+                loginWorker(dialog).execute();
 
-
-
-
-
-
+                dialog.createDialog(null, "Logging in...").setVisible(true);
+                dialog.setVisible(true);
 
 
             }
@@ -85,29 +87,75 @@ public class LoginPanel extends JFrame implements Themeable {
     }
 
 
-    public void checkLogin(ResultSet rs) {
-
-        String user = loginUsernameField.getText();
-        String password = loginPasswordField.getText();
 
 
-        try {
-            if (rs.next()) {
-                if (rs.getString(2).equals(user) && rs.getString(3).equals(password)) {
-                    JOptionPane.showMessageDialog(this, "Login successful");
-                } else {
-                    JOptionPane.showMessageDialog(this, "Login failed");
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Login failed");
+
+
+    public SwingWorker<Void, Void> loginWorker(JOptionPane messageLogging) {
+
+
+
+        // swingWorker segundo plano hilo
+        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+
+                // se conecta a la bd
+
+                MySQL.getInstance().connect();
+
+                return null;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+            @Override
+            protected void done() {
+
+                // Este método se llama cuando doInBackground() ha terminado
+                // Aquí puedes realizar las acciones necesarias después de la conexión a la base de datos
+
+                UsuarioDAOImpl usuarioDAO = UsuarioDAOImpl.getInstance();
+                ArrayList<Usuario> usuarios = usuarioDAO.select();
+
+                boolean isLogged = false;
+
+                // check if the user is in the database
+
+                // TODO hacer que si no se logea con un timeout de 10 segundos pare de intentar y no acceda.
 
 
-    }
+                for (Usuario usuario : usuarios) {
 
 
+                    if (usuario.getNombre().equals(loginUsernameField.getText()) && usuario.getContrasena().equals(loginPasswordField.getText())) {
+
+                        MySQL.getInstance().disconnect();
+
+                        isLogged = true;
+
+                        new MenuGeneral(usuario.Es_admin(), usuario.getNombre()).setVisible(true);
+
+                        dispose();
+
+                        messageLogging.setMessage("Login successful");
+
+
+                    }
+
+
+                }
+
+                if (!isLogged) {
+
+                    messageLogging.setMessage("Login failed");
+
+                }
+
+            }
+
+        };
+
+        return worker;
+
+}
 
 }
