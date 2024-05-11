@@ -1,6 +1,11 @@
+/*
+ * @AUTHOR Felix
+ */
+
 package BackEnd;
 
 import BackEnd.Configuration.ConfigurationIZV;
+import BackEnd.DAO.TYPE;
 import BackEnd.Extra.Encriptador;
 
 import java.sql.Connection;
@@ -108,9 +113,11 @@ public class MySQL{
         ResultSet rs = null;
         String query = "SELECT * FROM " + tableName;
 
+
+
         try {
 
-            PreparedStatement ps = connection.prepareStatement(query);
+            PreparedStatement ps = connection.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
             rs = ps.executeQuery();
 
         } catch (Exception e) {
@@ -121,6 +128,26 @@ public class MySQL{
 
         return rs;
         
+
+    }
+
+    public ResultSet getTableEnum(TYPE type) {
+
+        ResultSet rs = null;
+        String query = "SELECT * FROM " + type.toString().toLowerCase();
+
+        try {
+
+            PreparedStatement ps = connection.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            rs = ps.executeQuery();
+
+        } catch (Exception e) {
+
+            System.out.println(e);
+
+        }
+
+        return rs;
 
     }
 

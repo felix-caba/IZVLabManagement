@@ -10,17 +10,19 @@ package BackEnd.Productos;
 
 import BackEnd.Producto;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 public class Material extends Producto {
 
     private String subcategoria;
     private String descripcion;
-    private String fechaCompra;
-    private String numeroSerie;
+    private LocalDate fechaCompra;
     private int stockMinimo;
     private String Nserie;
 
     public Material(int id, int cantidad, String nombre, String localizacion, String ubicacion,
-                    String subcategoria, String descripcion, String fechaCompra, String Nserie, int stockMinimo) {
+                    String subcategoria, String descripcion, LocalDate fechaCompra, String Nserie, int stockMinimo) {
 
         super(id, cantidad, nombre, localizacion, ubicacion);
         this.subcategoria = subcategoria;
@@ -28,12 +30,40 @@ public class Material extends Producto {
         this.fechaCompra = fechaCompra;
         this.Nserie = Nserie;
         this.stockMinimo = stockMinimo;
+
     }
 
 
     public Material() {
 
     }
+
+
+    public Object getValueForAttribute(String attributeName) {
+        // Llama al método de la clase Productos para obtener los valores de los atributos heredados
+        Object value = super.getValueForAttribute(attributeName);
+
+        // Si el valor no es null, significa que el atributo está definido en Productos
+
+        if (value != null) {
+            return value;
+        }
+
+        // Si el atributo no está definido en Productos, busca en los atributos específicos de Reactivos
+        return switch (attributeName) {
+
+            case "subcategoria" -> this.subcategoria;
+            case "descripcion" -> this.descripcion;
+            case "fechaCompra" -> this.fechaCompra;
+            case "Nserie" -> this.Nserie;
+            case "stockMinimo" -> this.stockMinimo;
+
+            default -> throw new IllegalArgumentException("Atributo desconocido: " + attributeName);
+        };
+    }
+
+
+
 
     public String getSubcategoria() {
         return subcategoria;
@@ -51,20 +81,12 @@ public class Material extends Producto {
         this.descripcion = descripcion;
     }
 
-    public String getFechaCompra() {
+    public LocalDate getFechaCompra() {
         return fechaCompra;
     }
 
-    public void setFechaCompra(String fechaCompra) {
+    public void setFechaCompra(LocalDate fechaCompra) {
         this.fechaCompra = fechaCompra;
-    }
-
-    public String getNSerie() {
-        return numeroSerie;
-    }
-
-    public void setNserie(String Nserie) {
-        this.numeroSerie = Nserie;
     }
 
     public int getStockMinimo() {
@@ -73,5 +95,13 @@ public class Material extends Producto {
 
     public void setStockMinimo(int stockMinimo) {
         this.stockMinimo = stockMinimo;
+    }
+
+    public String getNserie() {
+        return Nserie;
+    }
+
+    public void setNserie(String nserie) {
+        Nserie = nserie;
     }
 }

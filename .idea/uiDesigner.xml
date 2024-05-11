@@ -123,7 +123,11 @@
         <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="0" />
       </item>
     </group>
-    <group name="SwingFel" />
+    <group name="SwingFel">
+      <item class="org.jdesktop.swingx.JXTable" icon="/com/intellij/uiDesigner/icons/table.svg" removable="true" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="0" />
+      </item>
+    </group>
   </component>
   <component name="uidesigner-configuration">
     <option name="DEFAULT_LAYOUT_MANAGER" value="FormLayout" />

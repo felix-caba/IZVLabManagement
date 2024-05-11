@@ -2,8 +2,13 @@
  * @AUTHOR Felix
  */
 
+/*
+ * @AUTHOR Felix
+ */
+
 package BackEnd.DAO;
 
+import BackEnd.Extra.CustomDateFormatter;
 import BackEnd.MySQL;
 import BackEnd.Producto;
 import BackEnd.Productos.Auxiliar;
@@ -13,6 +18,7 @@ import BackEnd.Productos.Reactivo;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ProductoDAOImpl implements ProductoDAO{
     @Override
@@ -42,16 +48,16 @@ public class ProductoDAOImpl implements ProductoDAO{
         try{
 
             switch (type) {
-                case REACTIVO:
-                    rs = getResultSet("reactivos");
+                case REACTIVOS:
+                    rs = getResultSet(TYPE.REACTIVOS);
                     productos.addAll(getReactivos(rs));
                     break;
-                case AUXILIAR:
-                    rs = getResultSet("prod_aux");
+                case PROD_AUX:
+                    rs = getResultSet(TYPE.PROD_AUX);
                     productos.addAll(getAuxiliares(rs));
                     break;
-                case MATERIAL:
-                    rs = getResultSet("materiales");
+                case MATERIALES:
+                    rs = getResultSet(TYPE.MATERIALES);
                     productos.addAll(getMateriales(rs));
                     break;
             }
@@ -63,11 +69,12 @@ public class ProductoDAOImpl implements ProductoDAO{
         return productos;
     }
 
-    private ResultSet getResultSet(String tableName) {
-        return MySQL.getInstance().getTable(tableName);
+
+    public ResultSet getResultSet(TYPE type) {
+
+        return MySQL.getInstance().getTableEnum(type);
+
     }
-
-
 
     @Override
     public ArrayList<Producto> selectAllProducts() {
@@ -76,17 +83,23 @@ public class ProductoDAOImpl implements ProductoDAO{
 
     private ArrayList<Producto> getReactivos(ResultSet rs) throws SQLException {
         ArrayList<Producto> reactivos = new ArrayList<>();
+
+
         while (rs.next()) {
 
+
             Reactivo reactivo = new Reactivo();
+
             reactivo.setNombre(rs.getString("Nombre"));
             reactivo.setCantidad(rs.getInt("Cantidad"));
             reactivo.setLocalizacion(rs.getString("Localizacion"));
             reactivo.setUbicacion(rs.getString("Ubicacion"));
             reactivo.setRiesgos(rs.getString("Riesgos"));
             reactivo.setGradoPureza(rs.getString("GradoPureza"));
-            reactivo.setFechaCaducidad(rs.getString("FechaCaducidad"));
             reactivo.setStockMinimo(rs.getInt("StockMinimo"));
+            reactivo.setFormato(rs.getString("Formato"));
+            reactivo.setId(rs.getInt("id"));
+            reactivo.setFechaCaducidad(CustomDateFormatter.formatear(rs.getString("FechaCaducidad")));
             reactivos.add(reactivo);
 
         }
@@ -103,6 +116,7 @@ public class ProductoDAOImpl implements ProductoDAO{
             auxiliar.setCantidad(rs.getInt("Cantidad"));
             auxiliar.setLocalizacion(rs.getString("Localizacion"));
             auxiliar.setUbicacion(rs.getString("Ubicacion"));
+            auxiliar.setId(rs.getInt("id"));
             auxiliares.add(auxiliar);
 
         }
@@ -120,11 +134,18 @@ public class ProductoDAOImpl implements ProductoDAO{
             material.setSubcategoria(rs.getString("Subcategoria"));
             material.setDescripcion(rs.getString("Descripcion"));
             material.setNserie(rs.getString("Nserie"));
-            material.setFechaCompra(rs.getString("FechaDeCompra"));
+
+            material.setFechaCompra(CustomDateFormatter.formatear(rs.getString("FechaDeCompra")));
+
+
+            material.setId(rs.getInt("id"));
             materiales.add(material);
         }
         return materiales;
     }
+
+
+
 
 
 }

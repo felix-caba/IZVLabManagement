@@ -4,6 +4,9 @@
 
 package FrontEnd;
 
+import BackEnd.DAO.ProductoDAOImpl;
+import BackEnd.DAO.TYPE;
+import BackEnd.MySQL;
 import com.formdev.flatlaf.FlatClientProperties;
 
 import javax.swing.*;
@@ -58,8 +61,20 @@ public class MenuGeneral extends JFrame implements Themeable{
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                TYPE type = comboProducto.getSelectedIndex() == 0 ? TYPE.REACTIVOS : comboProducto.getSelectedIndex() == 1 ? TYPE.PROD_AUX : TYPE.MATERIALES;
+
+                MySQL.getInstance().connect();
+
+
+                new SearchResultMenu(new ProductoDAOImpl().selectPType(type)).setVisible(true);
+
+
+
+                MySQL.getInstance().disconnect();
+
             }
         });
+
     }
 
 
@@ -77,6 +92,8 @@ public class MenuGeneral extends JFrame implements Themeable{
         pack();
 
     }
+
+
 
 
 

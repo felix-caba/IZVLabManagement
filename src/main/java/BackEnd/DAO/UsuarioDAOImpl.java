@@ -2,6 +2,10 @@
  * @AUTHOR Felix
  */
 
+/*
+ * @AUTHOR Felix
+ */
+
 package BackEnd.DAO;
 
 import BackEnd.MySQL;
@@ -9,6 +13,7 @@ import BackEnd.Usuario;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class UsuarioDAOImpl implements UsuarioDAO{
 
@@ -80,6 +85,8 @@ public class UsuarioDAOImpl implements UsuarioDAO{
         return usuarios;
 
     }
+
+
 
 
 }

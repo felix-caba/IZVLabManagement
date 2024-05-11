@@ -23,6 +23,23 @@ public class Auxiliar extends Producto {
 
     }
 
+    @Override
+    public Object getValueForAttribute(String attributeName) {
+
+        return switch (attributeName) {
+
+            case "id" -> this.getId();
+            case "cantidad" -> this.getCantidad();
+            case "nombre" -> this.getNombre();
+            case "localizacion" -> this.getLocalizacion();
+            case "ubicacion" -> this.getUbicacion();
+            case "formato" -> this.formato;
+            default -> throw new IllegalArgumentException("Atributo desconocido: " + attributeName);
+
+        };
+    }
+
+
     public String getFormato() {
         return formato;
     }
@@ -30,5 +47,9 @@ public class Auxiliar extends Producto {
     public void setFormato(String formato) {
         this.formato = formato;
     }
+
+
+
+
 }
 
