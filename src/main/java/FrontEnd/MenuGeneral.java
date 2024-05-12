@@ -29,6 +29,7 @@ public class MenuGeneral extends JFrame implements Themeable{
 
 
     public MenuGeneral(boolean isAdmin, String username) {
+
         this.isAdmin = isAdmin;
         this.username = username;
 
@@ -36,7 +37,6 @@ public class MenuGeneral extends JFrame implements Themeable{
 
         backButton.setName("backButton");
         lupaButton.setName("lupaButton");
-        adminButton.setName("adminButton");
 
         initComponents();
         setIcons(this);
@@ -45,6 +45,7 @@ public class MenuGeneral extends JFrame implements Themeable{
                 "background: lighten(@background,3%);");
         panelRoundMenuGeneralPreg.putClientProperty( FlatClientProperties.STYLE,
                 "background: lighten(@background,3%);");
+
 
 
         // Prog funcional para ahorrarme unas lineas
@@ -61,20 +62,18 @@ public class MenuGeneral extends JFrame implements Themeable{
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                TYPE type = comboProducto.getSelectedIndex() == 0 ? TYPE.REACTIVOS : comboProducto.getSelectedIndex() == 1 ? TYPE.PROD_AUX : TYPE.MATERIALES;
-
-                MySQL.getInstance().connect();
-
-
-                new SearchResultMenu(new ProductoDAOImpl().selectPType(type)).setVisible(true);
-
-
-
-                MySQL.getInstance().disconnect();
+             showSearchResults();
 
             }
         });
 
+    }
+
+    public void showSearchResults() {
+        TYPE type = comboProducto.getSelectedIndex() == 0 ? TYPE.REACTIVOS : comboProducto.getSelectedIndex() == 1 ? TYPE.PROD_AUX : TYPE.MATERIALES;
+        MySQL.getInstance().connect();
+        new SearchResultMenu(new ProductoDAOImpl().selectPType(type),  isAdmin, type).setVisible(true);
+        MySQL.getInstance().disconnect();
     }
 
 

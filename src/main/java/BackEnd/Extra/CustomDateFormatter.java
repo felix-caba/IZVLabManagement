@@ -43,7 +43,7 @@ public class CustomDateFormatter {
 
 
 
-        System.out.println(ocurrencias);
+
 
         String[] ocurrenciasArr= new String[ocurrencias.size()];
 

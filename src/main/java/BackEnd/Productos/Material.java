@@ -104,4 +104,13 @@ public class Material extends Producto {
     public void setNserie(String nserie) {
         Nserie = nserie;
     }
+
+
+    @Override
+    public Producto createProductFromRow(Object[] row) {
+
+
+          return null;
+
+    }
 }

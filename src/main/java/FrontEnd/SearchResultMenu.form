@@ -4,10 +4,18 @@
     <rowspec value="center:max(d;4px):noGrow"/>
     <rowspec value="top:10dlu:noGrow"/>
     <rowspec value="center:d:grow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
     <rowspec value="top:10dlu:noGrow"/>
     <rowspec value="center:max(d;4px):noGrow"/>
     <colspec value="fill:max(d;4px):noGrow"/>
     <colspec value="left:10dlu:noGrow"/>
+    <colspec value="fill:d:grow"/>
+    <colspec value="left:5dlu:noGrow"/>
+    <colspec value="fill:max(d;4px):grow"/>
+    <colspec value="left:4dlu:noGrow"/>
+    <colspec value="fill:max(d;4px):grow"/>
+    <colspec value="left:4dlu:noGrow"/>
     <colspec value="fill:d:grow"/>
     <colspec value="left:12dlu:noGrow"/>
     <colspec value="fill:max(d;4px):noGrow"/>
@@ -29,7 +37,7 @@
         <colspec value="left:10dlu:noGrow"/>
         <colspec value="fill:max(d;4px):noGrow"/>
         <constraints>
-          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="2" row-span="1" col-span="7" vsize-policy="3" hsize-policy="3" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
           <forms defaultalign-vert="false"/>
         </constraints>
         <properties>
@@ -55,6 +63,7 @@
                 <constraints/>
                 <properties>
                   <autoResizeMode value="0"/>
+                  <cellSelectionEnabled value="true"/>
                   <columnMargin value="0"/>
                   <doubleBuffered value="true"/>
                   <editable value="false"/>
@@ -68,6 +77,47 @@
           </scrollpane>
         </children>
       </grid>
+      <component id="7a45d" class="javax.swing.JButton" binding="adminButton" default-binding="true">
+        <constraints>
+          <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <enabled value="false"/>
+          <label value="Edición"/>
+          <text value="Edición"/>
+        </properties>
+      </component>
+      <component id="d33b7" class="javax.swing.JButton" binding="saveButton">
+        <constraints>
+          <grid row="4" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <enabled value="false"/>
+          <text value="Guardar"/>
+        </properties>
+      </component>
+      <component id="233ac" class="javax.swing.JButton" binding="addButton">
+        <constraints>
+          <grid row="4" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <enabled value="false"/>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="278d1" class="javax.swing.JButton" binding="deleteButton">
+        <constraints>
+          <grid row="4" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <enabled value="false"/>
+          <text value=""/>
+        </properties>
+      </component>
     </children>
   </grid>
 </form>

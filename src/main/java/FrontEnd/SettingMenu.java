@@ -17,7 +17,7 @@ public class SettingMenu extends JFrame implements Themeable, Validable{
     private JPanel panelSettings;
     private PanelRound panelSettingsRound;
     private JLabel configLabelBDName;
-    private JButton saveConfigButton;
+    private JButton saveButton;
     private JButton backButton;
     private JTextField ipBDField;
     private JTextField bdNameField;
@@ -29,7 +29,7 @@ public class SettingMenu extends JFrame implements Themeable, Validable{
 
     public SettingMenu() {
 
-        saveConfigButton.setName("saveConfigButton");
+        saveButton.setName("saveButton");
         backButton.setName("backButton");
 
 
@@ -41,7 +41,7 @@ public class SettingMenu extends JFrame implements Themeable, Validable{
         setIcons(this);
 
 
-        saveConfigButton.addActionListener(new ActionListener() {
+        saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 

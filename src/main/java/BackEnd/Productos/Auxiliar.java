@@ -39,6 +39,11 @@ public class Auxiliar extends Producto {
         };
     }
 
+    @Override
+    public Producto createProductFromRow(Object[] row) {
+        return null;
+    }
+
 
     public String getFormato() {
         return formato;

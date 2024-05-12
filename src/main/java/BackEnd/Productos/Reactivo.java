@@ -65,14 +65,7 @@ public class Reactivo extends Producto {
     }
 
     public void setFechaCaducidad(LocalDate fechaCaducidad) {
-
-
-
-
         this.fechaCaducidad = fechaCaducidad;
-
-
-
     }
 
     public int getStockMinimo() {
@@ -145,6 +138,28 @@ public class Reactivo extends Producto {
     @Override
     public String getUbicacion() {
         return super.getUbicacion();
+    }
+
+    @Override
+    public Reactivo createProductFromRow(Object[] row) {
+
+        Reactivo reactivo = new Reactivo();
+        reactivo.setId((int) row[0]);
+        reactivo.setNombre((String) row[1]);
+        reactivo.setUbicacion((String) row[2]);
+        reactivo.setLocalizacion((String) row[3]);
+        reactivo.setCantidad((int) row[4]);
+        reactivo.setFormato((String) row[5]);
+        reactivo.setRiesgos((String) row[6]);
+        reactivo.setGradoPureza((String) row[7]);
+        reactivo.setFechaCaducidad((LocalDate) row[8]);
+        reactivo.setStockMinimo((int) row[9]);
+
+        System.out.println("Reactivo creado: " + reactivo.toString());
+
+        return reactivo;
+
+
     }
 
 

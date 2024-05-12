@@ -138,6 +138,9 @@ public abstract class Producto {
         };
     }
 
+
+    public abstract Producto createProductFromRow(Object[] row);
+
 }
 
 
