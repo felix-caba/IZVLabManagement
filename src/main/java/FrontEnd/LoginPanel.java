@@ -4,18 +4,14 @@
 
 package FrontEnd;
 
-import BackEnd.DAO.UsuarioDAO;
-import BackEnd.DAO.UsuarioDAOImpl;
+import BackEnd.DAO.Impl.UsuarioDAOImpl;
 import BackEnd.MySQL;
-import BackEnd.MySQLThread;
 import BackEnd.Usuario;
 import com.formdev.flatlaf.FlatClientProperties;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 
 public class LoginPanel extends JFrame implements Themeable {

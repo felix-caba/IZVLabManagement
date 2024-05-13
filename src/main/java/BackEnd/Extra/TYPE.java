@@ -6,7 +6,11 @@
  * @AUTHOR Felix
  */
 
-package BackEnd.DAO;
+/*
+ * @AUTHOR Felix
+ */
+
+package BackEnd.Extra;
 
 public enum TYPE {
 

@@ -8,6 +8,7 @@
 
 package BackEnd.Productos;
 
+import BackEnd.Extra.CustomDateFormatter;
 import BackEnd.Producto;
 
 import java.time.LocalDate;
@@ -32,6 +33,11 @@ public class Reactivo extends Producto {
         this.fechaCaducidad = fechaCaducidad;
         this.stockMinimo = stockMinimo;
     }
+
+    public Reactivo(int id) {
+        super(id);
+    }
+
 
     public Reactivo(){
 
@@ -61,7 +67,10 @@ public class Reactivo extends Producto {
     }
 
     public LocalDate getFechaCaducidad() {
+
         return fechaCaducidad;
+
+
     }
 
     public void setFechaCaducidad(LocalDate fechaCaducidad) {
@@ -104,14 +113,23 @@ public class Reactivo extends Producto {
         }
 
         // Si el atributo no está definido en Productos, busca en los atributos específicos de Reactivos
-        return switch (attributeName) {
-            case "formato" -> this.formato;
-            case "riesgos" -> this.riesgos;
-            case "gradoPureza" -> this.gradoPureza;
-            case "fechaCaducidad" -> this.fechaCaducidad;
-            case "stockMinimo" -> this.stockMinimo;
-            default -> throw new IllegalArgumentException("Atributo desconocido: " + attributeName);
-        };
+
+        switch (attributeName) {
+            case "formato":
+                return this.formato;
+            case "riesgos":
+                return this.riesgos;
+            case "gradoPureza":
+                return this.gradoPureza;
+            case "fechaCaducidad":
+                return this.fechaCaducidad;
+            case "stockMinimo":
+                return this.stockMinimo;
+        }
+
+        return null;
+
+
     }
 
 
@@ -141,25 +159,25 @@ public class Reactivo extends Producto {
     }
 
     @Override
-    public Reactivo createProductFromRow(Object[] row) {
+    public Reactivo getProductFromRow(Object[] row) {
 
         Reactivo reactivo = new Reactivo();
-        reactivo.setId((int) row[0]);
-        reactivo.setNombre((String) row[1]);
-        reactivo.setUbicacion((String) row[2]);
-        reactivo.setLocalizacion((String) row[3]);
-        reactivo.setCantidad((int) row[4]);
-        reactivo.setFormato((String) row[5]);
-        reactivo.setRiesgos((String) row[6]);
-        reactivo.setGradoPureza((String) row[7]);
-        reactivo.setFechaCaducidad((LocalDate) row[8]);
-        reactivo.setStockMinimo((int) row[9]);
 
-        System.out.println("Reactivo creado: " + reactivo.toString());
-
+        try {
+            reactivo.setId((int) row[0]);
+            reactivo.setNombre((String) row[1]);
+            reactivo.setUbicacion((String) row[2]);
+            reactivo.setLocalizacion((String) row[3]);
+            reactivo.setCantidad((int) row[4]);
+            reactivo.setFormato((String) row[5]);
+            reactivo.setRiesgos((String) row[6]);
+            reactivo.setGradoPureza((String) row[7]);
+            reactivo.setFechaCaducidad((LocalDate) row[8]);
+            reactivo.setStockMinimo((int) row[9]);
+        } catch (Exception e) {
+            System.out.println("UNO DE LOS VALORES ES NULL Y NO SE PUEDE CONVERTIR");
+        }
         return reactivo;
-
-
     }
 
 

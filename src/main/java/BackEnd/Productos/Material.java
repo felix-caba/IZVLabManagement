@@ -107,10 +107,12 @@ public class Material extends Producto {
 
 
     @Override
-    public Producto createProductFromRow(Object[] row) {
+    public Producto getProductFromRow(Object[] row) {
 
 
           return null;
 
     }
+
+
 }

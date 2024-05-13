@@ -30,7 +30,11 @@ public class TableChange {
         return producto;
     }
 
-
-
-
+    @Override
+    public String toString() {
+        return "TableChange{" +
+                "changeType=" + changeType +
+                ", producto=" + producto +
+                '}';
+    }
 }

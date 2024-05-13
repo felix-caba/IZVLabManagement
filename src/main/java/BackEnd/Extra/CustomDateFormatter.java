@@ -42,9 +42,6 @@ public class CustomDateFormatter {
             }
 
 
-
-
-
         String[] ocurrenciasArr= new String[ocurrencias.size()];
 
         return ocurrencias.toArray(ocurrenciasArr);
@@ -140,6 +137,17 @@ public class CustomDateFormatter {
             return null;
 
         }
+
+    }
+
+
+    public static String convertToString(LocalDate date) {
+
+        if (date == null) {
+            return "";
+        }
+
+        return date.format(FORMATTER);
 
     }
 

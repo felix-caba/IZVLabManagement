@@ -5,8 +5,7 @@
 package BackEnd;
 
 import BackEnd.Configuration.ConfigurationIZV;
-import BackEnd.DAO.TYPE;
-import BackEnd.Extra.Encriptador;
+import BackEnd.Extra.TYPE;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -113,8 +112,6 @@ public class MySQL{
         ResultSet rs = null;
         String query = "SELECT * FROM " + tableName;
 
-
-
         try {
 
             PreparedStatement ps = connection.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -127,7 +124,6 @@ public class MySQL{
         }
 
         return rs;
-        
 
     }
 

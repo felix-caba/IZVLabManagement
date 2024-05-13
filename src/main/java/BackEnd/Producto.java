@@ -38,6 +38,9 @@ public abstract class Producto {
 
     }
 
+    public Producto(int id) {
+    }
+
     public int getId() {
         return id;
     }
@@ -139,7 +142,8 @@ public abstract class Producto {
     }
 
 
-    public abstract Producto createProductFromRow(Object[] row);
+    public abstract Producto getProductFromRow(Object[] row);
+
 
 }
 

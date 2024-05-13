@@ -5,7 +5,8 @@
 package FrontEnd;
 
 import BackEnd.Configuration.ScreenSize;
-import BackEnd.DAO.TYPE;
+import BackEnd.DAO.Impl.ProductoDAOImpl;
+import BackEnd.Extra.TYPE;
 import BackEnd.Extra.TableChange;
 import BackEnd.Producto;
 import BackEnd.Productos.Auxiliar;
@@ -27,7 +28,6 @@ import java.awt.event.*;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class SearchResultMenu extends JFrame implements Themeable {
     private JPanel panelSearchMenu;
@@ -47,8 +47,9 @@ public class SearchResultMenu extends JFrame implements Themeable {
 
 
 
-
     public void initComponents() {
+
+
 
         /*Tamaño de la ventana y posicion*/
 
@@ -83,14 +84,11 @@ public class SearchResultMenu extends JFrame implements Themeable {
         // directamente el tipo de dato que queremos que muestre. override de columnclassget
 
         TableModel model = new DefaultTableModel(getData(searchResults), getColumnNames(searchResults)) {
-            public Class<?> getColumnClass(int column)
-            {
-                for (int row = 0; row < getRowCount(); row++)
-                {
+            public Class<?> getColumnClass(int column) {
+                for (int row = 0; row < getRowCount(); row++) {
                     Object o = getValueAt(row, column);
 
-                    if (o != null)
-                    {
+                    if (o != null) {
                         return o.getClass();
                     }
                 }
@@ -114,37 +112,45 @@ public class SearchResultMenu extends JFrame implements Themeable {
             public void tableChanged(TableModelEvent tableModelEvent) {
 
                 int row = tableModelEvent.getFirstRow();
-               int getType = tableModelEvent.getType();
-
+                int getType = tableModelEvent.getType();
 
 
                 if (getType == TableModelEvent.UPDATE) {
 
+                    System.out.println("Añadido a Update" + getProductoFromRow(row));
 
+                    tableChanges.add(new TableChange(TableChange.ChangeType.UPDATE, getProductoFromRow(row)));
+
+                } else if (getType == TableModelEvent.DELETE) {
+
+                    System.out.println("Añadido a Delete" + getProductoFromRow(row));
+                    tableChanges.add(new TableChange(TableChange.ChangeType.DELETE, getProductoFromRow(row)));
 
                 }
 
 
 
             }
-
         });
 
         tableResults.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
 
-                    if (!listSelectionEvent.getValueIsAdjusting()) {
-                        // verifica
+                if (!listSelectionEvent.getValueIsAdjusting()) {
+                    // verifica
 
-                        if (tableResults.getSelectedRow() != -1 && isAdmin && isButtonPressed) {
+                    if (tableResults.getSelectedRow() != -1 && isAdmin && isButtonPressed) {
 
-                            deleteButton.setEnabled(true);
-                        } else {
-                            deleteButton.setEnabled(false);
-                        }
+                        deleteButton.setEnabled(true);
+
+                    } else {
+
+                        deleteButton.setEnabled(false);
+
                     }
                 }
+            }
 
 
         });
@@ -152,7 +158,6 @@ public class SearchResultMenu extends JFrame implements Themeable {
         tableResults.setModel(model);
         tableResults.packAll();
         tableResults.setPreferredScrollableViewportSize(dim);
-
 
 
         TableColumnModel columnModel = tableResults.getColumnModel();
@@ -177,11 +182,12 @@ public class SearchResultMenu extends JFrame implements Themeable {
         this.typeProduct = typeProduct;
 
 
+
         adminButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
         saveButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
         addButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
         deleteButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
-        panelRoundSearchResults.putClientProperty( FlatClientProperties.STYLE, "background: lighten(@background,3%);");
+        panelRoundSearchResults.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,3%);");
 
         initComponents();
 
@@ -191,37 +197,25 @@ public class SearchResultMenu extends JFrame implements Themeable {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
 
-
                 if (isButtonPressed) {
 
                     isButtonPressed = false;
                     tableResults.setEditable(false);
                     tableResults.setEditable(false);
-
                     adminButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
                     addButton.setEnabled(false);
-
                     saveButton.setEnabled(false);
 
                 } else {
 
-
                     isButtonPressed = true;
                     tableResults.setEditable(true);
                     tableResults.setEditable(true);
-
                     adminButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,40%);");
                     addButton.setEnabled(true);
-
-
-
                     saveButton.setEnabled(true);
+
                 }
-
-
-
-
-
 
             }
         });
@@ -230,19 +224,17 @@ public class SearchResultMenu extends JFrame implements Themeable {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
 
-
-
-
-                model.addRow(new Object[model.getColumnCount()]);
-
                 int nuevaRow = model.getRowCount() - 1;
-                int previaRow = nuevaRow - 1;
-                int valorIDprevio = (int) model.getValueAt(previaRow, 0);
 
-                model.setValueAt(valorIDprevio + 1, nuevaRow, 0);
+                Producto productoNuevo = createNewProduct();
 
-                tableResults.scrollRectToVisible(tableResults.getCellRect(nuevaRow, 0, true));
-                tableResults.setRowSelectionInterval(nuevaRow, nuevaRow);
+                addProductToRow(productoNuevo);
+
+                searchResults.add(productoNuevo);
+                tableChanges.add(new TableChange(TableChange.ChangeType.INSERT, productoNuevo));
+
+                tableResults.scrollRectToVisible(tableResults.getCellRect(nuevaRow+1, 0, true));
+                tableResults.setRowSelectionInterval(nuevaRow, nuevaRow+1);
 
 
 
@@ -254,13 +246,11 @@ public class SearchResultMenu extends JFrame implements Themeable {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
 
-
                 int selectedRow = tableResults.getSelectedRow();
 
                 if (selectedRow != -1) {
                     model.removeRow(selectedRow);
                 }
-
 
 
             }
@@ -269,17 +259,36 @@ public class SearchResultMenu extends JFrame implements Themeable {
 
         saveButton.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent actionEvent) {
+            public void actionPerformed(ActionEvent e) {
 
-                Producto producto = getProductoFromRow(tableResults.getSelectedRow());
-                System.out.println(producto.toString());
+                ProductoDAOImpl productoDAO = new ProductoDAOImpl();
 
+                    for (TableChange change : tableChanges) {
 
+                        switch (change.getChangeType()) {
+
+                            case INSERT:
+
+                                productoDAO.insert(change.getProducto());
+
+                                break;
+
+                            case UPDATE:
+
+                                    productoDAO.update(change.getProducto());
+
+                                break;
+
+                            case DELETE:
+                                // Eliminar de la base de datos
+                                break;
+
+                        }
+
+                    }
             }
         });
     }
-
-
 
     // Deprecados porque se ha cambiado la forma de obtener los datos de la tabla.
     // Es mejor separar los metodos de obtencion de columnas.
@@ -323,11 +332,9 @@ public class SearchResultMenu extends JFrame implements Themeable {
         return new DefaultTableModel(dataArray, columnNames.toArray());
 
     }
+
     @Deprecated
     public DefaultTableModel buildTableModel(ArrayList<Producto> searchResults) {
-
-
-
 
 
         if (searchResults.isEmpty()) {
@@ -350,9 +357,6 @@ public class SearchResultMenu extends JFrame implements Themeable {
         return new DefaultTableModel(dataArray, columnNames);
     }
 
-
-
-
     // Metodos Actuales
 
     public String[] getColumnNames(ArrayList<Producto> searchResults) {
@@ -368,10 +372,14 @@ public class SearchResultMenu extends JFrame implements Themeable {
         for (int i = 0; i < searchResults.size(); i++) {
 
             Producto producto = searchResults.get(i);
+
             Object[] rowData = new Object[producto.getAllAttributesNamesString().length];
 
             for (int j = 0; j < producto.getAllAttributesNamesString().length; j++) {
+
+
                 rowData[j] = producto.getValueForAttribute(producto.getAllAttributesNamesString()[j]);
+
             }
             data[i] = rowData;
         }
@@ -379,27 +387,41 @@ public class SearchResultMenu extends JFrame implements Themeable {
         return data;
     }
 
+
+
+    public Object[] getAttributesFromRow(int row) {
+
+        TableModel model = tableResults.getModel();
+        int columnCount = model.getColumnCount();
+
+        Object[] rowData = new Object[columnCount];
+
+
+
+        for (int column = 0; column < columnCount; column++) {
+
+            rowData[column] = model.getValueAt(row, column);
+
+        }
+
+
+        return rowData;
+
+    }
+
     public Producto getProductoFromRow(int row) {
 
-
-        // get a producto from the Arraylist of productos. See which type it is
-
-        Object[] dataRow = getData(searchResults)[row];
-
-        System.out.println(Arrays.toString(dataRow));
+        Object[] dataRow = getAttributesFromRow(row);
 
         switch (typeProduct) {
+
             case REACTIVOS:
 
                 Reactivo reactivo = new Reactivo();
 
-                reactivo = reactivo.createProductFromRow(dataRow);
+                reactivo = reactivo.getProductFromRow(dataRow);
 
-                System.out.println(reactivo);
-
-                return new Reactivo();
-
-
+                return reactivo;
 
             case PROD_AUX:
 
@@ -410,42 +432,69 @@ public class SearchResultMenu extends JFrame implements Themeable {
 
             case MATERIALES:
 
-
-
-
-
-
-
                 return new Material();
 
 
-
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         return null;
 
     }
 
+    public Producto createNewProduct() {
+
+        int lastID = searchResults.isEmpty() ? 0 : searchResults.get(searchResults.size() - 1).getId();
+        // Sumarle uno a la ID del último producto
+        int newID = lastID + 1;
+
+        switch (typeProduct) {
+
+            case REACTIVOS:
+
+                return new Reactivo(newID, 0, null, null, null,
+                        null, null, null, null, 0);
+
+
+            case PROD_AUX:
+
+
+                return new Auxiliar();
+
+            case MATERIALES:
+
+                return new Material();
+        }
+
+        return null;
+    }
+
+    public void addProductToRow(Producto producto) {
+        // Obtener los nombres de los atributos del Producto
+        String[] attributeNames = producto.getAllAttributesNamesString();
+
+        // Crear un array para almacenar los valores de los atributos del Producto
+        Object[] rowData = new Object[attributeNames.length];
+
+
+
+        for (int i = 0; i < attributeNames.length; i++) {
+
+
+            Object attributeValue = producto.getValueForAttribute(attributeNames[i]);
+
+            rowData[i] = attributeValue;
+
+            }
+
+        DefaultTableModel model = (DefaultTableModel) tableResults.getModel();
+        model.addRow(rowData);
+
+        }
+
+
+    }
 
 
 
 
-
-}

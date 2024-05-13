@@ -8,6 +8,7 @@
 
 package BackEnd.DAO;
 
+import BackEnd.Extra.TYPE;
 import BackEnd.Producto;
 
 import java.util.ArrayList;
@@ -18,6 +19,5 @@ public interface ProductoDAO {
     void update(Producto producto);
     void delete(Producto producto);
     ArrayList<Producto> selectPType(TYPE type);
-    ArrayList<Producto> selectAllProducts();
 
 }
