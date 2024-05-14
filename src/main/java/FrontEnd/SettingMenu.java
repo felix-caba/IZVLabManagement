@@ -104,7 +104,24 @@ public class SettingMenu extends JFrame implements Themeable, Validable{
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setContentPane(panelSettings);
 
+
+        fillFields();
+
         pack();
+
+    }
+
+    public void fillFields(){
+
+        ConfigurationIZV configurationIZV = ConfigurationIZV.getInstance();
+
+        ipBDField.setText(configurationIZV.getIp());
+        bdNameField.setText(configurationIZV.getBdName());
+        comboTheme.setSelectedItem(configurationIZV.getAppearance());
+
+        textField1.setText(configurationIZV.getUser());
+        textField2.setText(configurationIZV.getPasswordUnencrypted());
+
 
     }
 

@@ -20,11 +20,14 @@ import BackEnd.Producto;
 import BackEnd.Productos.Auxiliar;
 import BackEnd.Productos.Material;
 import BackEnd.Productos.Reactivo;
+import FrontEnd.LoadingFrame;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProductoDAOImpl implements ProductoDAO {
 
@@ -35,9 +38,24 @@ public class ProductoDAOImpl implements ProductoDAO {
         if (producto instanceof Reactivo) {
 
             try {
+
+
                 insertReactivo((Reactivo) producto);
+
+
+
             } catch (SQLException e) {
-                e.printStackTrace();
+
+                LoadingFrame dialog = new LoadingFrame();
+
+
+                if (e.getErrorCode() == 1062) {
+
+                    dialog.setMessage("Un producto con ese mismo ID ya existe en la BD");
+
+                }
+
+
             }
 
 
@@ -62,6 +80,8 @@ public class ProductoDAOImpl implements ProductoDAO {
                 e.printStackTrace();
             }
 
+
+
         } else if (producto instanceof Auxiliar) {
 
 
@@ -75,6 +95,26 @@ public class ProductoDAOImpl implements ProductoDAO {
 
     @Override
     public void delete(Producto producto) {
+
+        if (producto instanceof Reactivo) {
+
+            try {
+
+                deleteReactivo((Reactivo) producto);
+
+            } catch (SQLException e) {
+
+                e.printStackTrace();
+
+            }
+
+        } else if (producto instanceof Auxiliar) {
+
+
+
+        } else if (producto instanceof Material) {
+
+        }
 
     }
 
@@ -105,6 +145,20 @@ public class ProductoDAOImpl implements ProductoDAO {
         return productos;
     }
 
+    private void deleteReactivo(Reactivo reactivo) throws SQLException{
+        MySQL sql = MySQL.getInstance();
+        sql.connect();
+
+        final String sqlDELETEReactivo = "DELETE FROM reactivos WHERE id = ?";
+
+        try (PreparedStatement pstmt = sql.getConnection().prepareStatement(sqlDELETEReactivo)) {
+            pstmt.setInt(1, reactivo.getId());
+            pstmt.executeUpdate();
+        }
+
+        sql.disconnect();
+
+    }
 
     private void updateReactivo(Reactivo reactivo) throws SQLException {
         MySQL sql = MySQL.getInstance();
@@ -131,7 +185,10 @@ public class ProductoDAOImpl implements ProductoDAO {
     private void insertReactivo(Reactivo reactivo) throws SQLException {
         MySQL sql = MySQL.getInstance();
         sql.connect();
-        final String sqlINSERTReactivos = "INSERT INTO reactivos (nombre, cantidad, localizacion, ubicacion, riesgos, gradoPureza, stockMinimo, formato, fechaCaducidad) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        final String sqlINSERTReactivos = "INSERT INTO reactivos (nombre, cantidad, localizacion, ubicacion, riesgos, gradoPureza, " +
+                "stockMinimo, formato, fechaCaducidad, id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
         try (PreparedStatement pstmt = sql.getConnection().prepareStatement(sqlINSERTReactivos)) {
             pstmt.setString(1, reactivo.getNombre());
             pstmt.setInt(2, reactivo.getCantidad());
@@ -142,8 +199,10 @@ public class ProductoDAOImpl implements ProductoDAO {
             pstmt.setInt(7, reactivo.getStockMinimo());
             pstmt.setString(8, reactivo.getFormato());
             pstmt.setString(9, CustomDateFormatter.convertToString(reactivo.getFechaCaducidad()));
+            pstmt.setInt(10, reactivo.getId());
             pstmt.executeUpdate();
         }
+
         sql.disconnect();
     }
 
@@ -153,9 +212,12 @@ public class ProductoDAOImpl implements ProductoDAO {
         ArrayList<Producto> reactivos = new ArrayList<>();
 
         MySQL sql = MySQL.getInstance();
+        sql.connect();
 
         ResultSet rs = null;
         String query = "SELECT * FROM reactivos";
+
+
 
         PreparedStatement ps = sql.getConnection().prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
         rs = ps.executeQuery();
@@ -190,6 +252,7 @@ public class ProductoDAOImpl implements ProductoDAO {
         ArrayList<Producto> auxiliares = new ArrayList<>();
 
         MySQL sql = MySQL.getInstance();
+        sql.connect();
 
         ResultSet rs = null;
 

@@ -21,6 +21,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
@@ -74,6 +75,8 @@ public class SearchResultMenu extends JFrame implements Themeable {
         addButton.setName("addButton");
         deleteButton.setName("deleteButton");
 
+
+
         setIcons(this);
 
         if (isAdmin) {
@@ -84,6 +87,12 @@ public class SearchResultMenu extends JFrame implements Themeable {
         // directamente el tipo de dato que queremos que muestre. override de columnclassget
 
         TableModel model = new DefaultTableModel(getData(searchResults), getColumnNames(searchResults)) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // Devuelve false para la primera columna y true para las demás
+                return column != 0;
+            }
+
             public Class<?> getColumnClass(int column) {
                 for (int row = 0; row < getRowCount(); row++) {
                     Object o = getValueAt(row, column);
@@ -121,14 +130,7 @@ public class SearchResultMenu extends JFrame implements Themeable {
 
                     tableChanges.add(new TableChange(TableChange.ChangeType.UPDATE, getProductoFromRow(row)));
 
-                } else if (getType == TableModelEvent.DELETE) {
-
-                    System.out.println("Añadido a Delete" + getProductoFromRow(row));
-                    tableChanges.add(new TableChange(TableChange.ChangeType.DELETE, getProductoFromRow(row)));
-
                 }
-
-
 
             }
         });
@@ -169,6 +171,10 @@ public class SearchResultMenu extends JFrame implements Themeable {
             }
         }
 
+
+
+
+
         pack();
         setLocationRelativeTo(null);
 
@@ -180,6 +186,7 @@ public class SearchResultMenu extends JFrame implements Themeable {
         this.searchResults = searchResults;
         this.isAdmin = isAdmin;
         this.typeProduct = typeProduct;
+
 
 
 
@@ -197,7 +204,12 @@ public class SearchResultMenu extends JFrame implements Themeable {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
 
+
+
+
                 if (isButtonPressed) {
+
+
 
                     isButtonPressed = false;
                     tableResults.setEditable(false);
@@ -208,12 +220,15 @@ public class SearchResultMenu extends JFrame implements Themeable {
 
                 } else {
 
+
+
                     isButtonPressed = true;
                     tableResults.setEditable(true);
                     tableResults.setEditable(true);
                     adminButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,40%);");
                     addButton.setEnabled(true);
                     saveButton.setEnabled(true);
+
 
                 }
 
@@ -246,11 +261,15 @@ public class SearchResultMenu extends JFrame implements Themeable {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
 
+
+
                 int selectedRow = tableResults.getSelectedRow();
 
-                if (selectedRow != -1) {
-                    model.removeRow(selectedRow);
-                }
+                tableChanges.add(new TableChange(TableChange.ChangeType.DELETE, getProductoFromRow(selectedRow)));
+
+                model.removeRow(selectedRow);
+
+
 
 
             }
@@ -268,21 +287,16 @@ public class SearchResultMenu extends JFrame implements Themeable {
                         switch (change.getChangeType()) {
 
                             case INSERT:
-
                                 productoDAO.insert(change.getProducto());
-
                                 break;
 
                             case UPDATE:
-
-                                    productoDAO.update(change.getProducto());
-
+                                productoDAO.update(change.getProducto());
                                 break;
 
                             case DELETE:
-                                // Eliminar de la base de datos
+                                productoDAO.delete(change.getProducto());
                                 break;
-
                         }
 
                     }
@@ -388,25 +402,16 @@ public class SearchResultMenu extends JFrame implements Themeable {
     }
 
 
-
     public Object[] getAttributesFromRow(int row) {
 
         TableModel model = tableResults.getModel();
         int columnCount = model.getColumnCount();
-
         Object[] rowData = new Object[columnCount];
 
-
-
         for (int column = 0; column < columnCount; column++) {
-
             rowData[column] = model.getValueAt(row, column);
-
         }
-
-
         return rowData;
-
     }
 
     public Producto getProductoFromRow(int row) {
@@ -418,14 +423,10 @@ public class SearchResultMenu extends JFrame implements Themeable {
             case REACTIVOS:
 
                 Reactivo reactivo = new Reactivo();
-
                 reactivo = reactivo.getProductFromRow(dataRow);
-
                 return reactivo;
 
             case PROD_AUX:
-
-
 
                 return new Auxiliar();
 
@@ -469,6 +470,7 @@ public class SearchResultMenu extends JFrame implements Themeable {
         return null;
     }
 
+
     public void addProductToRow(Producto producto) {
         // Obtener los nombres de los atributos del Producto
         String[] attributeNames = producto.getAllAttributesNamesString();
@@ -493,7 +495,12 @@ public class SearchResultMenu extends JFrame implements Themeable {
         }
 
 
-    }
+
+
+
+
+}
+
 
 
 

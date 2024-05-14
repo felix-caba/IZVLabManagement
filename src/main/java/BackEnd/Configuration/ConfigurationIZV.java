@@ -158,6 +158,10 @@ public class ConfigurationIZV {
 
     }
 
+    public String getPasswordUnencrypted() {
+        return password;
+    }
+
     public static void LoadTheme() {
         switch (ConfigurationIZV.getInstance().getAppearance()) {
             case "OSCURO":

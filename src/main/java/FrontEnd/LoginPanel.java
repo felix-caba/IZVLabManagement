@@ -53,13 +53,16 @@ public class LoginPanel extends JFrame implements Themeable {
             public void actionPerformed(ActionEvent actionEvent) {
 
 
-                JOptionPane dialog = new JOptionPane("Logging in...", JOptionPane.INFORMATION_MESSAGE, JOptionPane.DEFAULT_OPTION);
+                LoadingFrame dialog = new LoadingFrame();
 
+                /*OBSERVA LOS CAMBIOS*/
+
+                MySQL sql = MySQL.getInstance();
+
+                sql.addPropertyChangeListener(dialog);
                 loginWorker(dialog).execute();
 
-                dialog.createDialog(null, "Logging in...").setVisible(true);
                 dialog.setVisible(true);
-
 
             }
 
@@ -87,18 +90,18 @@ public class LoginPanel extends JFrame implements Themeable {
 
 
 
-    public SwingWorker<Void, Void> loginWorker(JOptionPane messageLogging) {
+    public SwingWorker<Void, Void> loginWorker(LoadingFrame frame) {
 
 
-
-        // swingWorker segundo plano hilo
         SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+
+            UsuarioDAOImpl usuarioDAO = UsuarioDAOImpl.getInstance();
+            private ArrayList<Usuario> usuarios;
+
             @Override
             protected Void doInBackground() throws Exception {
 
-                // se conecta a la bd
-
-                MySQL.getInstance().connect();
+                usuarios = usuarioDAO.select();
 
                 return null;
             }
@@ -109,42 +112,35 @@ public class LoginPanel extends JFrame implements Themeable {
                 // Este método se llama cuando doInBackground() ha terminado
                 // Aquí puedes realizar las acciones necesarias después de la conexión a la base de datos
 
-                UsuarioDAOImpl usuarioDAO = UsuarioDAOImpl.getInstance();
-                ArrayList<Usuario> usuarios = usuarioDAO.select();
-
-                boolean isLogged = false;
-
-                // check if the user is in the database
-
-                // TODO hacer que si no se logea con un timeout de 10 segundos pare de intentar y no acceda.
 
 
-                for (Usuario usuario : usuarios) {
+
+                if (usuarios == null) {
+
+                    return;
+
+                } else {
 
 
-                    if (usuario.getNombre().equals(loginUsernameField.getText()) && usuario.getContrasena().equals(loginPasswordField.getText())) {
-
-                        MySQL.getInstance().disconnect();
-
-                        isLogged = true;
-
-                        new MenuGeneral(usuario.Es_admin(), usuario.getNombre()).setVisible(true);
-
-                        dispose();
-
-                        messageLogging.setMessage("Login successful");
+                    for (Usuario usuario : usuarios) {
 
 
-                    }
+                        if (usuario.getNombre().equals(loginUsernameField.getText()) && usuario.getContrasena().equals(loginPasswordField.getText())) {
 
+
+
+                            new MenuGeneral(usuario.Es_admin(), usuario.getNombre()).setVisible(true);
+
+                            dispose();
+
+                            frame.setMessage("Login successful");
+
+
+                        }
 
                 }
-
-                if (!isLogged) {
-
-                    messageLogging.setMessage("Login failed");
-
                 }
+
 
             }
 

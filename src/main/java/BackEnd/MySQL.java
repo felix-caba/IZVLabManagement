@@ -7,10 +7,10 @@ package BackEnd;
 import BackEnd.Configuration.ConfigurationIZV;
 import BackEnd.Extra.TYPE;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.sql.*;
+import java.util.Timer;
 
 public class MySQL{
 
@@ -24,18 +24,62 @@ public class MySQL{
     private static String password;
     private static String ip;
     private static String bdName;
+    private String sqlBROADCAST;
+    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
+    private static final int TIMEOUT_SECONDS = 10; // Tiempo de espera en segundos
+    private Timer timer; // Temporizador para el tiempo de espera
 
 
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(listener);
+    }
 
 
+    public static String getJDBC() {
+        return JDBC;
+    }
 
+    public static String getDbUrl() {
+        return DB_URL;
+    }
 
+    public static String getUser() {
+        return user;
+    }
+
+    public static String getPassword() {
+        return password;
+    }
+
+    public static String getIp() {
+        return ip;
+    }
+
+    public static String getBdName() {
+        return bdName;
+    }
+
+    public String getBroadCast() {
+        return sqlBROADCAST;
+    }
 
     private MySQL() {
 
 
-
     }
+
+
+    public void setSqlBROADCAST(String value) {
+        this.sqlBROADCAST = value;
+        pcs.firePropertyChange("sqlBROADCAST", null, value);
+    }
+
+
 
     public static MySQL getInstance() {
 
@@ -43,6 +87,7 @@ public class MySQL{
         password = ConfigurationIZV.getInstance().getPassword();
         ip = ConfigurationIZV.getInstance().getIp();
         bdName = ConfigurationIZV.getInstance().getBdName();
+
 
 
 
@@ -56,38 +101,39 @@ public class MySQL{
     }
 
 
-    public boolean connect() {
-
+    public void connect() {
 
         ConfigurationIZV configuration = ConfigurationIZV.getInstance();
-
-
         String url;
         String ip;
 
-
         try {
+
+
+
 
             ip = configuration.getIp();
             url = DB_URL + ip + "/" + configuration.getBdName();
+
+            DriverManager.setLoginTimeout(5);
             connection = DriverManager.getConnection(url, user, password);
 
 
-            return true;
 
-        } catch (Exception e) {
+
+        } catch (SQLException e) {
 
 
             System.out.println(e);
+            setSqlBROADCAST(e.getMessage());
 
 
         }
 
-        return false;
-
-
 
     }
+
+
 
     public void disconnect() {
 
@@ -106,49 +152,6 @@ public class MySQL{
 
 
     }
-
-    public ResultSet getTable(String tableName) {
-
-        ResultSet rs = null;
-        String query = "SELECT * FROM " + tableName;
-
-        try {
-
-            PreparedStatement ps = connection.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            rs = ps.executeQuery();
-
-        } catch (Exception e) {
-
-            System.out.println(e);
-
-        }
-
-        return rs;
-
-    }
-
-    public ResultSet getTableEnum(TYPE type) {
-
-        ResultSet rs = null;
-        String query = "SELECT * FROM " + type.toString().toLowerCase();
-
-        try {
-
-            PreparedStatement ps = connection.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            rs = ps.executeQuery();
-
-        } catch (Exception e) {
-
-            System.out.println(e);
-
-        }
-
-        return rs;
-
-    }
-
-
-
 
 
 
