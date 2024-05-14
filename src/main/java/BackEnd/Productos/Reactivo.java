@@ -12,6 +12,7 @@ import BackEnd.Extra.CustomDateFormatter;
 import BackEnd.Producto;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Date;
 
 public class Reactivo extends Producto {
@@ -70,7 +71,6 @@ public class Reactivo extends Producto {
 
         return fechaCaducidad;
 
-
     }
 
     public void setFechaCaducidad(LocalDate fechaCaducidad) {
@@ -88,19 +88,6 @@ public class Reactivo extends Producto {
     public String[] getAllAttributesNamesString() {
         return super.getAllAttributesNamesString(); // Llamada al método del padre
     }
-
-    @Override
-    public String toString() {
-        return "Reactivo{" +
-                "formato='" + formato + '\'' +
-                ", riesgos='" + riesgos + '\'' +
-                ", gradoPureza='" + gradoPureza + '\'' +
-                ", fechaCaducidad=" + fechaCaducidad +
-                ", stockMinimo=" + stockMinimo +
-                "} " + super.toString();
-    }
-
-
 
     public Object getValueForAttribute(String attributeName) {
         // Llama al método de la clase Productos para obtener los valores de los atributos heredados
@@ -132,7 +119,6 @@ public class Reactivo extends Producto {
 
     }
 
-
     @Override
     public int getId() {
         return super.getId();
@@ -158,6 +144,8 @@ public class Reactivo extends Producto {
         return super.getUbicacion();
     }
 
+
+    /*
     @Override
     public Reactivo getProductFromRow(Object[] row) {
 
@@ -180,5 +168,25 @@ public class Reactivo extends Producto {
         return reactivo;
     }
 
+*/
+    @Override
+    public Reactivo getProductFromRow(Object[] row) {
+
+        Reactivo reactivo = new Reactivo();
+        reactivo.setCamposComunes(row);
+
+        try {
+
+            reactivo.setFormato((String) row[5]);
+            reactivo.setRiesgos((String) row[6]);
+            reactivo.setGradoPureza((String) row[7]);
+            reactivo.setFechaCaducidad((LocalDate) row[8]);
+
+        } catch (Exception e) {
+            System.out.println("Error al establecer campos específicos de Reactivo: " + e.getMessage());
+        }
+
+        return reactivo;
+    }
 
 }

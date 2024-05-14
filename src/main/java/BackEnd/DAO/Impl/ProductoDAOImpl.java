@@ -28,6 +28,7 @@ import java.sql.SQLException;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ProductoDAOImpl implements ProductoDAO {
 
@@ -35,33 +36,36 @@ public class ProductoDAOImpl implements ProductoDAO {
     @Override
     public void insert(Producto producto) {
 
+        LoadingFrame loadingFrame = new LoadingFrame();
+
         if (producto instanceof Reactivo) {
 
             try {
-
-
                 insertReactivo((Reactivo) producto);
-
-
-
             } catch (SQLException e) {
-
-                LoadingFrame dialog = new LoadingFrame();
-
-
-                if (e.getErrorCode() == 1062) {
-
-                    dialog.setMessage("Un producto con ese mismo ID ya existe en la BD");
-
-                }
-
-
+                loadingFrame.setVisible(true);
+                loadingFrame.setMessage(e.getMessage());
             }
 
 
         } else if (producto instanceof Auxiliar) {
 
+            try {
+                insertAuxiliar((Auxiliar) producto);
+            } catch (SQLException e) {
+                loadingFrame.setVisible(true);
+                loadingFrame.setMessage(e.getMessage());
+            }
+
+
         } else if (producto instanceof Material) {
+
+            try {
+                insertMaterial((Material) producto);
+            } catch (SQLException e) {
+                loadingFrame.setVisible(true);
+                loadingFrame.setMessage(e.getMessage());
+            }
 
         }
 
@@ -72,21 +76,36 @@ public class ProductoDAOImpl implements ProductoDAO {
     public void update(Producto producto) {
 
 
+        LoadingFrame loadingFrame = new LoadingFrame();
+
         if (producto instanceof Reactivo) {
 
             try {
                 updateReactivo((Reactivo) producto);
             } catch (SQLException e) {
-                e.printStackTrace();
+                loadingFrame.setVisible(true);
+                loadingFrame.setMessage(e.getMessage());
             }
-
 
 
         } else if (producto instanceof Auxiliar) {
 
+            try {
+                updateAuxiliar((Auxiliar) producto);
+            } catch (SQLException e) {
+                loadingFrame.setVisible(true);
+                loadingFrame.setMessage(e.getMessage());
+            }
 
 
         } else if (producto instanceof Material) {
+
+            try {
+                updateMaterial((Material) producto);
+            } catch (SQLException e) {
+                loadingFrame.setVisible(true);
+                loadingFrame.setMessage(e.getMessage());
+            }
 
         }
 
@@ -96,23 +115,34 @@ public class ProductoDAOImpl implements ProductoDAO {
     @Override
     public void delete(Producto producto) {
 
+        LoadingFrame loadingFrame = new LoadingFrame();
+
         if (producto instanceof Reactivo) {
 
             try {
-
                 deleteReactivo((Reactivo) producto);
-
             } catch (SQLException e) {
-
-                e.printStackTrace();
-
+                loadingFrame.setVisible(true);
+                loadingFrame.setMessage(e.getMessage());
             }
 
         } else if (producto instanceof Auxiliar) {
 
-
+            try {
+                deleteAuxiliar((Auxiliar) producto);
+            } catch (SQLException e) {
+                loadingFrame.setVisible(true);
+                loadingFrame.setMessage(e.getMessage());
+            }
 
         } else if (producto instanceof Material) {
+
+            try {
+                deleteMaterial((Material) producto);
+            } catch (SQLException e) {
+                loadingFrame.setVisible(true);
+                loadingFrame.setMessage(e.getMessage());
+            }
 
         }
 
@@ -124,6 +154,8 @@ public class ProductoDAOImpl implements ProductoDAO {
         ResultSet rs = null;
         ArrayList<Producto> productos = new ArrayList<>();
 
+        System.out.println("SELECTING PRODUCTS");
+
         try{
 
             switch (type) {
@@ -134,6 +166,8 @@ public class ProductoDAOImpl implements ProductoDAO {
                     productos.addAll(getAuxiliares());
                     break;
                 case MATERIALES:
+                    System.out.println("MATERIALES");
+
                     productos.addAll(getMateriales());
                     break;
             }
@@ -200,6 +234,112 @@ public class ProductoDAOImpl implements ProductoDAO {
             pstmt.setString(8, reactivo.getFormato());
             pstmt.setString(9, CustomDateFormatter.convertToString(reactivo.getFechaCaducidad()));
             pstmt.setInt(10, reactivo.getId());
+            pstmt.executeUpdate();
+        }
+
+        sql.disconnect();
+    }
+
+    private void deleteAuxiliar(Auxiliar auxiliar) throws SQLException {
+        MySQL sql = MySQL.getInstance();
+        sql.connect();
+
+        final String sqlDELETEAuxiliar = "DELETE FROM auxiliares WHERE id = ?";
+
+        try (PreparedStatement pstmt = sql.getConnection().prepareStatement(sqlDELETEAuxiliar)) {
+            pstmt.setInt(1, auxiliar.getId());
+            pstmt.executeUpdate();
+        }
+
+        sql.disconnect();
+    }
+
+    private void updateAuxiliar(Auxiliar auxiliar) throws SQLException {
+        MySQL sql = MySQL.getInstance();
+        sql.connect();
+        final String sqlUPDATEAuxiliar = "UPDATE auxiliares SET nombre=?, cantidad=?, localizacion=?, ubicacion=?, formato=? WHERE id = ?";
+
+        try (PreparedStatement pstmt = sql.getConnection().prepareStatement(sqlUPDATEAuxiliar)) {
+            pstmt.setString(1, auxiliar.getNombre());
+            pstmt.setInt(2, auxiliar.getCantidad());
+            pstmt.setString(3, auxiliar.getLocalizacion());
+            pstmt.setString(4, auxiliar.getUbicacion());
+            pstmt.setString(5, auxiliar.getFormato());
+            pstmt.setInt(6, auxiliar.getId());
+            pstmt.executeUpdate();
+        }
+        sql.disconnect();
+    }
+
+    private void insertAuxiliar(Auxiliar auxiliar) throws SQLException {
+        MySQL sql = MySQL.getInstance();
+        sql.connect();
+
+        final String sqlINSERTAuxiliar = "INSERT INTO auxiliares (nombre, cantidad, localizacion, ubicacion, formato, id) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement pstmt = sql.getConnection().prepareStatement(sqlINSERTAuxiliar)) {
+            pstmt.setString(1, auxiliar.getNombre());
+            pstmt.setInt(2, auxiliar.getCantidad());
+            pstmt.setString(3, auxiliar.getLocalizacion());
+            pstmt.setString(4, auxiliar.getUbicacion());
+            pstmt.setString(5, auxiliar.getFormato());
+            pstmt.setInt(6, auxiliar.getId());
+            pstmt.executeUpdate();
+        }
+
+        sql.disconnect();
+    }
+
+    private void deleteMaterial(Material material) throws SQLException {
+        MySQL sql = MySQL.getInstance();
+        sql.connect();
+
+        final String sqlDELETEMaterial = "DELETE FROM materiales WHERE id = ?";
+
+        try (PreparedStatement pstmt = sql.getConnection().prepareStatement(sqlDELETEMaterial)) {
+            pstmt.setInt(1, material.getId());
+            pstmt.executeUpdate();
+        }
+
+        sql.disconnect();
+    }
+
+    private void updateMaterial(Material material) throws SQLException {
+        MySQL sql = MySQL.getInstance();
+        sql.connect();
+        final String sqlUPDATEMaterial = "UPDATE materiales SET nombre=?, cantidad=?, localizacion=?, ubicacion=?, subcategoria=?, descripcion=?, fechaDeCompra=?, Nserie=? WHERE id = ?";
+
+        try (PreparedStatement pstmt = sql.getConnection().prepareStatement(sqlUPDATEMaterial)) {
+            pstmt.setString(1, material.getNombre());
+            pstmt.setInt(2, material.getCantidad());
+            pstmt.setString(3, material.getLocalizacion());
+            pstmt.setString(4, material.getUbicacion());
+            pstmt.setString(5, material.getSubcategoria());
+            pstmt.setString(6, material.getDescripcion());
+            pstmt.setString(7, CustomDateFormatter.convertToString(material.getFechaCompra()));
+            pstmt.setString(8, material.getNserie());
+            pstmt.setInt(9, material.getId());
+            pstmt.executeUpdate();
+        }
+        sql.disconnect();
+    }
+
+    private void insertMaterial(Material material) throws SQLException {
+        MySQL sql = MySQL.getInstance();
+        sql.connect();
+
+        final String sqlINSERTMaterial = "INSERT INTO materiales (nombre, cantidad, localizacion, ubicacion, subcategoria, descripcion, fechaDeCompra, Nserie, id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement pstmt = sql.getConnection().prepareStatement(sqlINSERTMaterial)) {
+            pstmt.setString(1, material.getNombre());
+            pstmt.setInt(2, material.getCantidad());
+            pstmt.setString(3, material.getLocalizacion());
+            pstmt.setString(4, material.getUbicacion());
+            pstmt.setString(5, material.getSubcategoria());
+            pstmt.setString(6, material.getDescripcion());
+            pstmt.setString(7, CustomDateFormatter.convertToString(material.getFechaCompra()));
+            pstmt.setString(8, material.getNserie());
+            pstmt.setInt(9, material.getId());
             pstmt.executeUpdate();
         }
 
@@ -278,7 +418,7 @@ public class ProductoDAOImpl implements ProductoDAO {
 
 
 
-        MySQL.getInstance().disconnect();
+        sql.disconnect();
 
         return auxiliares;
     }
@@ -288,14 +428,20 @@ public class ProductoDAOImpl implements ProductoDAO {
         ArrayList<Producto> materiales = new ArrayList<>();
 
         MySQL sql = MySQL.getInstance();
+        sql.connect();
 
         ResultSet rs = null;
         String query = "SELECT * FROM materiales";
 
+        System.out.println("SELECTING MATERIALES");
+
         PreparedStatement ps = sql.getConnection().prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
         rs = ps.executeQuery();
+
+
         while (rs.next()) {
+            System.out.println("ENTRANDO EN EL WHILE");
             Material material = new Material();
             material.setNombre(rs.getString("Nombre"));
             material.setCantidad(rs.getInt("Cantidad"));
@@ -304,20 +450,28 @@ public class ProductoDAOImpl implements ProductoDAO {
             material.setSubcategoria(rs.getString("Subcategoria"));
             material.setDescripcion(rs.getString("Descripcion"));
             material.setNserie(rs.getString("Nserie"));
-
             material.setFechaCompra(CustomDateFormatter.formatear(rs.getString("FechaDeCompra")));
-
-
             material.setId(rs.getInt("id"));
+
+            System.out.println(material.getNombre());
             materiales.add(material);
+
+
         }
 
+        sql.disconnect();
 
-
-        MySQL.getInstance().disconnect();
 
         return materiales;
     }
+
+    private String filterString(String string) {
+        if (string == null) {
+            return ""; // o cualquier otro valor predeterminado que desees
+        }
+        return string.replaceAll("(?i)No viene reflejad[oa]", "");
+    }
+
 
 
 

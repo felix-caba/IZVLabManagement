@@ -10,6 +10,10 @@ package BackEnd.Productos;
 
 import BackEnd.Producto;
 
+import java.sql.SQLOutput;
+import java.time.LocalDate;
+import java.util.Arrays;
+
 public class Auxiliar extends Producto {
 
     private String formato;
@@ -23,28 +27,32 @@ public class Auxiliar extends Producto {
 
     }
 
-    @Override
     public Object getValueForAttribute(String attributeName) {
 
-        return switch (attributeName) {
 
-            case "id" -> this.getId();
-            case "cantidad" -> this.getCantidad();
-            case "nombre" -> this.getNombre();
-            case "localizacion" -> this.getLocalizacion();
-            case "ubicacion" -> this.getUbicacion();
-            case "formato" -> this.formato;
-            default -> throw new IllegalArgumentException("Atributo desconocido: " + attributeName);
+        Object value = super.getValueForAttribute(attributeName);
 
-        };
-    }
 
-    @Override
-    public Producto getProductFromRow(Object[] row) {
+        if (value != null) {
+            return value;
+        }
+
+
+        switch (attributeName) {
+
+            case "formato":
+                return this.formato;
+
+        }
+
         return null;
+
     }
 
 
+    public String[] getAllAttributesNamesString() {
+        return super.getAllAttributesNamesString(); // Llamada al método del padre
+    }
 
     public String getFormato() {
         return formato;
@@ -54,8 +62,21 @@ public class Auxiliar extends Producto {
         this.formato = formato;
     }
 
+    @Override
+    public Auxiliar getProductFromRow(Object[] row) {
 
+        Auxiliar auxiliar = new Auxiliar();
+        auxiliar.setCamposComunes(row);
 
+        try {
+
+            auxiliar.setFormato((String) row[5]);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return auxiliar;
+    }
 
 }
 

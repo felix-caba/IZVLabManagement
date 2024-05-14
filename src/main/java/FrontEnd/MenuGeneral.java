@@ -96,7 +96,9 @@ public class MenuGeneral extends JFrame implements Themeable{
                 MySQL sql = MySQL.getInstance();
 
                 sql.addPropertyChangeListener(dialog);
+                System.out.println("Añadido observer");
                 loadingWorker(dialog, type).execute();
+                System.out.println("Ejecutado worker");
 
                 dialog.setVisible(true);
 
@@ -150,7 +152,7 @@ public class MenuGeneral extends JFrame implements Themeable{
 
                 if (productos == null) {
 
-                    frame.onFail("Ha devuelto 0 datos, intenta de nuevo.");
+                    JOptionPane.showMessageDialog(null, "No se han encontrado productos", "Error", JOptionPane.ERROR_MESSAGE);
 
                 } else {
 

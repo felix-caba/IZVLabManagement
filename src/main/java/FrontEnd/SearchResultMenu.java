@@ -16,19 +16,16 @@ import com.formdev.flatlaf.FlatClientProperties;
 import org.jdesktop.swingx.JXTable;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
+import javax.swing.event.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SearchResultMenu extends JFrame implements Themeable {
     private JPanel panelSearchMenu;
@@ -39,10 +36,10 @@ public class SearchResultMenu extends JFrame implements Themeable {
     private JButton saveButton;
     private JButton addButton;
     private JButton deleteButton;
+    private JTextField filterField;
     public boolean isButtonPressed = false;
     public boolean isAdmin;
     private TYPE typeProduct;
-
     private ArrayList<Producto> searchResults;
     private ArrayList<TableChange> tableChanges = new ArrayList<TableChange>();
 
@@ -175,6 +172,13 @@ public class SearchResultMenu extends JFrame implements Themeable {
 
 
 
+        TableRowSorter<TableModel> rowSorter = new TableRowSorter<>(model);
+
+        tableResults.setRowSorter(rowSorter);
+
+        filterFunc(rowSorter);
+
+
         pack();
         setLocationRelativeTo(null);
 
@@ -186,9 +190,6 @@ public class SearchResultMenu extends JFrame implements Themeable {
         this.searchResults = searchResults;
         this.isAdmin = isAdmin;
         this.typeProduct = typeProduct;
-
-
-
 
         adminButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
         saveButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
@@ -204,34 +205,21 @@ public class SearchResultMenu extends JFrame implements Themeable {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
 
-
-
-
                 if (isButtonPressed) {
-
-
-
                     isButtonPressed = false;
                     tableResults.setEditable(false);
                     tableResults.setEditable(false);
                     adminButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
                     addButton.setEnabled(false);
                     saveButton.setEnabled(false);
-
                 } else {
-
-
-
                     isButtonPressed = true;
                     tableResults.setEditable(true);
                     tableResults.setEditable(true);
                     adminButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,40%);");
                     addButton.setEnabled(true);
                     saveButton.setEnabled(true);
-
-
                 }
-
             }
         });
 
@@ -250,8 +238,6 @@ public class SearchResultMenu extends JFrame implements Themeable {
 
                 tableResults.scrollRectToVisible(tableResults.getCellRect(nuevaRow+1, 0, true));
                 tableResults.setRowSelectionInterval(nuevaRow, nuevaRow+1);
-
-
 
 
             }
@@ -274,7 +260,6 @@ public class SearchResultMenu extends JFrame implements Themeable {
 
             }
         });
-
 
         saveButton.addActionListener(new ActionListener() {
             @Override
@@ -300,76 +285,13 @@ public class SearchResultMenu extends JFrame implements Themeable {
                         }
 
                     }
+
+                    tableChanges.clear();
+
             }
         });
     }
 
-    // Deprecados porque se ha cambiado la forma de obtener los datos de la tabla.
-    // Es mejor separar los metodos de obtencion de columnas.
-    // Así puedo administrar mejor el tipo de datos de cada columna y hacer que se muestren de forma correcta en la tabla.
-
-    @Deprecated
-    public DefaultTableModel buildTableModel(ResultSet rs) throws SQLException {
-
-        ResultSetMetaData metaData = rs.getMetaData();
-
-        ArrayList<String> columnNames = new ArrayList<>();
-        int columnCount = metaData.getColumnCount();
-
-        for (int i = 1; i <= columnCount; i++) {
-
-            columnNames.add(metaData.getColumnName(i));
-
-        }
-
-        ArrayList<Object[]> data = new ArrayList<>();
-
-        while (rs.next()) {
-
-            Object[] row = new Object[columnCount];
-
-            for (int indiceColumna = 1; indiceColumna <= columnCount; indiceColumna++) {
-
-
-                row[indiceColumna - 1] = rs.getObject(indiceColumna);
-
-            }
-
-
-            data.add(row);
-        }
-
-        Object[][] dataArray = new Object[data.size()][metaData.getColumnCount()];
-
-        data.toArray(dataArray);
-
-        return new DefaultTableModel(dataArray, columnNames.toArray());
-
-    }
-
-    @Deprecated
-    public DefaultTableModel buildTableModel(ArrayList<Producto> searchResults) {
-
-
-        if (searchResults.isEmpty()) {
-            return new DefaultTableModel();
-        }
-
-        String[] columnNames = searchResults.get(0).getAllAttributesNamesString();
-        Object[][] dataArray = new Object[searchResults.size()][columnNames.length];
-
-        for (int i = 0; i < searchResults.size(); i++) {
-
-            Producto producto = searchResults.get(i);
-            Object[] rowData = new Object[columnNames.length];
-
-            for (int j = 0; j < columnNames.length; j++) {
-                rowData[j] = producto.getValueForAttribute(columnNames[j]);
-            }
-            dataArray[i] = rowData;
-        }
-        return new DefaultTableModel(dataArray, columnNames);
-    }
 
     // Metodos Actuales
 
@@ -401,7 +323,6 @@ public class SearchResultMenu extends JFrame implements Themeable {
         return data;
     }
 
-
     public Object[] getAttributesFromRow(int row) {
 
         TableModel model = tableResults.getModel();
@@ -409,6 +330,7 @@ public class SearchResultMenu extends JFrame implements Themeable {
         Object[] rowData = new Object[columnCount];
 
         for (int column = 0; column < columnCount; column++) {
+            System.out.println(model.getValueAt(row, column));
             rowData[column] = model.getValueAt(row, column);
         }
         return rowData;
@@ -417,24 +339,38 @@ public class SearchResultMenu extends JFrame implements Themeable {
     public Producto getProductoFromRow(int row) {
 
         Object[] dataRow = getAttributesFromRow(row);
+        System.out.println(Arrays.toString(dataRow));
 
         switch (typeProduct) {
 
             case REACTIVOS:
 
                 Reactivo reactivo = new Reactivo();
+
+
+
                 reactivo = reactivo.getProductFromRow(dataRow);
+
+
+                System.out.println(reactivo.toString());
+
                 return reactivo;
 
             case PROD_AUX:
 
-                return new Auxiliar();
+                Auxiliar auxiliar = new Auxiliar();
+                auxiliar = auxiliar.getProductFromRow(dataRow);
+                System.out.println(auxiliar.toString());
+
+                return auxiliar;
 
 
             case MATERIALES:
 
-                return new Material();
+                Material material = new Material();
+                material = material.getProductFromRow(dataRow);
 
+                return material;
 
         }
 
@@ -456,20 +392,20 @@ public class SearchResultMenu extends JFrame implements Themeable {
                 return new Reactivo(newID, 0, null, null, null,
                         null, null, null, null, 0);
 
-
             case PROD_AUX:
 
-
-                return new Auxiliar();
+                return new Auxiliar(newID, 0, null, null, null, null);
 
             case MATERIALES:
 
-                return new Material();
+                return new Material(newID, 0, null, null, null,
+                        null, null, null, null, 0);
+
+
         }
 
         return null;
     }
-
 
     public void addProductToRow(Producto producto) {
         // Obtener los nombres de los atributos del Producto
@@ -478,10 +414,7 @@ public class SearchResultMenu extends JFrame implements Themeable {
         // Crear un array para almacenar los valores de los atributos del Producto
         Object[] rowData = new Object[attributeNames.length];
 
-
-
         for (int i = 0; i < attributeNames.length; i++) {
-
 
             Object attributeValue = producto.getValueForAttribute(attributeNames[i]);
 
@@ -495,7 +428,41 @@ public class SearchResultMenu extends JFrame implements Themeable {
         }
 
 
+    public void filterFunc(TableRowSorter rowSorter){
 
+       filterField.getDocument().addDocumentListener(new DocumentListener(){
+
+           @Override
+           public void insertUpdate(DocumentEvent e) {
+               String text = filterField.getText();
+
+               if (text.trim().length() == 0) {
+                   rowSorter.setRowFilter(null);
+               } else {
+                   rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+               }
+           }
+
+           @Override
+           public void removeUpdate(DocumentEvent e) {
+               String text = filterField.getText();
+
+               if (text.trim().length() == 0) {
+                   rowSorter.setRowFilter(null);
+               } else {
+                   rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+               }
+           }
+
+           @Override
+           public void changedUpdate(DocumentEvent e) {
+               throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+           }
+
+       });
+
+
+    }
 
 
 

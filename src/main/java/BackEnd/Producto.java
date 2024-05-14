@@ -113,16 +113,7 @@ public abstract class Producto {
 
 
 
-    @Override
-    public String toString() {
-        return "Producto{" +
-                "id=" + id +
-                ", cantidad=" + cantidad +
-                ", nombre='" + nombre + '\'' +
-                ", localizacion='" + localizacion + '\'' +
-                ", ubicacion='" + ubicacion + '\'' +
-                '}';
-    }
+
 
 
     public Object getValueForAttribute(String nombreColumna) {
@@ -143,6 +134,17 @@ public abstract class Producto {
 
 
     public abstract Producto getProductFromRow(Object[] row);
+
+
+    protected void setCamposComunes(Object[] row) {
+
+        this.id = (int) row[0];
+        this.nombre = (String) row[1];
+        this.ubicacion = (String) row[3];
+        this.localizacion = (String) row[2];
+        this.cantidad = (int) row[4];
+
+    }
 
 
 }

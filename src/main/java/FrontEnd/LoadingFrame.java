@@ -52,7 +52,7 @@ public class LoadingFrame extends JFrame implements Themeable, PropertyChangeLis
 
     public void setMessage(String message) {
         labelLoading.setText(message);
-
+        refresh();
         toFront();
     }
 
@@ -84,11 +84,6 @@ public class LoadingFrame extends JFrame implements Themeable, PropertyChangeLis
         progressBar1.setIndeterminate(false);
     }
 
-    public void onFail(String mensajeError) {
-
-        progressBar1.setIndeterminate(false);
-
-    }
 
     public String getSqlBROADCAST() {
         return sqlBROADCAST;
@@ -105,8 +100,6 @@ public class LoadingFrame extends JFrame implements Themeable, PropertyChangeLis
         this.setSqlBROADCAST((String) evt.getNewValue());
         this.setMessage(this.getSqlBROADCAST());
         progressBar1.setIndeterminate(false);
-        refresh();
-
     }
 
     public void refresh() {

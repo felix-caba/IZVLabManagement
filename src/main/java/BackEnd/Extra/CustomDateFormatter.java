@@ -63,7 +63,6 @@ public class CustomDateFormatter {
 
 
 
-
         for (int i = 0; i < ocurrencias.length ; i++) {
 
             if (ocurrencias[i].matches(REGEX_MMYYYY)) {

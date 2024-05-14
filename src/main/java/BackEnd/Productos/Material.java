@@ -40,26 +40,27 @@ public class Material extends Producto {
 
 
     public Object getValueForAttribute(String attributeName) {
-        // Llama al método de la clase Productos para obtener los valores de los atributos heredados
-        Object value = super.getValueForAttribute(attributeName);
 
-        // Si el valor no es null, significa que el atributo está definido en Productos
+        Object value = super.getValueForAttribute(attributeName);
 
         if (value != null) {
             return value;
         }
 
-        // Si el atributo no está definido en Productos, busca en los atributos específicos de Reactivos
-        return switch (attributeName) {
-
-            case "subcategoria" -> this.subcategoria;
-            case "descripcion" -> this.descripcion;
-            case "fechaCompra" -> this.fechaCompra;
-            case "Nserie" -> this.Nserie;
-            case "stockMinimo" -> this.stockMinimo;
-
-            default -> throw new IllegalArgumentException("Atributo desconocido: " + attributeName);
-        };
+        switch (attributeName) {
+            case "subcategoria":
+                return this.subcategoria;
+            case "descripcion":
+                return this.descripcion;
+            case "fechaCompra":
+                return this.fechaCompra;
+            case "Nserie":
+                return this.Nserie;
+            case "stockMinimo":
+                return this.stockMinimo;
+            default:
+                throw new IllegalArgumentException("Atributo desconocido: " + attributeName);
+        }
     }
 
 
@@ -105,14 +106,52 @@ public class Material extends Producto {
         Nserie = nserie;
     }
 
-
+/*
     @Override
-    public Producto getProductFromRow(Object[] row) {
+    public Material getProductFromRow(Object[] row) {
 
+        Material material = new Material();
 
-          return null;
+        try {
+            material.setId((int) row[0]);
+            material.setNombre((String) row[1]);
+            material.setLocalizacion((String) row[2]);
+            material.setUbicacion((String) row[3]);
+            material.setCantidad((int) row[4]);
+            material.setSubcategoria((String) row[5]);
+            material.setDescripcion((String) row[6]);
+            material.setFechaCompra((LocalDate) row[7]);
+            material.setNserie((String) row[8]);
+            material.setStockMinimo((int) row[9]);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return material;
+    }
+*/
+    @Override
+    public Material getProductFromRow(Object[] row) {
+
+        Material material = new Material();
+        material.setCamposComunes(row);
+
+        try {
+
+            material.setSubcategoria((String) row[5]);
+            material.setDescripcion((String) row[6]);
+            material.setFechaCompra((LocalDate) row[7]);
+            material.setStockMinimo((int) row[8]);
+            material.setNserie((String) row[9]);
+
+        } catch (Exception e) {
+            System.out.println("Error al establecer campos específicos de Material: " + e.getMessage());
+
+        }
+
+        return material;
 
     }
+
 
 
 }
