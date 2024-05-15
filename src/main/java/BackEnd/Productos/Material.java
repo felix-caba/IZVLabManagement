@@ -129,28 +129,7 @@ public class Material extends Producto {
         return material;
     }
 */
-    @Override
-    public Material getProductFromRow(Object[] row) {
 
-        Material material = new Material();
-        material.setCamposComunes(row);
-
-        try {
-
-            material.setSubcategoria((String) row[5]);
-            material.setDescripcion((String) row[6]);
-            material.setFechaCompra((LocalDate) row[7]);
-            material.setStockMinimo((int) row[8]);
-            material.setNserie((String) row[9]);
-
-        } catch (Exception e) {
-            System.out.println("Error al establecer campos específicos de Material: " + e.getMessage());
-
-        }
-
-        return material;
-
-    }
 
 
 

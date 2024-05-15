@@ -4,14 +4,18 @@
 
 package FrontEnd;
 
+import BackEnd.Configuration.ConfigurationIZV;
 import BackEnd.Configuration.ScreenSize;
 import BackEnd.DAO.Impl.ProductoDAOImpl;
+import BackEnd.Extra.ParseRiesgos;
+import BackEnd.Extra.RIESGOS;
 import BackEnd.Extra.TYPE;
 import BackEnd.Extra.TableChange;
 import BackEnd.Producto;
 import BackEnd.Productos.Auxiliar;
 import BackEnd.Productos.Material;
 import BackEnd.Productos.Reactivo;
+import BackEnd.TableModelProducts;
 import com.formdev.flatlaf.FlatClientProperties;
 import org.jdesktop.swingx.JXTable;
 
@@ -43,6 +47,11 @@ public class SearchResultMenu extends JFrame implements Themeable {
     public void initComponents() {
 
 
+        TableModelProducts model = new TableModelProducts(getData(searchResults), getColumnNames(searchResults), tableResults);
+        tableResults.setModel(model);
+
+
+
         /*Tamaño de la ventana y posicion*/
 
         // Set size para ocupar el 70% de la pantalla consigue valores de la pantalla a través de screensize
@@ -72,38 +81,7 @@ public class SearchResultMenu extends JFrame implements Themeable {
             adminButton.setEnabled(true);
         }
 
-        // El table row sorter, cuando recibe Object, no hace la conversion. Hace toString. Si recibe Object Int, le hace toString. Por ello, debemos darle
-        // directamente el tipo de dato que queremos que muestre. override de columnclassget
 
-
-
-
-
-        TableModel model = new DefaultTableModel(getData(searchResults), getColumnNames(searchResults)) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                // Devuelve false para la primera columna y true para las demás
-                return column != 0;
-            }
-
-            public Class<?> getColumnClass(int column) {
-
-
-                for (int row = 0; row < getRowCount(); row++) {
-
-                    Object o = getValueAt(row, column);
-
-                    if (o != null) {
-
-                        return o.getClass();
-                    }
-
-                }
-
-                return Object.class;
-            }
-
-        };
 
         /*
          *
@@ -121,14 +99,26 @@ public class SearchResultMenu extends JFrame implements Themeable {
                 int row = tableModelEvent.getFirstRow();
                 int getType = tableModelEvent.getType();
 
-
                 if (getType == TableModelEvent.UPDATE) {
 
-                    System.out.println("Añadido a Update" + getProductoFromRow(row));
+                    System.out.println("UPDATE");
+                    tableChanges.add(new TableChange(TableChange.ChangeType.UPDATE, searchResults.get(row)));
 
-                    tableChanges.add(new TableChange(TableChange.ChangeType.UPDATE, getProductoFromRow(row)));
+                } else if (getType == TableModelEvent.INSERT) {
+
+                    System.out.println("INSERT");
+                    tableChanges.add(new TableChange(TableChange.ChangeType.INSERT, searchResults.get(row)));
+                    tableResults.scrollRectToVisible(tableResults.getCellRect(row+1, 0, true));
+
+                } else if (getType == TableModelEvent.DELETE) {
+
+                    System.out.println("UPDATE");
+                    tableChanges.add(new TableChange(TableChange.ChangeType.DELETE, searchResults.get(row)));
+                    searchResults.remove(row);
 
                 }
+
+
 
             }
         });
@@ -136,57 +126,99 @@ public class SearchResultMenu extends JFrame implements Themeable {
         tableResults.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
-
                 if (!listSelectionEvent.getValueIsAdjusting()) {
-                    // verifica
-
                     if (tableResults.getSelectedRow() != -1 && isAdmin && isButtonPressed) {
-
                         deleteButton.setEnabled(true);
-
                     } else {
-
                         deleteButton.setEnabled(false);
-
                     }
                 }
             }
-
-
         });
 
-        tableResults.setModel(model);
-        tableResults.packAll();
-        tableResults.setPreferredScrollableViewportSize(dim);
+        tableResults.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    int row = tableResults.rowAtPoint(e.getPoint());
+                    int column = tableResults.columnAtPoint(e.getPoint());
+                    String columnName = tableResults.getColumnName(column);
+                    if (columnName.equals("riesgos")) {
+
+                        Object cellValue = tableResults.getValueAt(row, column);
 
 
-        TableColumnModel columnModel = tableResults.getColumnModel();
-        for (int indColumna = 0; indColumna < columnModel.getColumnCount(); indColumna++) {
-            Class<?> columnClass = model.getColumnClass(indColumna);
-            if (LocalDate.class.isAssignableFrom(columnClass)) {
-                // pone el editor de celda fecha
-                columnModel.getColumn(indColumna).setCellEditor(new LocalDateCellEditor());
+
+
+                        RIESGOS[] riesgos = ParseRiesgos.parseRiesgos((String) cellValue);
+
+                        JPanel panel = new JPanel(new GridLayout(2, 3)); // 2 filas, 3 columnas
+                        boolean encontradoAtencion = false;
+
+                        if (riesgos.length > 0) {
+
+                            System.out.println(riesgos);
+
+                            if (ConfigurationIZV.getInstance().isDark()) {
+
+                                for (RIESGOS riesgo : riesgos) {
+                                    // Verificar si el riesgo es "Corrosivo", "Irritante" o "Nocivo"
+                                    if (!encontradoAtencion && (riesgo == RIESGOS.CORROSIVO || riesgo == RIESGOS.IRRITANTE || riesgo == RIESGOS.NOCIVO)) {
+                                        // Mostrar el icono de atención
+                                        ImageIcon iconAtencion = new ImageIcon("src/main/resources/riesgos/white/atencion.png");
+                                        JLabel labelAtencion = new JLabel(iconAtencion);
+                                        panel.add(labelAtencion);
+
+                                        // Mostrar el icono correspondiente al riesgo
+                                        ImageIcon iconRiesgo = new ImageIcon("src/main/resources/riesgos/white/" + riesgo.toString() + ".png");
+                                        JLabel labelRiesgo = new JLabel(iconRiesgo);
+                                        panel.add(labelRiesgo);
+
+                                        encontradoAtencion = true; // Marcar que se ha encontrado un riesgo de atención
+                                    } else {
+                                        // Mostrar solo el icono correspondiente al riesgo
+                                        ImageIcon icon = new ImageIcon("src/main/resources/riesgos/white/" + riesgo.toString() + ".png");
+                                        JLabel label = new JLabel(icon);
+                                        panel.add(label);
+                                    }
+                                }
+
+                            } else {
+
+                                for (RIESGOS riesgo : riesgos) {
+
+                                }
+
+                            }
+
+
+                        } else {
+
+                            JLabel label = new JLabel("No hay riesgos");
+                            panel.add(label);
+
+                        }
+
+
+
+                        JOptionPane.showMessageDialog(null, panel, "Título", JOptionPane.PLAIN_MESSAGE);
+
+
+
+
+                    }
+
+
+                }
             }
-        }
+        });
 
 
-
-
-
-        TableRowSorter<TableModel> rowSorter = new TableRowSorter<>(model);
-
-        tableResults.setRowSorter(rowSorter);
-
-        filterFunc(rowSorter);
-
-        DefaultTableCellRenderer leftRenderer = new DefaultTableCellRenderer();
-        leftRenderer.setHorizontalAlignment(JLabel.LEFT);
-
-        for (int i = 0; i < tableResults.getColumnCount(); i++) {
-            tableResults.getColumnModel().getColumn(i).setCellRenderer(leftRenderer);
-        }
+        tableResults.setRowSorter(model.getRowSorter());
+        filterFunc(model.getRowSorter());
 
         pack();
+
         setLocationRelativeTo(null);
 
     }
@@ -211,7 +243,6 @@ public class SearchResultMenu extends JFrame implements Themeable {
         adminButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-
                 if (isButtonPressed) {
                     isButtonPressed = false;
                     tableResults.setEditable(false);
@@ -230,23 +261,13 @@ public class SearchResultMenu extends JFrame implements Themeable {
             }
         });
 
+
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-
-                int nuevaRow = model.getRowCount() - 1;
-
                 Producto productoNuevo = createNewProduct();
-
-                addProductToRow(productoNuevo);
-
                 searchResults.add(productoNuevo);
-                tableChanges.add(new TableChange(TableChange.ChangeType.INSERT, productoNuevo));
-
-                tableResults.scrollRectToVisible(tableResults.getCellRect(nuevaRow+1, 0, true));
-                tableResults.setRowSelectionInterval(nuevaRow, nuevaRow+1);
-
-
+                addProductToRow(productoNuevo);
             }
         });
 
@@ -254,15 +275,8 @@ public class SearchResultMenu extends JFrame implements Themeable {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
 
-
-
                 int selectedRow = tableResults.getSelectedRow();
-
-                tableChanges.add(new TableChange(TableChange.ChangeType.DELETE, getProductoFromRow(selectedRow)));
-
                 model.removeRow(selectedRow);
-
-
 
 
             }
@@ -271,34 +285,33 @@ public class SearchResultMenu extends JFrame implements Themeable {
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 ProductoDAOImpl productoDAO = new ProductoDAOImpl();
-
                     for (TableChange change : tableChanges) {
-
                         switch (change.getChangeType()) {
-
                             case INSERT:
+                                System.out.println("INSERT EJECUTADO");
+                                System.out.println(change.getProducto().toString());
                                 productoDAO.insert(change.getProducto());
                                 break;
-
                             case UPDATE:
+                                System.out.println("UPDATE EJECUTADO");
+                                System.out.println(change.getProducto().toString());
                                 productoDAO.update(change.getProducto());
                                 break;
-
                             case DELETE:
+                                System.out.println("DELETE EJECUTADO");
+                                System.out.println(change.getProducto().toString());
                                 productoDAO.delete(change.getProducto());
                                 break;
                         }
-
                     }
-
                     tableChanges.clear();
-
             }
         });
 
     }
+
+
 
 
     // Metodos Actuales
@@ -330,58 +343,6 @@ public class SearchResultMenu extends JFrame implements Themeable {
         return data;
     }
 
-    public Object[] getAttributesFromRow(int row) {
-
-        TableModel model = tableResults.getModel();
-        int columnCount = model.getColumnCount();
-        Object[] rowData = new Object[columnCount];
-
-        for (int column = 0; column < columnCount; column++) {
-            System.out.println(model.getValueAt(row, column));
-            rowData[column] = model.getValueAt(row, column);
-        }
-        return rowData;
-    }
-
-    public Producto getProductoFromRow(int row) {
-
-        Object[] dataRow = getAttributesFromRow(row);
-        System.out.println(Arrays.toString(dataRow));
-
-        switch (typeProduct) {
-
-            case REACTIVOS:
-
-                Reactivo reactivo = new Reactivo();
-                reactivo = reactivo.getProductFromRow(dataRow);
-
-
-                System.out.println(reactivo.toString());
-
-                return reactivo;
-
-            case AUXILIARES:
-
-                Auxiliar auxiliar = new Auxiliar();
-                auxiliar = auxiliar.getProductFromRow(dataRow);
-                System.out.println(auxiliar.toString());
-
-                return auxiliar;
-
-
-            case MATERIALES:
-
-                Material material = new Material();
-                material = material.getProductFromRow(dataRow);
-
-                return material;
-
-        }
-
-
-        return null;
-
-    }
 
     public Producto createNewProduct() {
 
@@ -431,7 +392,6 @@ public class SearchResultMenu extends JFrame implements Themeable {
 
         }
 
-
     public void filterFunc(TableRowSorter rowSorter){
 
        filterField.getDocument().addDocumentListener(new DocumentListener(){
@@ -460,7 +420,7 @@ public class SearchResultMenu extends JFrame implements Themeable {
 
            @Override
            public void changedUpdate(DocumentEvent e) {
-               throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+               throw new UnsupportedOperationException("ETC");
            }
 
        });

@@ -129,7 +129,6 @@ public abstract class Producto {
     }
 
 
-    public abstract Producto getProductFromRow(Object[] row);
 
 
     protected void setCamposComunes(Object[] row) {

@@ -30,30 +30,19 @@ public class MenuGeneral extends JFrame implements Themeable {
     private PanelRound panelRoundMenuGeneralPreg;
     private JComboBox comboProducto;
     private JButton importarButton;
-    private JButton adminButton;
-    private final LoadingFrame dialog = new LoadingFrame();
-
-
-    private String message;
+    private final LoadingFrame dialog = LoadingFrame.getInstance();
 
     private boolean isAdmin;
     private String username;
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
 
     public MenuGeneral(boolean isAdmin, String username) {
 
-        this.isAdmin = isAdmin;
-        this.username = username;
-
         MySQL sql = MySQL.getInstance();
         sql.addPropertyChangeListener(dialog);
+
+        this.isAdmin = isAdmin;
+        this.username = username;
 
         loggedAsLabel.setText("Has iniciado sesión como: " + username+ " " + (isAdmin ? "(Administrador)" : "(Usuario)"));
 
@@ -87,16 +76,24 @@ public class MenuGeneral extends JFrame implements Themeable {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                TYPE type = comboProducto.getSelectedIndex() == 0 ? TYPE.REACTIVOS : comboProducto.getSelectedIndex() == 1 ? TYPE.AUXILIARES
-                        : comboProducto.getSelectedIndex() == 2 ? TYPE.MATERIALES : TYPE.USUARIOS;
+                TYPE type;
+                int selectedIndex = comboProducto.getSelectedIndex();
 
-                /*OBSERVA LOS CAMBIOS*/
+                if (selectedIndex == 0) {
+                    type = TYPE.REACTIVOS;
+                } else if (selectedIndex == 1) {
+                    type = TYPE.AUXILIARES;
+                } else if (selectedIndex == 2) {
+                    type = TYPE.MATERIALES;
+                } else if (selectedIndex == 3) {
+                    type = TYPE.USUARIOS;
+                } else if (selectedIndex == -4) {
+                    type = TYPE.LOCALIZACION;
+                } else {
+                    type = TYPE.UBICACION;
+                }
 
-
-                System.out.println("Añadido observer");
                 loadingWorker(dialog, type).execute();
-                System.out.println("Ejecutado worker");
-
                 dialog.setVisible(true);
 
             }
@@ -121,9 +118,7 @@ public class MenuGeneral extends JFrame implements Themeable {
             if (returnVal == JFileChooser.APPROVE_OPTION) {
 
                     String path = fileChooser.getSelectedFile().getAbsolutePath();
-                    System.out.println(path);
                     productoDAO.loadTable(path, type);
-
                     dialog.setVisible(true);
 
                 }
@@ -140,12 +135,10 @@ public class MenuGeneral extends JFrame implements Themeable {
         setMinimumSize(new java.awt.Dimension(400, 300));
         setResizable(false);
         setLocationRelativeTo(null);
-
         setTitle("Login Window");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setContentPane(panelMenuGeneral);
         pack();
-
 
 
     }
@@ -158,7 +151,6 @@ public class MenuGeneral extends JFrame implements Themeable {
             private ArrayList<Usuario> usuarios;
             ProductoDAOImpl productoDAO = new ProductoDAOImpl();
             UsuarioDAOImpl usuarioDAO = UsuarioDAOImpl.getInstance();
-
 
             @Override
             protected Void doInBackground() throws Exception {
@@ -173,6 +165,10 @@ public class MenuGeneral extends JFrame implements Themeable {
 
             @Override
             protected void done() {
+
+
+
+                if (productos != null || usuarios != null) {
 
                     if (type == TYPE.USUARIOS && isAdmin) {
                         UserControlPanel ventana = new UserControlPanel(usuarios);
@@ -192,6 +188,7 @@ public class MenuGeneral extends JFrame implements Themeable {
 
                     }
 
+                }
 
 
         };

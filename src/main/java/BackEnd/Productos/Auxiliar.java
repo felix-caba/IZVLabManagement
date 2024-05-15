@@ -62,21 +62,6 @@ public class Auxiliar extends Producto {
         this.formato = formato;
     }
 
-    @Override
-    public Auxiliar getProductFromRow(Object[] row) {
-
-        Auxiliar auxiliar = new Auxiliar();
-        auxiliar.setCamposComunes(row);
-
-        try {
-
-            auxiliar.setFormato((String) row[5]);
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        return auxiliar;
-    }
 
 }
 

@@ -17,6 +17,8 @@ public enum TYPE {
     REACTIVOS,
     AUXILIARES,
     MATERIALES,
-    USUARIOS
+    USUARIOS,
+    LOCALIZACION,
+    UBICACION
 
 }

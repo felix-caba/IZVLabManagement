@@ -20,7 +20,7 @@ public interface Themeable {
                         continue;
                     }
 
-                    if (ConfigurationIZV.getInstance().getAppearance().equals("OSCURO") || ConfigurationIZV.getInstance().getAppearance().equals("DARCULA")) {
+                    if (ConfigurationIZV.getInstance().isDark()) {
                         button.setIcon(new ImageIcon("src/main/resources/icons/white/" + button.getName() + ".png"));
                     } else {
                         button.setIcon(new ImageIcon("src/main/resources/icons/black/" + button.getName() + ".png"));

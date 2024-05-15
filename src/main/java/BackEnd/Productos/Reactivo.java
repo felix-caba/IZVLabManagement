@@ -43,6 +43,9 @@ public class Reactivo extends Producto {
     public Reactivo(){
 
     }
+
+
+
     public String getFormato() {
         return formato;
     }
@@ -145,48 +148,7 @@ public class Reactivo extends Producto {
     }
 
 
-    /*
-    @Override
-    public Reactivo getProductFromRow(Object[] row) {
 
-        Reactivo reactivo = new Reactivo();
 
-        try {
-            reactivo.setId((int) row[0]);
-            reactivo.setNombre((String) row[1]);
-            reactivo.setUbicacion((String) row[2]);
-            reactivo.setLocalizacion((String) row[3]);
-            reactivo.setCantidad((int) row[4]);
-            reactivo.setFormato((String) row[5]);
-            reactivo.setRiesgos((String) row[6]);
-            reactivo.setGradoPureza((String) row[7]);
-            reactivo.setFechaCaducidad((LocalDate) row[8]);
-            reactivo.setStockMinimo((int) row[9]);
-        } catch (Exception e) {
-            System.out.println("UNO DE LOS VALORES ES NULL Y NO SE PUEDE CONVERTIR");
-        }
-        return reactivo;
-    }
-
-*/
-    @Override
-    public Reactivo getProductFromRow(Object[] row) {
-
-        Reactivo reactivo = new Reactivo();
-        reactivo.setCamposComunes(row);
-
-        try {
-
-            reactivo.setFormato((String) row[5]);
-            reactivo.setRiesgos((String) row[6]);
-            reactivo.setGradoPureza((String) row[7]);
-            reactivo.setFechaCaducidad((LocalDate) row[8]);
-
-        } catch (Exception e) {
-            System.out.println("Error al establecer campos específicos de Reactivo: " + e.getMessage());
-        }
-
-        return reactivo;
-    }
 
 }

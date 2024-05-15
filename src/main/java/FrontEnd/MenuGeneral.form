@@ -126,6 +126,8 @@
                 <item value="AUXILIAR"/>
                 <item value="MATERIAL"/>
                 <item value="USUARIOS"/>
+                <item value="LOCALIZACION"/>
+                <item value="UBICACION"/>
               </model>
             </properties>
           </component>

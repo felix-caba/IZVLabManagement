@@ -20,27 +20,47 @@ import BackEnd.Producto;
 import BackEnd.Productos.Auxiliar;
 import BackEnd.Productos.Material;
 import BackEnd.Productos.Reactivo;
+import BackEnd.SQLBroadcaster;
 import FrontEnd.LoadingFrame;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class ProductoDAOImpl implements ProductoDAO {
+public class ProductoDAOImpl implements ProductoDAO, SQLBroadcaster {
+
+    private String sqlBROADCAST;
+
+    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(listener);
+    }
+
+    @Override
+    public void sendBroadcast(String message) {
+
+        this.sqlBROADCAST = message;
+        pcs.firePropertyChange("sqlBROADCAST", null, message);
+
+    }
 
 
     public void loadTable (String path, TYPE type) {
 
         MySQL sql = MySQL.getInstance();
-
         sql.connect();
 
         sql.loadCSV(path, type.toString().toLowerCase());
 
         sql.disconnect();
-
-
 
     }
 
@@ -51,15 +71,13 @@ public class ProductoDAOImpl implements ProductoDAO {
     @Override
     public void insert(Producto producto) {
 
-        LoadingFrame loadingFrame = new LoadingFrame();
 
         if (producto instanceof Reactivo) {
 
             try {
                 insertReactivo((Reactivo) producto);
             } catch (SQLException e) {
-                loadingFrame.setVisible(true);
-                loadingFrame.setMessage(e.getMessage());
+                sendBroadcast(e.getMessage());
             }
 
 
@@ -68,8 +86,7 @@ public class ProductoDAOImpl implements ProductoDAO {
             try {
                 insertAuxiliar((Auxiliar) producto);
             } catch (SQLException e) {
-                loadingFrame.setVisible(true);
-                loadingFrame.setMessage(e.getMessage());
+                sendBroadcast(e.getMessage());
             }
 
 
@@ -78,8 +95,7 @@ public class ProductoDAOImpl implements ProductoDAO {
             try {
                 insertMaterial((Material) producto);
             } catch (SQLException e) {
-                loadingFrame.setVisible(true);
-                loadingFrame.setMessage(e.getMessage());
+                sendBroadcast(e.getMessage());
             }
 
         }
@@ -91,15 +107,14 @@ public class ProductoDAOImpl implements ProductoDAO {
     public void update(Producto producto) {
 
 
-        LoadingFrame loadingFrame = new LoadingFrame();
+
 
         if (producto instanceof Reactivo) {
 
             try {
                 updateReactivo((Reactivo) producto);
             } catch (SQLException e) {
-                loadingFrame.setVisible(true);
-                loadingFrame.setMessage(e.getMessage());
+                sendBroadcast(e.getMessage());
             }
 
 
@@ -108,8 +123,7 @@ public class ProductoDAOImpl implements ProductoDAO {
             try {
                 updateAuxiliar((Auxiliar) producto);
             } catch (SQLException e) {
-                loadingFrame.setVisible(true);
-                loadingFrame.setMessage(e.getMessage());
+                sendBroadcast(e.getMessage());
             }
 
 
@@ -118,8 +132,7 @@ public class ProductoDAOImpl implements ProductoDAO {
             try {
                 updateMaterial((Material) producto);
             } catch (SQLException e) {
-                loadingFrame.setVisible(true);
-                loadingFrame.setMessage(e.getMessage());
+                sendBroadcast(e.getMessage());
             }
 
         }
@@ -130,15 +143,14 @@ public class ProductoDAOImpl implements ProductoDAO {
     @Override
     public void delete(Producto producto) {
 
-        LoadingFrame loadingFrame = new LoadingFrame();
+
 
         if (producto instanceof Reactivo) {
 
             try {
                 deleteReactivo((Reactivo) producto);
             } catch (SQLException e) {
-                loadingFrame.setVisible(true);
-                loadingFrame.setMessage(e.getMessage());
+                sendBroadcast(e.getMessage());
             }
 
         } else if (producto instanceof Auxiliar) {
@@ -146,8 +158,7 @@ public class ProductoDAOImpl implements ProductoDAO {
             try {
                 deleteAuxiliar((Auxiliar) producto);
             } catch (SQLException e) {
-                loadingFrame.setVisible(true);
-                loadingFrame.setMessage(e.getMessage());
+                sendBroadcast(e.getMessage());
             }
 
         } else if (producto instanceof Material) {
@@ -155,8 +166,7 @@ public class ProductoDAOImpl implements ProductoDAO {
             try {
                 deleteMaterial((Material) producto);
             } catch (SQLException e) {
-                loadingFrame.setVisible(true);
-                loadingFrame.setMessage(e.getMessage());
+                sendBroadcast(e.getMessage());
             }
 
         }
@@ -183,7 +193,7 @@ public class ProductoDAOImpl implements ProductoDAO {
                     break;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            sendBroadcast(e.getMessage());
         }
         return productos;
     }
@@ -478,9 +488,6 @@ public class ProductoDAOImpl implements ProductoDAO {
         }
         return string.replaceAll("(?i)No viene reflejad[oa]", "");
     }
-
-
-
 
 
 

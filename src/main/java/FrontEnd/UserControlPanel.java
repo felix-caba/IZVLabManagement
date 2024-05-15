@@ -4,8 +4,11 @@
 
 package FrontEnd;
 
+import BackEnd.DAO.Impl.ProductoDAOImpl;
 import BackEnd.DAO.Impl.UsuarioDAOImpl;
 import BackEnd.Extra.TableChange;
+import BackEnd.Producto;
+import BackEnd.Sitio;
 import BackEnd.Usuario;
 import com.formdev.flatlaf.FlatClientProperties;
 
@@ -34,6 +37,10 @@ public class UserControlPanel extends JFrame implements Themeable {
         deleteButton.setName("deleteButton");
 
         UsuarioTableModel tableModel = new UsuarioTableModel(usuarios, new ArrayList<>());
+
+
+
+
         table1.setModel(tableModel);
         initComponents();
 
@@ -50,8 +57,11 @@ public class UserControlPanel extends JFrame implements Themeable {
             public void actionPerformed(ActionEvent e) {
 
                 int lastUserId = 0;
+
                 if (!usuarios.isEmpty()) {
+
                     lastUserId = usuarios.get(usuarios.size() - 1).getId();
+
                 }
 
                 Usuario nuevoUsuario = new Usuario("", "", false,lastUserId + 1);
@@ -72,8 +82,7 @@ public class UserControlPanel extends JFrame implements Themeable {
 
                 if (selectedRow != -1) {
                     tableModel.removeUsuario(selectedRow);
-
-                    tableModel.getChanges().add(new TableChange(TableChange.ChangeType.DELETE, usuarios.get(selectedRow)));
+                   // tableModel.getChanges().add(new TableChange(TableChange.ChangeType.DELETE, usuarios.get(selectedRow)));
                 }
             }
         });
@@ -82,26 +91,49 @@ public class UserControlPanel extends JFrame implements Themeable {
         editButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 ArrayList<TableChange> changes = tableModel.getChanges();
-                UsuarioDAOImpl usuarioDAO = UsuarioDAOImpl.getInstance();
 
                 for (TableChange change : changes) {
-                    switch (change.getChangeType()) {
-                        case INSERT:
-                            usuarioDAO.insert(change.getUsuario());
-                            break;
-                        case UPDATE:
-                            usuarioDAO.update(change.getUsuario());
-                            break;
-                        case DELETE:
-                            usuarioDAO.delete(change.getUsuario());
-                            break;
+
+                    Object obj = change.getObject();
+
+                    if (obj instanceof Usuario) {
+                        UsuarioDAOImpl usuarioDAO = UsuarioDAOImpl.getInstance();
+                        switch (change.getChangeType()) {
+                            case INSERT:
+                                usuarioDAO.insert((Usuario) obj);
+                                break;
+                            case UPDATE:
+                                usuarioDAO.update((Usuario) obj);
+                                break;
+                            case DELETE:
+                                usuarioDAO.delete((Usuario) obj);
+                                break;
+                        }
                     }
+
+                    if (obj instanceof Producto) {
+                        ProductoDAOImpl productoDAO = new ProductoDAOImpl();
+                        switch (change.getChangeType()) {
+                            case INSERT:
+                                productoDAO.insert((Producto) obj);
+                                break;
+                            case UPDATE:
+                                productoDAO.update((Producto) obj);
+                                break;
+                            case DELETE:
+                                productoDAO.delete((Producto) obj);
+                                break;
+                        }
+
+                    }
+
+                    if (obj instanceof Sitio){
+
+                    }
+
                 }
-
             }
-
         });
 
     }
@@ -207,8 +239,15 @@ public class UserControlPanel extends JFrame implements Themeable {
                     }
                     break;
             }
+
+
+
+
             changes.add(new TableChange(TableChange.ChangeType.UPDATE, usuario));
             fireTableCellUpdated(rowIndex, columnIndex);
+
+
+
         }
 
 

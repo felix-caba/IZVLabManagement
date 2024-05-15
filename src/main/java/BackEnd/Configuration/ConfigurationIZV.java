@@ -28,6 +28,16 @@ public class ConfigurationIZV {
 
     }
 
+    public boolean isDark(){
+
+        if (appearance.equals("OSCURO") || appearance.equals("DARCULA")){
+            return true;
+        }
+
+        return false;
+
+    }
+
     public static ConfigurationIZV getInstance() {
 
         if (instance == null) {

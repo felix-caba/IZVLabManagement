@@ -13,7 +13,7 @@ import java.io.File;
 import java.sql.*;
 import java.util.Timer;
 
-public class MySQL{
+public class MySQL implements SQLBroadcaster{
 
     // Singleton Patron
 
@@ -40,6 +40,11 @@ public class MySQL{
         pcs.removePropertyChangeListener(listener);
     }
 
+    @Override
+    public void sendBroadcast(String message) {
+        this.sqlBROADCAST = message;
+        pcs.firePropertyChange("sqlBROADCAST", null, message);
+    }
 
     public static String getJDBC() {
         return JDBC;
@@ -75,10 +80,7 @@ public class MySQL{
     }
 
 
-    public void setSqlBROADCAST(String value) {
-        this.sqlBROADCAST = value;
-        pcs.firePropertyChange("sqlBROADCAST", null, value);
-    }
+
 
 
 
@@ -88,10 +90,6 @@ public class MySQL{
         password = ConfigurationIZV.getInstance().getPassword();
         ip = ConfigurationIZV.getInstance().getIp();
         bdName = ConfigurationIZV.getInstance().getBdName();
-
-
-
-
 
         if (instance == null) {
             instance = new MySQL();
@@ -114,12 +112,13 @@ public class MySQL{
             ip = configuration.getIp();
             url = DB_URL + ip + "/" + configuration.getBdName()+"?allowLoadLocalInfile=true";
 
-            DriverManager.setLoginTimeout(5);
+            DriverManager.setLoginTimeout(3);
+
             connection = DriverManager.getConnection(url, user, password);
 
 
         } catch (SQLException e) {
-            setSqlBROADCAST(e.getMessage());
+            sendBroadcast(e.getMessage());
         }
 
 
@@ -142,15 +141,13 @@ public class MySQL{
 
 
         } catch (SQLException e) {
-            setSqlBROADCAST(e.getMessage());
+            sendBroadcast(e.getMessage());
         }
 
     }
 
 
     public void disconnect() {
-
-
         try {
 
             if (connection != null) {
@@ -158,23 +155,14 @@ public class MySQL{
             }
 
         } catch (Exception e) {
-
             System.out.println(e);
-
         }
-
-
     }
-
-
-
-
 
 
     public Connection getConnection() {
         return connection;
     }
-
 
 
 

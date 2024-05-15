@@ -12,9 +12,12 @@ import com.formdev.flatlaf.FlatClientProperties;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class LoginPanel extends JFrame implements Themeable {
+
     private PanelRound panelWindowLoginIn;
     private JPanel panelWindowLogin;
     private JButton loginButton;
@@ -22,11 +25,12 @@ public class LoginPanel extends JFrame implements Themeable {
     private JTextField loginPasswordField;
     private JButton backButton;
     private JPasswordField passwordField1;
-
+    private final LoadingFrame dialog = LoadingFrame.getInstance();
 
     public LoginPanel() {
 
-
+        MySQL sql = MySQL.getInstance();
+        sql.addPropertyChangeListener(dialog);
 
         panelWindowLoginIn.putClientProperty( FlatClientProperties.STYLE,
                 "background: lighten(@background,3%);");
@@ -37,7 +41,6 @@ public class LoginPanel extends JFrame implements Themeable {
 
 
         initComponents();
-
         setIcons(this);
 
 
@@ -53,21 +56,18 @@ public class LoginPanel extends JFrame implements Themeable {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
 
-
-                LoadingFrame dialog = new LoadingFrame();
-
-                /*OBSERVA LOS CAMBIOS*/
-
-                MySQL sql = MySQL.getInstance();
-
-                sql.addPropertyChangeListener(dialog);
-                loginWorker(dialog).execute();
-
                 dialog.setVisible(true);
+                loginWorker(dialog).execute();
 
             }
 
 
+        });
+        passwordField1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+            }
         });
     }
 
@@ -77,11 +77,9 @@ public class LoginPanel extends JFrame implements Themeable {
         setMinimumSize(new java.awt.Dimension(400, 300));
         setResizable(false);
         setLocationRelativeTo(null);
-
         setTitle("Login Window");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setContentPane(panelWindowLogin);
-
         pack();
 
     }
@@ -93,7 +91,6 @@ public class LoginPanel extends JFrame implements Themeable {
 
     public SwingWorker<Void, Void> loginWorker(LoadingFrame frame) {
 
-
         SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 
             UsuarioDAOImpl usuarioDAO = UsuarioDAOImpl.getInstance();
@@ -102,40 +99,37 @@ public class LoginPanel extends JFrame implements Themeable {
 
             @Override
             protected Void doInBackground() throws Exception {
-
                 usuarios = usuarioDAO.select();
-
                 return null;
             }
 
             @Override
             protected void done() {
 
-                // Este método se llama cuando doInBackground() ha terminado
-                // Aquí puedes realizar las acciones necesarias después de la conexión a la base de datos
-
-
-                if (usuarios == null || usuarios.isEmpty()) {
-                    frame.setMessage("No se han encontrado usuarios");
-                } else {
+                if (usuarios != null) {
                     boolean usuarioEncontrado = false;
 
                     for (Usuario usuario : usuarios) {
 
                         if (usuario.getNombre().equals(loginUsernameField.getText()) && usuario.getContrasena().equals(passwordField1.getText())) {
+
                             loggedMessage = "Bienvenido " + usuario.getNombre();
                             new MenuGeneral(usuario.Es_admin(), usuario.getNombre()).setVisible(true);
                             dispose();
                             usuarioEncontrado = true;
-                            break; // Salimos del bucle ya que encontramos el usuario
+
+                            frame.setMessage(loggedMessage);
+
+                            break;
+
                         }
                     }
-
                     if (!usuarioEncontrado) {
                         loggedMessage = "Usuario o contraseña incorrectos";
-                    }
 
-                    frame.onSucess(loggedMessage);
+                        frame.setMessage(loggedMessage);
+
+                    }
                 }
             }
 
