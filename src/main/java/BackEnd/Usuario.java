@@ -16,10 +16,13 @@ public class Usuario {
 
     private boolean es_admin;
 
-    public Usuario(String nombre, String contrasena, boolean es_admin) {
+    private int id;
+
+    public Usuario(String nombre, String contrasena, boolean es_admin, int id) {
         this.nombre = nombre;
         this.contrasena = contrasena;
         this.es_admin = es_admin;
+        this.id = id;
     }
 
     public String getNombre() {
@@ -44,5 +47,17 @@ public class Usuario {
 
     public void setEs_admin(boolean es_admin) {
         this.es_admin = es_admin;
+    }
+
+    public boolean isEs_admin() {
+        return es_admin;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -39,6 +39,13 @@ public class ConfigurationIZV {
         return instance;
     }
 
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     // Carga el archivo de configuracion, no la configuracion.
     public void loadConfigurationFile() {

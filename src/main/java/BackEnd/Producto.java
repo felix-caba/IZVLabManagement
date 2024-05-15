@@ -35,7 +35,6 @@ public abstract class Producto {
 
     public Producto() {
 
-
     }
 
     public Producto(int id) {
@@ -86,8 +85,6 @@ public abstract class Producto {
 
     public String[] getAllAttributesNamesString() {
 
-
-
         List<String> attributeNames = new ArrayList<>();
 
         // Nombres de los atributos de la clase padre (Producto)
@@ -110,7 +107,6 @@ public abstract class Producto {
 
         return attributeNames.toArray(new String[0]);
     }
-
 
 
 

@@ -13,17 +13,15 @@ import BackEnd.Usuario;
 import com.formdev.flatlaf.FlatClientProperties;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
+
 import static java.lang.Thread.sleep;
 
-public class MenuGeneral extends JFrame implements Themeable{
+public class MenuGeneral extends JFrame implements Themeable {
     private PanelRound panelRoundMenuGeneral;
     private JPanel panelMenuGeneral;
     private JButton backButton;
@@ -31,8 +29,9 @@ public class MenuGeneral extends JFrame implements Themeable{
     private JLabel loggedAsLabel;
     private PanelRound panelRoundMenuGeneralPreg;
     private JComboBox comboProducto;
-    private JTextField fieldUbicacion;
+    private JButton importarButton;
     private JButton adminButton;
+    private final LoadingFrame dialog = new LoadingFrame();
 
 
     private String message;
@@ -53,12 +52,14 @@ public class MenuGeneral extends JFrame implements Themeable{
         this.isAdmin = isAdmin;
         this.username = username;
 
-
+        MySQL sql = MySQL.getInstance();
+        sql.addPropertyChangeListener(dialog);
 
         loggedAsLabel.setText("Has iniciado sesión como: " + username+ " " + (isAdmin ? "(Administrador)" : "(Usuario)"));
 
         backButton.setName("backButton");
         lupaButton.setName("lupaButton");
+        importarButton.setName("loadButton");
 
         initComponents();
         setIcons(this);
@@ -86,26 +87,49 @@ public class MenuGeneral extends JFrame implements Themeable{
             @Override
             public void actionPerformed(ActionEvent e) {
 
-
-                TYPE type = comboProducto.getSelectedIndex() == 0 ? TYPE.REACTIVOS : comboProducto.getSelectedIndex() == 1 ? TYPE.PROD_AUX : TYPE.MATERIALES;
-
-                LoadingFrame dialog = new LoadingFrame();
+                TYPE type = comboProducto.getSelectedIndex() == 0 ? TYPE.REACTIVOS : comboProducto.getSelectedIndex() == 1 ? TYPE.AUXILIARES
+                        : comboProducto.getSelectedIndex() == 2 ? TYPE.MATERIALES : TYPE.USUARIOS;
 
                 /*OBSERVA LOS CAMBIOS*/
 
-                MySQL sql = MySQL.getInstance();
 
-                sql.addPropertyChangeListener(dialog);
                 System.out.println("Añadido observer");
                 loadingWorker(dialog, type).execute();
                 System.out.println("Ejecutado worker");
 
                 dialog.setVisible(true);
 
-
             }
         });
 
+        importarButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                ProductoDAOImpl productoDAO = new ProductoDAOImpl();
+
+                TYPE type = comboProducto.getSelectedIndex() == 0 ? TYPE.REACTIVOS : comboProducto.getSelectedIndex() == 1 ?
+                        TYPE.AUXILIARES : comboProducto.getSelectedIndex() == 2 ? TYPE.MATERIALES : TYPE.USUARIOS;
+
+                JFileChooser fileChooser = new JFileChooser();
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("Solo Archivos CSV", "csv");
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                fileChooser.setFileFilter(filter);
+
+                int returnVal = fileChooser.showOpenDialog(null);
+
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+
+                    String path = fileChooser.getSelectedFile().getAbsolutePath();
+                    System.out.println(path);
+                    productoDAO.loadTable(path, type);
+
+                    dialog.setVisible(true);
+
+                }
+
+            }
+        });
     }
 
 
@@ -131,37 +155,44 @@ public class MenuGeneral extends JFrame implements Themeable{
         SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 
             private ArrayList<Producto> productos;
+            private ArrayList<Usuario> usuarios;
             ProductoDAOImpl productoDAO = new ProductoDAOImpl();
+            UsuarioDAOImpl usuarioDAO = UsuarioDAOImpl.getInstance();
 
 
             @Override
             protected Void doInBackground() throws Exception {
 
-
-
-                productos = productoDAO.selectPType(type);
-
-
+                if (type == TYPE.USUARIOS) {
+                     usuarios = usuarioDAO.select();
+                } else {
+                    productos = productoDAO.selectPType(type);
+                }
                 return null;
-
-
             }
 
             @Override
             protected void done() {
 
-                if (productos == null) {
+                    if (type == TYPE.USUARIOS && isAdmin) {
+                        UserControlPanel ventana = new UserControlPanel(usuarios);
+                        ventana.setVisible(true);
 
-                    JOptionPane.showMessageDialog(null, "No se han encontrado productos", "Error", JOptionPane.ERROR_MESSAGE);
+                        frame.onSucess("Carga completada");
 
-                } else {
+                    } else if (type == TYPE.USUARIOS && !isAdmin) {
 
-                    SearchResultMenu ventanaRes = new  SearchResultMenu(productos, isAdmin, type);
-                    ventanaRes.setVisible(true);
-                    frame.onSucess();
+                        frame.onFail("No tienes permisos para acceder a esta sección");
+
+                    } else if (type != TYPE.USUARIOS){
+                        SearchResultMenu ventanaRes = new  SearchResultMenu(productos, isAdmin, type);
+                        ventanaRes.setVisible(true);
+
+                        frame.onSucess("Carga completada");
+
+                    }
 
 
-                }
 
         };
 

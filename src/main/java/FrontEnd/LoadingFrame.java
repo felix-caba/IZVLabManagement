@@ -4,15 +4,11 @@
 
 package FrontEnd;
 
-import BackEnd.Configuration.ScreenSize;
-import BackEnd.MySQL;
 import com.formdev.flatlaf.FlatClientProperties;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -25,6 +21,8 @@ public class LoadingFrame extends JFrame implements Themeable, PropertyChangeLis
     private JButton backButton;
     private JProgressBar progressBar1;
     private JLabel labelLoading;
+    private JButton errorLog;
+    private JTextArea textArea1;
 
     private String sqlBROADCAST;
 
@@ -32,7 +30,7 @@ public class LoadingFrame extends JFrame implements Themeable, PropertyChangeLis
 
     public void initComponents() {
 
-        backButton.setName("backButton");
+        backButton.setName("checkButton");
         setTitle("Cargando...");
 
 
@@ -56,6 +54,15 @@ public class LoadingFrame extends JFrame implements Themeable, PropertyChangeLis
         toFront();
     }
 
+    public void showMessage(String message) {
+        labelLoading.setText(message);
+        refresh();
+        toFront();
+        setVisible(true);
+    }
+
+
+
 
 
     public LoadingFrame() {
@@ -77,10 +84,23 @@ public class LoadingFrame extends JFrame implements Themeable, PropertyChangeLis
         });
 
 
+        errorLog.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+
+
+            }
+        });
     }
 
-    public void onSucess() {
-        setMessage("Carga completada");
+    public void onSucess(String message) {
+        setMessage(message);
+        progressBar1.setIndeterminate(false);
+    }
+
+    public void onFail(String message) {
+        setMessage(message);
         progressBar1.setIndeterminate(false);
     }
 
@@ -99,7 +119,12 @@ public class LoadingFrame extends JFrame implements Themeable, PropertyChangeLis
     public void propertyChange(PropertyChangeEvent evt) {
         this.setSqlBROADCAST((String) evt.getNewValue());
         this.setMessage(this.getSqlBROADCAST());
+        this.errorLog.setVisible(true);
+        this.setMessage("Ha ocurrido un error");
         progressBar1.setIndeterminate(false);
+        this.setLocationRelativeTo(null);
+        this.setVisible(true);
+
     }
 
     public void refresh() {

@@ -9,6 +9,7 @@ import BackEnd.Extra.TYPE;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.File;
 import java.sql.*;
 import java.util.Timer;
 
@@ -110,29 +111,41 @@ public class MySQL{
         try {
 
 
-
-
             ip = configuration.getIp();
-            url = DB_URL + ip + "/" + configuration.getBdName();
+            url = DB_URL + ip + "/" + configuration.getBdName()+"?allowLoadLocalInfile=true";
 
             DriverManager.setLoginTimeout(5);
             connection = DriverManager.getConnection(url, user, password);
 
 
-
-
         } catch (SQLException e) {
-
-
-            System.out.println(e);
             setSqlBROADCAST(e.getMessage());
-
-
         }
 
 
     }
 
+
+
+    public void loadCSV(String path, String table) {
+
+        File file = new File(path);
+        String normalizedPath = file.getAbsolutePath();
+        String formattedPath = normalizedPath.replace("\\", "\\\\");
+
+        try {
+
+            Statement statement = connection.createStatement();
+
+            String sql = "LOAD DATA LOCAL INFILE '" + formattedPath + "' INTO TABLE " + table + " FIELDS TERMINATED BY ';' LINES TERMINATED BY '\n' IGNORE 1 ROWS";
+            statement.executeUpdate(sql);
+
+
+        } catch (SQLException e) {
+            setSqlBROADCAST(e.getMessage());
+        }
+
+    }
 
 
     public void disconnect() {

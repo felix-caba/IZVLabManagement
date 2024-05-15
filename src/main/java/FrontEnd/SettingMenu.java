@@ -60,6 +60,12 @@ public class SettingMenu extends JFrame implements Themeable, Validable{
                         configurationIZV.setBdName(bdNameField.getText());
                     }
 
+                    if (!textField1.getText().isEmpty()) {
+                        configurationIZV.setUser(textField1.getText());
+                    }
+
+
+
                     configurationIZV.setAppearance(comboTheme.getSelectedItem().toString());
 
                     ConfigurationIZV.getInstance().saveConfiguration();
@@ -138,6 +144,8 @@ public class SettingMenu extends JFrame implements Themeable, Validable{
             return false;
 
         }
+
+
 
         return true;
 

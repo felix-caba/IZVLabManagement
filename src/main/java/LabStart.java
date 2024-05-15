@@ -24,6 +24,8 @@ import java.io.IOException;
 
 public class LabStart {
 
+
+
     public static void main(String[] args) {
 
         try {
@@ -35,7 +37,6 @@ public class LabStart {
 
             ConfigurationIZV.LoadTheme();
 
-
         } catch (IOException e) {
             e.printStackTrace();
         } catch (FontFormatException e) {
@@ -46,25 +47,13 @@ public class LabStart {
 
         java.awt.EventQueue.invokeLater(new Runnable() {
 
-
-
             public void run() {
                 new MenuGeneral(true, "fel").setVisible(true);
             }
 
-
-
-
-
         });
 
     }
-
-
-
-
-
-
 
 
     public static void setFont() throws IOException, FontFormatException {
@@ -82,12 +71,12 @@ public class LabStart {
         FontUIResource fontUIResource = new FontUIResource(font);
 
         UIManager.put("defaultFont", fontUIResource);
-
         UIManager.put("Button.font", fontComponentes);
         UIManager.put("Label.font", fontComponentes);
         UIManager.put("TextField.font", fontComponentes);
         UIManager.put("TextArea.font", fontComponentes);
         UIManager.put("ComboBox.font", fontComponentes);
+        UIManager.put("PasswordField.font", fontComponentes);
         UIManager.put("OptionPane.messageFont", fontComponentes);
 
     }

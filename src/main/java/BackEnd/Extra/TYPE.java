@@ -15,7 +15,8 @@ package BackEnd.Extra;
 public enum TYPE {
 
     REACTIVOS,
-    PROD_AUX,
-    MATERIALES
+    AUXILIARES,
+    MATERIALES,
+    USUARIOS
 
 }

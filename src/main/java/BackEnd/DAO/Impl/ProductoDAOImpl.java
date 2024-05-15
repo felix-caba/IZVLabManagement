@@ -25,12 +25,27 @@ import FrontEnd.LoadingFrame;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 public class ProductoDAOImpl implements ProductoDAO {
+
+
+    public void loadTable (String path, TYPE type) {
+
+        MySQL sql = MySQL.getInstance();
+
+        sql.connect();
+
+        sql.loadCSV(path, type.toString().toLowerCase());
+
+        sql.disconnect();
+
+
+
+    }
+
+
+
 
 
     @Override
@@ -154,28 +169,22 @@ public class ProductoDAOImpl implements ProductoDAO {
         ResultSet rs = null;
         ArrayList<Producto> productos = new ArrayList<>();
 
-        System.out.println("SELECTING PRODUCTS");
-
         try{
 
             switch (type) {
                 case REACTIVOS:
                     productos.addAll(getReactivos());
                     break;
-                case PROD_AUX:
+                case AUXILIARES:
                     productos.addAll(getAuxiliares());
                     break;
                 case MATERIALES:
-                    System.out.println("MATERIALES");
-
                     productos.addAll(getMateriales());
                     break;
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
         return productos;
     }
 
@@ -432,8 +441,6 @@ public class ProductoDAOImpl implements ProductoDAO {
 
         ResultSet rs = null;
         String query = "SELECT * FROM materiales";
-
-        System.out.println("SELECTING MATERIALES");
 
         PreparedStatement ps = sql.getConnection().prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 

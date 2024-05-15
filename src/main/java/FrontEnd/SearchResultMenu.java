@@ -17,10 +17,7 @@ import org.jdesktop.swingx.JXTable;
 
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
+import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
@@ -43,10 +40,7 @@ public class SearchResultMenu extends JFrame implements Themeable {
     private ArrayList<Producto> searchResults;
     private ArrayList<TableChange> tableChanges = new ArrayList<TableChange>();
 
-
-
     public void initComponents() {
-
 
 
         /*Tamaño de la ventana y posicion*/
@@ -72,8 +66,6 @@ public class SearchResultMenu extends JFrame implements Themeable {
         addButton.setName("addButton");
         deleteButton.setName("deleteButton");
 
-
-
         setIcons(this);
 
         if (isAdmin) {
@@ -83,6 +75,10 @@ public class SearchResultMenu extends JFrame implements Themeable {
         // El table row sorter, cuando recibe Object, no hace la conversion. Hace toString. Si recibe Object Int, le hace toString. Por ello, debemos darle
         // directamente el tipo de dato que queremos que muestre. override de columnclassget
 
+
+
+
+
         TableModel model = new DefaultTableModel(getData(searchResults), getColumnNames(searchResults)) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -91,12 +87,17 @@ public class SearchResultMenu extends JFrame implements Themeable {
             }
 
             public Class<?> getColumnClass(int column) {
+
+
                 for (int row = 0; row < getRowCount(); row++) {
+
                     Object o = getValueAt(row, column);
 
                     if (o != null) {
+
                         return o.getClass();
                     }
+
                 }
 
                 return Object.class;
@@ -178,6 +179,12 @@ public class SearchResultMenu extends JFrame implements Themeable {
 
         filterFunc(rowSorter);
 
+        DefaultTableCellRenderer leftRenderer = new DefaultTableCellRenderer();
+        leftRenderer.setHorizontalAlignment(JLabel.LEFT);
+
+        for (int i = 0; i < tableResults.getColumnCount(); i++) {
+            tableResults.getColumnModel().getColumn(i).setCellRenderer(leftRenderer);
+        }
 
         pack();
         setLocationRelativeTo(null);
@@ -290,6 +297,7 @@ public class SearchResultMenu extends JFrame implements Themeable {
 
             }
         });
+
     }
 
 
@@ -312,7 +320,6 @@ public class SearchResultMenu extends JFrame implements Themeable {
             Object[] rowData = new Object[producto.getAllAttributesNamesString().length];
 
             for (int j = 0; j < producto.getAllAttributesNamesString().length; j++) {
-
 
                 rowData[j] = producto.getValueForAttribute(producto.getAllAttributesNamesString()[j]);
 
@@ -346,9 +353,6 @@ public class SearchResultMenu extends JFrame implements Themeable {
             case REACTIVOS:
 
                 Reactivo reactivo = new Reactivo();
-
-
-
                 reactivo = reactivo.getProductFromRow(dataRow);
 
 
@@ -356,7 +360,7 @@ public class SearchResultMenu extends JFrame implements Themeable {
 
                 return reactivo;
 
-            case PROD_AUX:
+            case AUXILIARES:
 
                 Auxiliar auxiliar = new Auxiliar();
                 auxiliar = auxiliar.getProductFromRow(dataRow);
@@ -392,7 +396,7 @@ public class SearchResultMenu extends JFrame implements Themeable {
                 return new Reactivo(newID, 0, null, null, null,
                         null, null, null, null, 0);
 
-            case PROD_AUX:
+            case AUXILIARES:
 
                 return new Auxiliar(newID, 0, null, null, null, null);
 

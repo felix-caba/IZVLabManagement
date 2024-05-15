@@ -21,6 +21,7 @@ public class LoginPanel extends JFrame implements Themeable {
     private JTextField loginUsernameField;
     private JTextField loginPasswordField;
     private JButton backButton;
+    private JPasswordField passwordField1;
 
 
     public LoginPanel() {
@@ -97,6 +98,7 @@ public class LoginPanel extends JFrame implements Themeable {
 
             UsuarioDAOImpl usuarioDAO = UsuarioDAOImpl.getInstance();
             private ArrayList<Usuario> usuarios;
+            String loggedMessage;
 
             @Override
             protected Void doInBackground() throws Exception {
@@ -113,35 +115,28 @@ public class LoginPanel extends JFrame implements Themeable {
                 // Aquí puedes realizar las acciones necesarias después de la conexión a la base de datos
 
 
-
-
-                if (usuarios == null) {
-
-                    return;
-
+                if (usuarios == null || usuarios.isEmpty()) {
+                    frame.setMessage("No se han encontrado usuarios");
                 } else {
-
+                    boolean usuarioEncontrado = false;
 
                     for (Usuario usuario : usuarios) {
 
-
-                        if (usuario.getNombre().equals(loginUsernameField.getText()) && usuario.getContrasena().equals(loginPasswordField.getText())) {
-
-
-
+                        if (usuario.getNombre().equals(loginUsernameField.getText()) && usuario.getContrasena().equals(passwordField1.getText())) {
+                            loggedMessage = "Bienvenido " + usuario.getNombre();
                             new MenuGeneral(usuario.Es_admin(), usuario.getNombre()).setVisible(true);
-
                             dispose();
-
-                            frame.setMessage("Login successful");
-
-
+                            usuarioEncontrado = true;
+                            break; // Salimos del bucle ya que encontramos el usuario
                         }
+                    }
 
+                    if (!usuarioEncontrado) {
+                        loggedMessage = "Usuario o contraseña incorrectos";
+                    }
+
+                    frame.onSucess(loggedMessage);
                 }
-                }
-
-
             }
 
         };
