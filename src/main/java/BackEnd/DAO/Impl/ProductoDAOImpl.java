@@ -193,8 +193,11 @@ public class ProductoDAOImpl implements ProductoDAO, SQLBroadcaster {
                     break;
             }
         } catch (SQLException e) {
+
             sendBroadcast(e.getMessage());
+
         }
+
         return productos;
     }
 

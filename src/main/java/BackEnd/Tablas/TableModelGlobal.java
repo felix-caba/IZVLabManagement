@@ -2,24 +2,26 @@
  * @AUTHOR Felix
  */
 
-package BackEnd;
+/*
+ * @AUTHOR Felix
+ */
+
+package BackEnd.Tablas;
 
 import BackEnd.Configuration.ScreenSize;
 import FrontEnd.LocalDateCellEditor;
 import org.jdesktop.swingx.JXTable;
 
-import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.time.LocalDate;
 
-public class TableModelProducts extends DefaultTableModel {
+public class TableModelGlobal extends DefaultTableModel {
 
     private TableRowSorter<TableModel> rowSorter ;
     DefaultTableCellRenderer leftRenderer = new DefaultTableCellRenderer();
 
-    public TableModelProducts(Object[][] data, Object[] columnNames, JXTable tableResults) {
+    public TableModelGlobal(Object[][] data, Object[] columnNames, JXTable tableResults) {
 
 
         super(data, columnNames);
@@ -34,12 +36,6 @@ public class TableModelProducts extends DefaultTableModel {
         Dimension dimMax = new Dimension(sizeXMax, sizeYMax);
 
         rowSorter = new TableRowSorter<>(this);
-        tableResults.setRowSorter(rowSorter);
-        leftRenderer.setHorizontalAlignment(DefaultTableCellRenderer.LEFT);
-
-        for (int i = 0; i < tableResults.getColumnCount(); i++) {
-            tableResults.getColumnModel().getColumn(i).setCellRenderer(leftRenderer);
-        }
 
         for (int indColumna = 0; indColumna < columnModel.getColumnCount(); indColumna++) {
             Class<?> columnClass = this.getColumnClass(indColumna);
@@ -50,11 +46,21 @@ public class TableModelProducts extends DefaultTableModel {
         }
 
 
+
         tableResults.setModel(this);
-        tableResults.packAll();
+
+
+
+        tableResults.setRowSorter(rowSorter);
+        leftRenderer.setHorizontalAlignment(DefaultTableCellRenderer.LEFT);
+
+        for (int i = 0; i < tableResults.getColumnCount(); i++) {
+            tableResults.getColumnModel().getColumn(i).setCellRenderer(leftRenderer);
+        }
+
         tableResults.setPreferredScrollableViewportSize(dim);
 
-
+        tableResults.packAll();
 
 
     }

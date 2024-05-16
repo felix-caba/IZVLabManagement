@@ -116,7 +116,6 @@ public abstract class Producto {
 
         return switch (nombreColumna) {
 
-
             case "id" -> this.getId();
             case "cantidad" -> this.getCantidad();
             case "nombre" -> this.getNombre();

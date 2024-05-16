@@ -15,7 +15,7 @@ import BackEnd.Producto;
 import BackEnd.Productos.Auxiliar;
 import BackEnd.Productos.Material;
 import BackEnd.Productos.Reactivo;
-import BackEnd.TableModelProducts;
+import BackEnd.Tablas.TableModelGlobal;
 import com.formdev.flatlaf.FlatClientProperties;
 import org.jdesktop.swingx.JXTable;
 
@@ -26,9 +26,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class SearchResultMenu extends JFrame implements Themeable {
+public class BusquedaProducto extends JFrame implements Themeable {
     private JPanel panelSearchMenu;
     private PanelRound panelRoundSearchResults;
     private JScrollPane scrollPane;
@@ -44,17 +43,104 @@ public class SearchResultMenu extends JFrame implements Themeable {
     private ArrayList<Producto> searchResults;
     private ArrayList<TableChange> tableChanges = new ArrayList<TableChange>();
 
+    public BusquedaProducto(ArrayList<Producto> searchResults, boolean isAdmin, TYPE typeProduct) {
+
+
+        this.searchResults = searchResults;
+        this.isAdmin = isAdmin;
+        this.typeProduct = typeProduct;
+
+        adminButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
+        saveButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
+        addButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
+        deleteButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
+        panelRoundSearchResults.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,3%);");
+
+        initComponents();
+
+        DefaultTableModel model = (DefaultTableModel) tableResults.getModel();
+
+        adminButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+
+                if (isButtonPressed) {
+                    isButtonPressed = false;
+                    tableResults.setEditable(false);
+                    tableResults.setEditable(false);
+                    adminButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
+                    addButton.setEnabled(false);
+                    saveButton.setEnabled(false);
+                } else {
+                    isButtonPressed = true;
+                    tableResults.setEditable(true);
+                    tableResults.setEditable(true);
+                    adminButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,40%);");
+                    addButton.setEnabled(true);
+                    saveButton.setEnabled(true);
+                }
+            }
+        });
+
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                Producto productoNuevo = createNewProduct();
+                searchResults.add(productoNuevo);
+                addProductToRow(productoNuevo);
+            }
+        });
+
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+
+                int selectedRow = tableResults.getSelectedRow();
+                model.removeRow(selectedRow);
+
+
+            }
+        });
+
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ProductoDAOImpl productoDAO = new ProductoDAOImpl();
+                for (TableChange change : tableChanges) {
+                    switch (change.getChangeType()) {
+                        case INSERT:
+                            System.out.println("INSERT EJECUTADO");
+                            System.out.println(change.getProducto().toString());
+                            productoDAO.insert(change.getProducto());
+                            break;
+                        case UPDATE:
+                            System.out.println("UPDATE EJECUTADO");
+                            System.out.println(change.getProducto().toString());
+                            productoDAO.update(change.getProducto());
+                            break;
+                        case DELETE:
+                            System.out.println("DELETE EJECUTADO");
+                            System.out.println(change.getProducto().toString());
+                            productoDAO.delete(change.getProducto());
+                            break;
+                    }
+                }
+                tableChanges.clear();
+            }
+        });
+
+    }
+
     public void initComponents() {
 
 
-        TableModelProducts model = new TableModelProducts(getData(searchResults), getColumnNames(searchResults), tableResults);
+        TableModelGlobal model = new TableModelGlobal(getData(searchResults), getColumnNames(searchResults), tableResults);
         tableResults.setModel(model);
 
-
-
         /*Tamaño de la ventana y posicion*/
-
         // Set size para ocupar el 70% de la pantalla consigue valores de la pantalla a través de screensize
+
+
         int sizeX = (int) (ScreenSize.getScreenWidth() * 0.7);
         int sizeY = (int) (ScreenSize.getScreenHeight() * 0.7);
         int sizeXMax = (ScreenSize.getScreenWidth());
@@ -75,13 +161,13 @@ public class SearchResultMenu extends JFrame implements Themeable {
         addButton.setName("addButton");
         deleteButton.setName("deleteButton");
 
+
+
         setIcons(this);
 
         if (isAdmin) {
             adminButton.setEnabled(true);
         }
-
-
 
         /*
          *
@@ -117,9 +203,6 @@ public class SearchResultMenu extends JFrame implements Themeable {
                     searchResults.remove(row);
 
                 }
-
-
-
             }
         });
 
@@ -146,9 +229,6 @@ public class SearchResultMenu extends JFrame implements Themeable {
                     if (columnName.equals("riesgos")) {
 
                         Object cellValue = tableResults.getValueAt(row, column);
-
-
-
 
                         RIESGOS[] riesgos = ParseRiesgos.parseRiesgos((String) cellValue);
 
@@ -213,6 +293,14 @@ public class SearchResultMenu extends JFrame implements Themeable {
             }
         });
 
+        TableColumnModel columnModel = tableResults.getColumnModel();
+        for (int indColumna = 0; indColumna < columnModel.getColumnCount(); indColumna++) {
+            Class<?> columnClass = model.getColumnClass(indColumna);
+            if (LocalDate.class.isAssignableFrom(columnClass)) {
+                // pone el editor de celda fecha
+                columnModel.getColumn(indColumna).setCellEditor(new LocalDateCellEditor());
+            }
+        }
 
         tableResults.setRowSorter(model.getRowSorter());
         filterFunc(model.getRowSorter());
@@ -223,93 +311,8 @@ public class SearchResultMenu extends JFrame implements Themeable {
 
     }
 
-    public SearchResultMenu(ArrayList<Producto> searchResults, boolean isAdmin, TYPE typeProduct) {
 
 
-        this.searchResults = searchResults;
-        this.isAdmin = isAdmin;
-        this.typeProduct = typeProduct;
-
-        adminButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
-        saveButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
-        addButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
-        deleteButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
-        panelRoundSearchResults.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,3%);");
-
-        initComponents();
-
-        DefaultTableModel model = (DefaultTableModel) tableResults.getModel();
-
-        adminButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (isButtonPressed) {
-                    isButtonPressed = false;
-                    tableResults.setEditable(false);
-                    tableResults.setEditable(false);
-                    adminButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
-                    addButton.setEnabled(false);
-                    saveButton.setEnabled(false);
-                } else {
-                    isButtonPressed = true;
-                    tableResults.setEditable(true);
-                    tableResults.setEditable(true);
-                    adminButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,40%);");
-                    addButton.setEnabled(true);
-                    saveButton.setEnabled(true);
-                }
-            }
-        });
-
-
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                Producto productoNuevo = createNewProduct();
-                searchResults.add(productoNuevo);
-                addProductToRow(productoNuevo);
-            }
-        });
-
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-
-                int selectedRow = tableResults.getSelectedRow();
-                model.removeRow(selectedRow);
-
-
-            }
-        });
-
-        saveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ProductoDAOImpl productoDAO = new ProductoDAOImpl();
-                    for (TableChange change : tableChanges) {
-                        switch (change.getChangeType()) {
-                            case INSERT:
-                                System.out.println("INSERT EJECUTADO");
-                                System.out.println(change.getProducto().toString());
-                                productoDAO.insert(change.getProducto());
-                                break;
-                            case UPDATE:
-                                System.out.println("UPDATE EJECUTADO");
-                                System.out.println(change.getProducto().toString());
-                                productoDAO.update(change.getProducto());
-                                break;
-                            case DELETE:
-                                System.out.println("DELETE EJECUTADO");
-                                System.out.println(change.getProducto().toString());
-                                productoDAO.delete(change.getProducto());
-                                break;
-                        }
-                    }
-                    tableChanges.clear();
-            }
-        });
-
-    }
 
 
 
@@ -342,7 +345,6 @@ public class SearchResultMenu extends JFrame implements Themeable {
 
         return data;
     }
-
 
     public Producto createNewProduct() {
 
@@ -393,7 +395,6 @@ public class SearchResultMenu extends JFrame implements Themeable {
         }
 
     public void filterFunc(TableRowSorter rowSorter){
-
        filterField.getDocument().addDocumentListener(new DocumentListener(){
 
            @Override

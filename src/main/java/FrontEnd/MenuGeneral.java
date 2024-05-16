@@ -5,19 +5,22 @@
 package FrontEnd;
 
 import BackEnd.DAO.Impl.ProductoDAOImpl;
+import BackEnd.DAO.Impl.SitioDAOImpl;
 import BackEnd.DAO.Impl.UsuarioDAOImpl;
 import BackEnd.Extra.TYPE;
 import BackEnd.MySQL;
 import BackEnd.Producto;
+import BackEnd.Sitio;
 import BackEnd.Usuario;
 import com.formdev.flatlaf.FlatClientProperties;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static java.lang.Thread.sleep;
 
@@ -76,7 +79,7 @@ public class MenuGeneral extends JFrame implements Themeable {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                TYPE type;
+                TYPE type = null;
                 int selectedIndex = comboProducto.getSelectedIndex();
 
                 if (selectedIndex == 0) {
@@ -87,9 +90,9 @@ public class MenuGeneral extends JFrame implements Themeable {
                     type = TYPE.MATERIALES;
                 } else if (selectedIndex == 3) {
                     type = TYPE.USUARIOS;
-                } else if (selectedIndex == -4) {
+                } else if (selectedIndex == 4) {
                     type = TYPE.LOCALIZACION;
-                } else {
+                } else if (selectedIndex == 5) {
                     type = TYPE.UBICACION;
                 }
 
@@ -132,7 +135,7 @@ public class MenuGeneral extends JFrame implements Themeable {
     public void initComponents() {
 
         /*Tamaño de la ventana y posicion*/
-        setMinimumSize(new java.awt.Dimension(400, 300));
+        setMinimumSize(new Dimension(400, 300));
         setResizable(false);
         setLocationRelativeTo(null);
         setTitle("Login Window");
@@ -149,16 +152,28 @@ public class MenuGeneral extends JFrame implements Themeable {
 
             private ArrayList<Producto> productos;
             private ArrayList<Usuario> usuarios;
+            private ArrayList<Sitio> sitios;
+
             ProductoDAOImpl productoDAO = new ProductoDAOImpl();
+            SitioDAOImpl sitioDAO = new SitioDAOImpl();
             UsuarioDAOImpl usuarioDAO = UsuarioDAOImpl.getInstance();
+
 
             @Override
             protected Void doInBackground() throws Exception {
 
                 if (type == TYPE.USUARIOS) {
+
                      usuarios = usuarioDAO.select();
+
+                } else if (type == TYPE.LOCALIZACION || type == TYPE.UBICACION) {
+
+                      sitios = sitioDAO.getSitios(type);
+
                 } else {
+
                     productos = productoDAO.selectPType(type);
+
                 }
                 return null;
             }
@@ -167,29 +182,44 @@ public class MenuGeneral extends JFrame implements Themeable {
             protected void done() {
 
 
+                    if (isAdmin) {
 
-                if (productos != null || usuarios != null) {
+                        if (Objects.requireNonNull(type) == TYPE.USUARIOS) {
+                            new BusquedaUser(usuarios).setVisible(true);
+                        }
 
-                    if (type == TYPE.USUARIOS && isAdmin) {
-                        UserControlPanel ventana = new UserControlPanel(usuarios);
-                        ventana.setVisible(true);
 
-                        frame.onSucess("Carga completada");
 
-                    } else if (type == TYPE.USUARIOS && !isAdmin) {
+                        if (type == TYPE.LOCALIZACION || type == TYPE.UBICACION) {
 
-                        frame.onFail("No tienes permisos para acceder a esta sección");
 
-                    } else if (type != TYPE.USUARIOS){
-                        SearchResultMenu ventanaRes = new  SearchResultMenu(productos, isAdmin, type);
-                        ventanaRes.setVisible(true);
+                            System.out.println(productos);
+                            System.out.println(type);
 
-                        frame.onSucess("Carga completada");
+                            new BusquedaSitio(sitios, type).setVisible(true);
 
+
+                        }
+
+                        if (type == TYPE.REACTIVOS || type == TYPE.AUXILIARES || type == TYPE.MATERIALES) {
+
+
+                            new BusquedaProducto(productos, isAdmin, type).setVisible(true);
+
+                        }
+
+                    } else {
+                        // Si no es ni materiales ni auxiliares ni reactivos, no puede  acceder a la tabla
+                        if (type == TYPE.USUARIOS || type == TYPE.LOCALIZACION || type == TYPE.UBICACION) {
+
+
+
+                            System.out.println("Sin acceso");
+                        } else {
+                            new BusquedaProducto(productos, isAdmin, type).setVisible(true);
+                        }
                     }
-
-                }
-
+                    frame.setVisible(false);
 
         };
 

@@ -116,6 +116,7 @@ public class LoadingFrame extends JFrame implements Themeable, PropertyChangeLis
 
     public void propertyChange(PropertyChangeEvent evt) {
         setSqlBROADCAST((String) evt.getNewValue());
+        System.out.println(getSqlBROADCAST());
         setMessage("Ha ocurrido un error");
         errorLogButton.setVisible(true);
         progressBar1.setIndeterminate(false);

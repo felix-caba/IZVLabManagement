@@ -49,7 +49,7 @@ public class Usuario {
         this.es_admin = es_admin;
     }
 
-    public boolean isEs_admin() {
+    public boolean getEs_admin() {
         return es_admin;
     }
 

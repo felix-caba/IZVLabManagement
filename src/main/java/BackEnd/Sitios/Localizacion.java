@@ -17,6 +17,9 @@ public class Localizacion extends Sitio {
 
     }
 
-
+    @Override
+    public Object getValueForAttribute(String nombreColumna) {
+        return super.getValueForAttribute(nombreColumna);
+    }
 
 }

@@ -5,6 +5,7 @@
 package BackEnd.Extra;
 
 import BackEnd.Producto;
+import BackEnd.Sitio;
 import BackEnd.Usuario;
 
 public class TableChange<T> {
@@ -24,6 +25,7 @@ public class TableChange<T> {
     private ChangeType changeType;
     private Producto producto;
     private Usuario usuario;
+    private Sitio sitio;
 
     private T object;
 
@@ -36,6 +38,11 @@ public class TableChange<T> {
         this.changeType = changeType;
         this.usuario = usuario;
 
+    }
+
+    public TableChange(ChangeType changeType, Sitio sitio) {
+        this.changeType = changeType;
+        this.sitio = sitio;
     }
 
     public TableChange(ChangeType changeType, T object) {
@@ -62,5 +69,17 @@ public class TableChange<T> {
                 ", producto=" + usuario.toString() +
                 ", usuario=" + usuario +
                 '}';
+    }
+
+    public void setChangeType(ChangeType changeType) {
+        this.changeType = changeType;
+    }
+
+    public Sitio getSitio() {
+        return sitio;
+    }
+
+    public void setSitio(Sitio sitio) {
+        this.sitio = sitio;
     }
 }

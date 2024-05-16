@@ -60,28 +60,26 @@ public class SitioDAOImpl implements SitioDAO, SQLBroadcaster {
     @Override
     public ArrayList<Sitio> getSitios(TYPE type) {
 
-
         sql.connect();
+
+        ArrayList<Sitio> sitios = new ArrayList<>();
 
         try {
 
             if (type == TYPE.LOCALIZACION) {
-
-                return getLocalizaciones();
-
+                sitios.addAll(getLocalizaciones());
             } else {
-
-                return getUbicaciones();
-
+                sitios.addAll(getUbicaciones());
             }
+
         } catch (SQLException e) {
 
             sendBroadcast(e.getMessage());
 
         }
 
-
-        return null;
+        sql.disconnect();
+        return sitios;
 
     }
 
@@ -97,10 +95,11 @@ public class SitioDAOImpl implements SitioDAO, SQLBroadcaster {
 
 
         while (rs.next()){
-
+            System.out.println(rs.getInt("id") + " " + rs.getString("nombre"));
             Localizacion localizacion = new Localizacion();
             localizacion.setId(rs.getInt("id"));
             localizacion.setNombre(rs.getString("nombre"));
+            localizaciones.add(localizacion);
 
     }
 
@@ -112,17 +111,24 @@ public class SitioDAOImpl implements SitioDAO, SQLBroadcaster {
 
         ArrayList<Sitio> ubicaciones = new ArrayList<>();
 
-        String query = "SELECT * FROM ubicacion";
+        String query = "SELECT U.id, U.nombre, U.localizacion_ID, L.nombre AS nombre_localizacion " +
+                "FROM ubicacion U " +
+                "INNER JOIN localizacion L ON U.localizacion_ID = L.ID";
 
         ResultSet rs = null;
         PreparedStatement ps = sql.getConnection().prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
         rs = ps.executeQuery();
 
         while (rs.next()){
+
+
             Ubicacion ubicacion = new Ubicacion();
             ubicacion.setId(rs.getInt("id"));
             ubicacion.setNombre(rs.getString("nombre"));
-            ubicacion.getLocalizacionID(rs.getInt("localizacion_id"));
+            ubicacion.setLocalizacionID(rs.getInt("localizacion_id"));
+            ubicacion.setNombreLocalizacion(rs.getString("nombre_localizacion"));
+            ubicaciones.add(ubicacion);
+
         }
 
         return ubicaciones;
@@ -130,10 +136,10 @@ public class SitioDAOImpl implements SitioDAO, SQLBroadcaster {
     }
 
 
-
-
     @Override
     public void sendBroadcast(String message) {
+
+        pcs.firePropertyChange("SQL", null, message);
 
     }
 

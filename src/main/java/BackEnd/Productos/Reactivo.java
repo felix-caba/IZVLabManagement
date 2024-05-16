@@ -44,8 +44,6 @@ public class Reactivo extends Producto {
 
     }
 
-
-
     public String getFormato() {
         return formato;
     }

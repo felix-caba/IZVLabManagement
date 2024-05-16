@@ -24,17 +24,13 @@ import java.io.IOException;
 
 public class LabStart {
 
-
-
     public static void main(String[] args) {
 
         try {
 
             ConfigurationIZV.getInstance().loadConfigurationFile();
-
             setFont();
             setPropertiesTheme();
-
             ConfigurationIZV.LoadTheme();
 
         } catch (IOException e) {
@@ -43,8 +39,6 @@ public class LabStart {
             e.printStackTrace();
         }
 
-
-
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
@@ -52,9 +46,7 @@ public class LabStart {
             }
 
         });
-
     }
-
 
     public static void setFont() throws IOException, FontFormatException {
 
@@ -82,16 +74,10 @@ public class LabStart {
     }
 
     public static void setPropertiesTheme() {
-
-
         UIManager.put( "Button.arc", 75 );
         UIManager.put( "TextComponent.arc", 75 );
         UIManager.put( "ComboBox.selectionArc", 75 );
         UIManager.put( "Component.arc", 75 );
-
-
-
-
     }
 
 }

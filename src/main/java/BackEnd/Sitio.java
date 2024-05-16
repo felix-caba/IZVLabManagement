@@ -21,6 +21,20 @@ public abstract class Sitio {
 
     }
 
+
+
+    public Object getValueForAttribute(String nombreColumna) {
+
+        return switch (nombreColumna) {
+
+            case "id" -> this.getId();
+            case "nombre" -> this.getNombre();
+
+            default -> null;
+
+        };
+    }
+
     public int getId() {
         return id;
     }
