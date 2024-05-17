@@ -86,39 +86,7 @@ public class Reactivo extends Producto {
         this.stockMinimo = stockMinimo;
     }
 
-    public String[] getAllAttributesNamesString() {
-        return super.getAllAttributesNamesString(); // Llamada al método del padre
-    }
 
-    public Object getValueForAttribute(String attributeName) {
-        // Llama al método de la clase Productos para obtener los valores de los atributos heredados
-        Object value = super.getValueForAttribute(attributeName);
-
-        // Si el valor no es null, significa que el atributo está definido en Productos
-
-        if (value != null) {
-            return value;
-        }
-
-        // Si el atributo no está definido en Productos, busca en los atributos específicos de Reactivos
-
-        switch (attributeName) {
-            case "formato":
-                return this.formato;
-            case "riesgos":
-                return this.riesgos;
-            case "gradoPureza":
-                return this.gradoPureza;
-            case "fechaCaducidad":
-                return this.fechaCaducidad;
-            case "stockMinimo":
-                return this.stockMinimo;
-        }
-
-        return null;
-
-
-    }
 
     @Override
     public int getId() {

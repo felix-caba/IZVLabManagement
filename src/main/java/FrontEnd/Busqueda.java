@@ -24,7 +24,6 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXTable;
 
 import javax.swing.*;
@@ -34,7 +33,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.*;
 import javax.swing.text.Document;
-import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.FileNotFoundException;
@@ -42,7 +40,7 @@ import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class BusquedaProducto extends JFrame implements Themeable {
+public class Busqueda extends JFrame implements Themeable {
     private JPanel panelSearchMenu;
     private PanelRound panelRoundSearchResults;
     private JScrollPane scrollPane;
@@ -57,16 +55,18 @@ public class BusquedaProducto extends JFrame implements Themeable {
     public boolean isAdmin;
     private final TYPE typeProduct;
     private ArrayList searchResults;
-    private Document document;
-
-
+    private final LoadingFrame dialog = LoadingFrame.getInstance();
 
     @SuppressWarnings({"unchecked, rawtypes, unchecked cast", "Unchecked cast"})
 
-    public BusquedaProducto(ArrayList searchResults, boolean isAdmin, TYPE typeProduct) {
+    public Busqueda(ArrayList searchResults, boolean isAdmin, TYPE typeProduct) {
 
         if (isAdmin) {
             adminButton.setEnabled(true);
+        }
+
+        if (searchResults == null || searchResults.isEmpty()) {
+            dispose();
         }
 
 
@@ -125,7 +125,6 @@ public class BusquedaProducto extends JFrame implements Themeable {
                 }
             }
         });
-
         adminButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -268,19 +267,49 @@ public class BusquedaProducto extends JFrame implements Themeable {
                 }
 
 
-
-
-
-
-
             }
         });
-
         printButton.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
 
-                com.itextpdf.text.Document documento = new com.itextpdf.text.Document(PageSize.A4.rotate());
+                int respuesta = -1;
+
+                while (respuesta < 0 || respuesta > 4) {
+
+                    try {
+
+                        respuesta = Integer.parseInt(JOptionPane.showInputDialog("Especifica el tamaño de la página a crear (4, 3, 2, 1, 0)"));
+
+
+                    } catch (NumberFormatException e) {
+
+                        dialog.onFail("Introduce un número válido");
+
+
+                    }
+                }
+
+                com.itextpdf.text.Document documento = null;
+
+                switch (respuesta) {
+                    case 4:
+                        documento = new com.itextpdf.text.Document(PageSize.A4.rotate());
+                        break;
+                    case 3:
+                        documento = new com.itextpdf.text.Document(PageSize.A3.rotate());
+                        break;
+                    case 2:
+                         documento = new com.itextpdf.text.Document(PageSize.A2.rotate());
+                        break;
+                    case 1:
+                        documento = new com.itextpdf.text.Document(PageSize.A1.rotate());
+                        break;
+                    case 0:
+                        documento = new com.itextpdf.text.Document(PageSize.A0.rotate());
+                        break;
+                }
 
                 try {
 
@@ -300,25 +329,24 @@ public class BusquedaProducto extends JFrame implements Themeable {
                             if (tableResults.getModel().getValueAt(rows, cols) == null) {
                                 pdfTable.addCell("");
                             } else {
-                            pdfTable.addCell(tableResults.getModel().getValueAt(rows, cols).toString());
-                        }}
+                                pdfTable.addCell(tableResults.getModel().getValueAt(rows, cols).toString());
+                            }
+                        }
                     }
 
                     documento.add(pdfTable);
                     documento.close();
 
-                } catch (DocumentException e) {
-
-                    throw new RuntimeException(e);
-
-                } catch (FileNotFoundException e) {
-
-                    throw new RuntimeException(e);
-
+                } catch (DocumentException | FileNotFoundException e) {
+                    dialog.onFail(e.getMessage());
                 }
 
             }
         });
+
+        tableResults.packAll();
+
+
     }
 
     public void initComponents() {
@@ -333,6 +361,8 @@ public class BusquedaProducto extends JFrame implements Themeable {
         Dimension dim = new Dimension(sizeX, sizeY);
         Dimension dimMax = new Dimension(sizeXMax, sizeYMax);
 
+
+
         setSize(dim);
         setMinimumSize(dim);
         setMaximumSize(dimMax);
@@ -345,8 +375,6 @@ public class BusquedaProducto extends JFrame implements Themeable {
         adminButton.setName("adminButton");
         addButton.setName("addButton");
         deleteButton.setName("deleteButton");
-
-
 
         setIcons(this);
 
@@ -375,52 +403,21 @@ public class BusquedaProducto extends JFrame implements Themeable {
                         RIESGOS[] riesgos = ParseRiesgos.parseRiesgos((String) cellValue);
 
                         JPanel panel = new JPanel(new GridLayout(2, 3)); // 2 filas, 3 columnas
-                        boolean encontradoAtencion = false;
 
                         if (riesgos.length > 0) {
 
                             System.out.println(riesgos);
 
                             if (ConfigurationIZV.getInstance().isDark()) {
-
-                                for (RIESGOS riesgo : riesgos) {
-                                    // Verificar si el riesgo es "Corrosivo", "Irritante" o "Nocivo"
-                                    if (!encontradoAtencion && (riesgo == RIESGOS.CORROSIVO || riesgo == RIESGOS.IRRITANTE || riesgo == RIESGOS.NOCIVO)) {
-                                        // Mostrar el icono de atención
-                                        ImageIcon iconAtencion = new ImageIcon("src/main/resources/riesgos/white/atencion.png");
-                                        JLabel labelAtencion = new JLabel(iconAtencion);
-                                        panel.add(labelAtencion);
-
-                                        // Mostrar el icono correspondiente al riesgo
-                                        ImageIcon iconRiesgo = new ImageIcon("src/main/resources/riesgos/white/" + riesgo.toString() + ".png");
-                                        JLabel labelRiesgo = new JLabel(iconRiesgo);
-                                        panel.add(labelRiesgo);
-                                        encontradoAtencion = true; // Marcar que se ha encontrado un riesgo de atención
-
-                                    } else {
-                                        // Mostrar solo el icono correspondiente al riesgo
-                                        ImageIcon icon = new ImageIcon("src/main/resources/riesgos/white/" + riesgo.toString() + ".png");
-                                        JLabel label = new JLabel(icon);
-                                        panel.add(label);
-                                    }
-                                }
-
+                                displayRiesgosIcons(riesgos, "white", panel);
+                            } else {
+                                displayRiesgosIcons(riesgos, "black", panel);
                             }
 
 
-
-
-                        } else {
-
-                            JLabel label = new JLabel("No hay riesgos");
-                            panel.add(label);
-
                         }
 
-
-                        JOptionPane.showMessageDialog(null, panel, "Título", JOptionPane.PLAIN_MESSAGE);
-
-
+                        JOptionPane.showMessageDialog(null, panel, "Riesgos del reactivo", JOptionPane.PLAIN_MESSAGE);
 
                     }
 
@@ -434,14 +431,14 @@ public class BusquedaProducto extends JFrame implements Themeable {
 
 
 
-        tableResults.packAll();
+
 
         pack();
+
 
         setLocationRelativeTo(null);
 
     }
-
 
     // Metodos Actuales
 
@@ -503,9 +500,6 @@ public class BusquedaProducto extends JFrame implements Themeable {
 
     }
 
-
-
-
     public void filterFunction(TableRowSorter rowSorter, JTextField filterField) {
 
         filterField.getDocument().addDocumentListener(new DocumentListener() {
@@ -543,11 +537,25 @@ public class BusquedaProducto extends JFrame implements Themeable {
     }
 
 
+    private void displayRiesgosIcons(RIESGOS[] riesgos,  String color, JPanel panel) {
 
+        boolean encontradoAtencion = false;
 
+        for (RIESGOS riesgo : riesgos) {
+            String basePath = "src/main/resources/riesgos/" + color + "/";
+            if (!encontradoAtencion && (riesgo == RIESGOS.CORROSIVO || riesgo == RIESGOS.IRRITANTE || riesgo == RIESGOS.NOCIVO)) {
+                addIconToPanel(basePath + "atencion.png", panel);
+                encontradoAtencion = true;
+            }
+            addIconToPanel(basePath + riesgo.toString().toLowerCase() + ".png", panel);
+        }
+    }
 
-
-
+    private void addIconToPanel(String iconPath, JPanel panel) {
+        ImageIcon icon = new ImageIcon(iconPath);
+        JLabel label = new JLabel(icon);
+        panel.add(label);
+    }
 
 
 

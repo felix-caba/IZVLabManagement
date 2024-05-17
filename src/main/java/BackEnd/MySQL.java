@@ -134,7 +134,7 @@ public class MySQL implements SQLBroadcaster{
 
             Statement statement = connection.createStatement();
 
-            String sql = "LOAD DATA LOCAL INFILE '" + formattedPath + "' INTO TABLE " + table + " FIELDS TERMINATED BY ';' LINES TERMINATED BY '\n' IGNORE 1 ROWS";
+            String sql = "LOAD DATA LOCAL INFILE '" + formattedPath + "' INTO TABLE " + table + " FIELDS TERMINATED BY ';' LINES TERMINATED BY '\n' IGNORE 0 ROWS";
             statement.executeUpdate(sql);
 
 

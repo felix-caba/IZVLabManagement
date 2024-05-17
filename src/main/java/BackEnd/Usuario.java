@@ -24,7 +24,6 @@ public class Usuario {
         this.nombre = nombre;
         this.contrasena = contrasena;
         this.es_admin = es_admin;
-
     }
 
     public String getNombre() {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="FrontEnd.MainMenu">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="FrontEnd.MenuDeInicio">
   <grid id="27dc6" binding="panelLogin" custom-create="true" layout-manager="FormLayout">
     <rowspec value="center:max(d;4px):noGrow"/>
     <rowspec value="top:10dlu:noGrow"/>
@@ -27,7 +27,7 @@
       <grid id="83c10" class="FrontEnd.PanelRound" binding="panelRoundLoginButtons" layout-manager="FormLayout">
         <rowspec value="center:d:grow"/>
         <rowspec value="top:7dlu:noGrow"/>
-        <rowspec value="center:33px:noGrow"/>
+        <rowspec value="center:25dlu:noGrow"/>
         <rowspec value="top:7dlu:noGrow"/>
         <rowspec value="center:d:noGrow"/>
         <colspec value="fill:max(d;4px):noGrow"/>

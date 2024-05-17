@@ -4,6 +4,8 @@
 
 package BackEnd.Extra;
 
+import BackEnd.Productos.Reactivo;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;

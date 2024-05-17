@@ -36,15 +36,11 @@ public class GenericTableModel<T> extends AbstractTableModel {
         this.columnNames = columnNames;
         this.changes = new ArrayList<>();
 
-
         int sizeX = (int) (ScreenSize.getScreenWidth() * 0.7);
         int sizeY = (int) (ScreenSize.getScreenHeight() * 0.7);
         Dimension dim = new Dimension(sizeX, sizeY);
 
         tableResults.setPreferredScrollableViewportSize(dim);
-
-
-
 
 
     }
@@ -104,10 +100,8 @@ public class GenericTableModel<T> extends AbstractTableModel {
 
     public void removeRow(int rowIndex) {
 
-
         changes.add(new TableChange(TableChange.ChangeType.DELETE, data.get(rowIndex)));
         data.remove(rowIndex);
-        System.out.println(changes.get(0).getObject());
         fireTableRowsDeleted(rowIndex, rowIndex);
 
     }
@@ -130,32 +124,28 @@ public class GenericTableModel<T> extends AbstractTableModel {
             if (o != null) {
                 return o.getClass();
             }
+
         }
 
         return Object.class;
 
     }
 
-
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
         return columnIndex != 0;
     }
 
-
-
-
-    private Field getField(Class<?> clazz, String fieldName) throws NoSuchFieldException {
-        while (clazz != null) {
+    private Field getField(Class<?> clase, String fieldName) throws NoSuchFieldException {
+        while (clase != null) {
             try {
-                return clazz.getDeclaredField(fieldName);
+                return clase.getDeclaredField(fieldName);
             } catch (NoSuchFieldException e) {
-                clazz = clazz.getSuperclass();
+                clase = clase.getSuperclass();
             }
         }
         throw new NoSuchFieldException("Field " + fieldName + " not found in class hierarchy.");
     }
-
 
     public ArrayList<TableChange> getChanges() {
         return changes;

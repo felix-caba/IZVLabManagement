@@ -111,6 +111,8 @@
               <model>
                 <item value="OSCURO"/>
                 <item value="CLARO"/>
+                <item value="DARCULA"/>
+                <item value="INTELLIJ"/>
               </model>
             </properties>
           </component>

@@ -19,12 +19,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import static java.lang.Thread.sleep;
 
-public class MenuGeneral extends JFrame implements Themeable {
+public class MenuDeBusqueda extends JFrame implements Themeable {
     private PanelRound panelRoundMenuGeneral;
     private JPanel panelMenuGeneral;
     private JButton backButton;
@@ -40,7 +40,7 @@ public class MenuGeneral extends JFrame implements Themeable {
     private boolean hasOpened = false;
 
 
-    public MenuGeneral(boolean isAdmin, String username) {
+    public MenuDeBusqueda(boolean isAdmin, String username) {
 
         MySQL sql = MySQL.getInstance();
         sql.addPropertyChangeListener(dialog);
@@ -55,7 +55,7 @@ public class MenuGeneral extends JFrame implements Themeable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                new MainMenu().setVisible(true);
+                new MenuDeInicio().setVisible(true);
             }
         });
         lupaButton.addActionListener(new ActionListener() {
@@ -106,7 +106,8 @@ public class MenuGeneral extends JFrame implements Themeable {
 
                     String path = fileChooser.getSelectedFile().getAbsolutePath();
                     productoDAO.loadTable(path, type);
-                    dialog.setVisible(true);
+
+                    dialog.onSucess("Carga completada");
 
                 }
 
@@ -115,30 +116,25 @@ public class MenuGeneral extends JFrame implements Themeable {
 
     }
 
-
-
     public void initComponents() {
-
         /*Tamaño de la ventana y posicion*/
         setMinimumSize(new Dimension(400, 300));
         setResizable(false);
         setLocationRelativeTo(null);
         setTitle("Login Window");
         properties();
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(panelMenuGeneral);
         pack();
-
-
     }
 
     public SwingWorker<Void, Void> loadingWorker(LoadingFrame frame, TYPE type) {
 
         SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 
-            private ArrayList<Producto> productos;
-            private ArrayList<Usuario> usuarios;
-            private ArrayList<Sitio> sitios;
+            // ? Por que no sé que tipo de dato voy a usar.
+
+            private ArrayList<?> result;
 
             final ProductoDAOImpl productoDAO = new ProductoDAOImpl();
             final SitioDAOImpl sitioDAO = new SitioDAOImpl();
@@ -148,37 +144,36 @@ public class MenuGeneral extends JFrame implements Themeable {
             protected Void doInBackground() throws Exception {
 
                 if (type == TYPE.USUARIOS) {
-
-                     usuarios = usuarioDAO.select();
-
+                     result = usuarioDAO.select();
                 } else if (type == TYPE.LOCALIZACION || type == TYPE.UBICACION) {
 
-                      sitios = sitioDAO.getSitios(type);
+                      result = sitioDAO.getSitios(type);
 
                 } else {
-                    productos = productoDAO.selectPType(type);
+                    result = productoDAO.selectPType(type);
                 }
                 return null;
             }
 
             @Override
             protected void done() {
+
+
+                if (result != null) {
+
+
                     if (isAdmin) {
                         if ((type) == TYPE.USUARIOS) {
-
                             hasOpened = true;
-
-                         //   new BusquedaUser(usuarios).setVisible(true);
-                            new BusquedaProducto(usuarios, isAdmin, type).setVisible(true);
-
+                            new Busqueda(result, isAdmin, type).setVisible(true);
                         }
                         if (type == TYPE.LOCALIZACION || type == TYPE.UBICACION) {
                             hasOpened = true;
-                            new BusquedaProducto(sitios, isAdmin, type).setVisible(true);
+                            new Busqueda(result, isAdmin, type).setVisible(true);
                         }
                         if (type == TYPE.REACTIVOS || type == TYPE.AUXILIARES || type == TYPE.MATERIALES) {
                             hasOpened = true;
-                            new BusquedaProducto(productos, isAdmin, type).setVisible(true);
+                            new Busqueda(result, isAdmin, type).setVisible(true);
                         }
                     } else {
                         if (type == TYPE.USUARIOS || type == TYPE.LOCALIZACION || type == TYPE.UBICACION) {
@@ -186,12 +181,14 @@ public class MenuGeneral extends JFrame implements Themeable {
 
                         } else {
                             hasOpened = true;
-                            new BusquedaProducto(productos, isAdmin, type).setVisible(true);
+                            new Busqueda(result, isAdmin, type).setVisible(true);
                         }
                     }
 
-                if (hasOpened) {
-                    frame.onSucess("Carga completada");
+                    if (hasOpened) {
+                        frame.onSucess("Carga completada");
+                    }
+
                 }
 
         };

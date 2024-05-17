@@ -1,6 +1,8 @@
 package BackEnd.Configuration;
 
 import BackEnd.Extra.Encriptador;
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.formdev.flatlaf.themes.FlatMacDarkLaf;
 import com.formdev.flatlaf.themes.FlatMacLightLaf;
 
@@ -30,7 +32,7 @@ public class ConfigurationIZV {
 
     public boolean isDark(){
 
-        if (appearance.equals("OSCURO") || appearance.equals("DARCULA")){
+        if (appearance.equals("OSCURO") || appearance.equals("DARCULA")) {
             return true;
         }
 
@@ -63,7 +65,6 @@ public class ConfigurationIZV {
         try{
 
             FileReader fr = new FileReader("src/main/java/BackEnd/Configuration/izvlab.config");
-
             properties.load(fr);
 
             // Carga la configuracion una vez abierto el archivo.
@@ -182,11 +183,16 @@ public class ConfigurationIZV {
     public static void LoadTheme() {
         switch (ConfigurationIZV.getInstance().getAppearance()) {
             case "OSCURO":
-
                 FlatMacDarkLaf.setup();
                 break;
             case "CLARO":
                 FlatMacLightLaf.setup();
+                break;
+            case "DARCULA":
+                FlatDarculaLaf.setup();
+                break;
+            case "INTELLIJ":
+                FlatIntelliJLaf.setup();
                 break;
 
         }

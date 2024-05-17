@@ -6,7 +6,6 @@
 
 package FrontEnd;
 
-import BackEnd.Configuration.ScreenSize;
 import com.formdev.flatlaf.FlatClientProperties;
 
 import javax.swing.*;
@@ -15,7 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-public class MainMenu extends JFrame implements Themeable {
+public class MenuDeInicio extends JFrame implements Themeable {
 
     private JPanel panelLogin;
     private JButton configLoginButton;
@@ -26,7 +25,7 @@ public class MainMenu extends JFrame implements Themeable {
     private PanelRound panelRoundLogo;
 
 
-    public MainMenu() {
+    public MenuDeInicio() {
 
 
         login_label.setText("Bienvenido, " + System.getProperty("user.name"));

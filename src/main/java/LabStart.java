@@ -4,16 +4,8 @@
  */
 
 import BackEnd.Configuration.ConfigurationIZV;
-import FrontEnd.LoginPanel;
-import FrontEnd.MainMenu;
-import FrontEnd.MenuGeneral;
-import FrontEnd.SettingMenu;
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatDarkLaf;
-import com.formdev.flatlaf.FlatLightLaf;
-import com.formdev.flatlaf.intellijthemes.FlatXcodeDarkIJTheme;
-import com.formdev.flatlaf.themes.FlatMacDarkLaf;
-import com.sun.tools.javac.Main;
+import FrontEnd.MenuDeBusqueda;
+import FrontEnd.MenuDeInicio;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
@@ -42,7 +34,7 @@ public class LabStart {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                new MenuGeneral(true, "fel").setVisible(true);
+                new MenuDeInicio().setVisible(true);
             }
 
         });

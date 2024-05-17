@@ -25,6 +25,7 @@ public class SettingMenu extends JFrame implements Themeable, Validable{
     private JTextField textField1;
     private JTextField textField2;
     private JLabel temaLabel;
+    private final LoadingFrame dialog = LoadingFrame.getInstance();
 
 
     public SettingMenu() {
@@ -51,9 +52,7 @@ public class SettingMenu extends JFrame implements Themeable, Validable{
                     // if a textbox is empty, do not change the value
 
                     if (!ipBDField.getText().isEmpty() && areValuesCorrect()) {
-
                         configurationIZV.setIp(ipBDField.getText());
-
 
                     }
                     if (!bdNameField.getText().isEmpty()) {
@@ -65,7 +64,6 @@ public class SettingMenu extends JFrame implements Themeable, Validable{
                     }
 
 
-
                     configurationIZV.setAppearance(comboTheme.getSelectedItem().toString());
 
                     ConfigurationIZV.getInstance().saveConfiguration();
@@ -75,6 +73,8 @@ public class SettingMenu extends JFrame implements Themeable, Validable{
                     ConfigurationIZV.LoadTheme();
 
                     FlatLaf.updateUI();
+
+                    setIcons(dialog);
 
                     setIcons(SettingMenu.this);
 
@@ -89,7 +89,7 @@ public class SettingMenu extends JFrame implements Themeable, Validable{
             public void actionPerformed(ActionEvent e) {
 
                 dispose();
-                new MainMenu().setVisible(true);
+                new MenuDeInicio().setVisible(true);
 
 
             }
@@ -107,7 +107,7 @@ public class SettingMenu extends JFrame implements Themeable, Validable{
         setLocationRelativeTo(null);
 
         setTitle("IZV Lab Management Tool 2024");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(panelSettings);
 
 

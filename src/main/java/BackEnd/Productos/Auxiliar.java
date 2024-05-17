@@ -27,32 +27,9 @@ public class Auxiliar extends Producto {
 
     }
 
-    public Object getValueForAttribute(String attributeName) {
 
 
-        Object value = super.getValueForAttribute(attributeName);
 
-
-        if (value != null) {
-            return value;
-        }
-
-
-        switch (attributeName) {
-
-            case "formato":
-                return this.formato;
-
-        }
-
-        return null;
-
-    }
-
-
-    public String[] getAllAttributesNamesString() {
-        return super.getAllAttributesNamesString(); // Llamada al método del padre
-    }
 
     public String getFormato() {
         return formato;

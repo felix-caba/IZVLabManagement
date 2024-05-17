@@ -48,7 +48,7 @@ public class LoginPanel extends JFrame implements Themeable {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 dispose();
-                new MainMenu().setVisible(true);
+                new MenuDeInicio().setVisible(true);
             }
         });
 
@@ -78,7 +78,7 @@ public class LoginPanel extends JFrame implements Themeable {
         setResizable(false);
         setLocationRelativeTo(null);
         setTitle("Login Window");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(panelWindowLogin);
         pack();
 
@@ -114,11 +114,11 @@ public class LoginPanel extends JFrame implements Themeable {
                         if (usuario.getNombre().equals(loginUsernameField.getText()) && usuario.getContrasena().equals(passwordField1.getText())) {
 
                             loggedMessage = "Bienvenido " + usuario.getNombre();
-                            new MenuGeneral(usuario.Es_admin(), usuario.getNombre()).setVisible(true);
+                            new MenuDeBusqueda(usuario.Es_admin(), usuario.getNombre()).setVisible(true);
                             dispose();
                             usuarioEncontrado = true;
 
-                            frame.setMessage(loggedMessage);
+                            frame.onSucess(loggedMessage);
 
                             break;
 
@@ -127,7 +127,7 @@ public class LoginPanel extends JFrame implements Themeable {
                     if (!usuarioEncontrado) {
                         loggedMessage = "Usuario o contraseña incorrectos";
 
-                        frame.setMessage(loggedMessage);
+                        frame.onFail(loggedMessage);
 
                     }
                 }
