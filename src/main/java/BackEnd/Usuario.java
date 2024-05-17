@@ -10,19 +10,21 @@ package BackEnd;
 
 public class Usuario {
 
+    private int id;
+
     private String nombre;
 
     private String contrasena;
 
     private boolean es_admin;
 
-    private int id;
 
     public Usuario(String nombre, String contrasena, boolean es_admin, int id) {
+        this.id = id;
         this.nombre = nombre;
         this.contrasena = contrasena;
         this.es_admin = es_admin;
-        this.id = id;
+
     }
 
     public String getNombre() {

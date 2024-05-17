@@ -68,7 +68,7 @@
               <forms/>
             </constraints>
             <properties>
-              <text value=""/>
+              <text value="Guardar"/>
             </properties>
           </component>
           <component id="ce9c8" class="javax.swing.JButton" binding="addButon">
@@ -77,7 +77,7 @@
               <forms/>
             </constraints>
             <properties>
-              <text value=""/>
+              <text value="Añadir"/>
             </properties>
           </component>
           <component id="3aed2" class="javax.swing.JButton" binding="backButton">
@@ -95,7 +95,7 @@
               <forms/>
             </constraints>
             <properties>
-              <text value=""/>
+              <text value="Borrar"/>
             </properties>
           </component>
         </children>

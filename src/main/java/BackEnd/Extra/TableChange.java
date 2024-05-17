@@ -5,14 +5,15 @@
 package BackEnd.Extra;
 
 import BackEnd.Producto;
+import BackEnd.Productos.Reactivo;
 import BackEnd.Sitio;
 import BackEnd.Usuario;
 
 public class TableChange<T> {
+
     public Object getObject() {
         return object;
     }
-
 
     // CON LA T ACEPTAR CUALQUIER OBJETO COMO PARAMETRIZADO. LO QUE SEA
 
@@ -50,34 +51,48 @@ public class TableChange<T> {
         this.object = object;
     }
 
+
+
     public ChangeType getChangeType() {
         return changeType;
     }
 
     public Producto getProducto() {
-        return producto;
+        // Gets actual Object and casts it to Producto
+        return (Producto) object;
     }
 
     public Usuario getUsuario() {
-        return usuario;
+        return (Usuario) object;
     }
+
+    public Sitio getSitio() {
+        return (Sitio) object;
+    }
+
 
     @Override
     public String toString() {
         return "TableChange{" +
-                "changeType=" + changeType +
-                ", producto=" + usuario.toString() +
-                ", usuario=" + usuario +
+                "object=" + object.toString().toString() +
+                ", changeType=" + changeType +
                 '}';
+    }
+
+    public String objectToReactivo() {
+
+        // cast object to Reactivo
+
+        Reactivo reactivo = (Reactivo) object;
+        return reactivo.toString();
+
     }
 
     public void setChangeType(ChangeType changeType) {
         this.changeType = changeType;
     }
 
-    public Sitio getSitio() {
-        return sitio;
-    }
+
 
     public void setSitio(Sitio sitio) {
         this.sitio = sitio;

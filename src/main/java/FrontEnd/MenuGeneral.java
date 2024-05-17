@@ -35,8 +35,9 @@ public class MenuGeneral extends JFrame implements Themeable {
     private JButton importarButton;
     private final LoadingFrame dialog = LoadingFrame.getInstance();
 
-    private boolean isAdmin;
-    private String username;
+    private final boolean isAdmin;
+    private final String username;
+    private boolean hasOpened = false;
 
 
     public MenuGeneral(boolean isAdmin, String username) {
@@ -47,24 +48,8 @@ public class MenuGeneral extends JFrame implements Themeable {
         this.isAdmin = isAdmin;
         this.username = username;
 
-        loggedAsLabel.setText("Has iniciado sesión como: " + username+ " " + (isAdmin ? "(Administrador)" : "(Usuario)"));
-
-        backButton.setName("backButton");
-        lupaButton.setName("lupaButton");
-        importarButton.setName("loadButton");
-
         initComponents();
         setIcons(this);
-
-        panelRoundMenuGeneral.putClientProperty( FlatClientProperties.STYLE,
-                "background: lighten(@background,3%);");
-        panelRoundMenuGeneralPreg.putClientProperty( FlatClientProperties.STYLE,
-                "background: lighten(@background,3%);");
-
-
-
-        // Prog funcional para ahorrarme unas lineas
-
 
         backButton.addActionListener(new ActionListener() {
             @Override
@@ -73,12 +58,12 @@ public class MenuGeneral extends JFrame implements Themeable {
                 new MainMenu().setVisible(true);
             }
         });
-
-
         lupaButton.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                hasOpened = false;
                 TYPE type = null;
                 int selectedIndex = comboProducto.getSelectedIndex();
 
@@ -101,7 +86,6 @@ public class MenuGeneral extends JFrame implements Themeable {
 
             }
         });
-
         importarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -128,6 +112,7 @@ public class MenuGeneral extends JFrame implements Themeable {
 
             }
         });
+
     }
 
 
@@ -139,6 +124,7 @@ public class MenuGeneral extends JFrame implements Themeable {
         setResizable(false);
         setLocationRelativeTo(null);
         setTitle("Login Window");
+        properties();
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setContentPane(panelMenuGeneral);
         pack();
@@ -154,10 +140,9 @@ public class MenuGeneral extends JFrame implements Themeable {
             private ArrayList<Usuario> usuarios;
             private ArrayList<Sitio> sitios;
 
-            ProductoDAOImpl productoDAO = new ProductoDAOImpl();
-            SitioDAOImpl sitioDAO = new SitioDAOImpl();
-            UsuarioDAOImpl usuarioDAO = UsuarioDAOImpl.getInstance();
-
+            final ProductoDAOImpl productoDAO = new ProductoDAOImpl();
+            final SitioDAOImpl sitioDAO = new SitioDAOImpl();
+            final UsuarioDAOImpl usuarioDAO = UsuarioDAOImpl.getInstance();
 
             @Override
             protected Void doInBackground() throws Exception {
@@ -171,55 +156,43 @@ public class MenuGeneral extends JFrame implements Themeable {
                       sitios = sitioDAO.getSitios(type);
 
                 } else {
-
                     productos = productoDAO.selectPType(type);
-
                 }
                 return null;
             }
 
             @Override
             protected void done() {
-
-
                     if (isAdmin) {
+                        if ((type) == TYPE.USUARIOS) {
 
-                        if (Objects.requireNonNull(type) == TYPE.USUARIOS) {
-                            new BusquedaUser(usuarios).setVisible(true);
+                            hasOpened = true;
+
+                         //   new BusquedaUser(usuarios).setVisible(true);
+                            new BusquedaProducto(usuarios, isAdmin, type).setVisible(true);
+
                         }
-
-
-
                         if (type == TYPE.LOCALIZACION || type == TYPE.UBICACION) {
-
-
-                            System.out.println(productos);
-                            System.out.println(type);
-
-                            new BusquedaSitio(sitios, type).setVisible(true);
-
-
+                            hasOpened = true;
+                            new BusquedaProducto(sitios, isAdmin, type).setVisible(true);
                         }
-
                         if (type == TYPE.REACTIVOS || type == TYPE.AUXILIARES || type == TYPE.MATERIALES) {
-
-
+                            hasOpened = true;
                             new BusquedaProducto(productos, isAdmin, type).setVisible(true);
-
                         }
-
                     } else {
-                        // Si no es ni materiales ni auxiliares ni reactivos, no puede  acceder a la tabla
                         if (type == TYPE.USUARIOS || type == TYPE.LOCALIZACION || type == TYPE.UBICACION) {
+                            frame.onFail("No tienes permisos para acceder a esta sección");
 
-
-
-                            System.out.println("Sin acceso");
                         } else {
+                            hasOpened = true;
                             new BusquedaProducto(productos, isAdmin, type).setVisible(true);
                         }
                     }
-                    frame.setVisible(false);
+
+                if (hasOpened) {
+                    frame.onSucess("Carga completada");
+                }
 
         };
 
@@ -233,6 +206,15 @@ public class MenuGeneral extends JFrame implements Themeable {
 
 }
 
-
+        public void properties() {
+            loggedAsLabel.setText("Has iniciado sesión como: " + username+ " " + (isAdmin ? "(Administrador)" : "(Usuario)"));
+            panelRoundMenuGeneral.putClientProperty( FlatClientProperties.STYLE,
+                    "background: lighten(@background,3%);");
+            panelRoundMenuGeneralPreg.putClientProperty( FlatClientProperties.STYLE,
+                    "background: lighten(@background,3%);");
+            backButton.setName("backButton");
+            lupaButton.setName("lupaButton");
+            importarButton.setName("loadButton");
+        }
 
 }

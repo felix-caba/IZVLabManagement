@@ -64,6 +64,7 @@
               <component id="66afc" class="org.jdesktop.swingx.JXTable" binding="tableResults">
                 <constraints/>
                 <properties>
+                  <autoCreateRowSorter value="false"/>
                   <autoResizeMode value="0"/>
                   <cellSelectionEnabled value="true"/>
                   <columnMargin value="0"/>
@@ -128,6 +129,15 @@
           <forms defaultalign-horz="false"/>
         </constraints>
         <properties/>
+      </component>
+      <component id="62a99" class="javax.swing.JButton" binding="printButton">
+        <constraints>
+          <grid row="2" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties>
+          <text value="Imprimir"/>
+        </properties>
       </component>
     </children>
   </grid>

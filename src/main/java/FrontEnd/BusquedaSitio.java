@@ -114,17 +114,14 @@ public class BusquedaSitio extends JFrame implements Themeable {
                     switch (change.getChangeType()) {
                         case INSERT:
                             System.out.println("INSERT EJECUTADO");
-                            System.out.println(change.getSitio().toString());
                             sitioDAO.insertarSitio(change.getSitio());
                             break;
                         case UPDATE:
                             System.out.println("UPDATE EJECUTADO");
-                            System.out.println(change.getSitio().toString());
                             sitioDAO.modificarSitio(change.getSitio());
                             break;
                         case DELETE:
                             System.out.println("DELETE EJECUTADO");
-                            System.out.println(change.getSitio().toString());
                             sitioDAO.eliminarSitio(change.getSitio());
                             break;
                     }

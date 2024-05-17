@@ -9,22 +9,34 @@
 package BackEnd.Tablas;
 
 import BackEnd.Configuration.ScreenSize;
+import BackEnd.Extra.TableChange;
+import BackEnd.Usuario;
 import FrontEnd.LocalDateCellEditor;
 import org.jdesktop.swingx.JXTable;
 
 import javax.swing.table.*;
 import java.awt.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class TableModelGlobal extends DefaultTableModel {
 
     private TableRowSorter<TableModel> rowSorter ;
-    DefaultTableCellRenderer leftRenderer = new DefaultTableCellRenderer();
+    private DefaultTableCellRenderer leftRenderer = new DefaultTableCellRenderer();
+    private ArrayList<Object> resultados;
 
-    public TableModelGlobal(Object[][] data, Object[] columnNames, JXTable tableResults) {
+    public TableModelGlobal(Object[][] data, Object[] columnNames,
+                            JXTable tableResults) {
 
 
         super(data, columnNames);
+
+
+
+        this.resultados = resultados;
+
+
+
         TableColumnModel columnModel = tableResults.getColumnModel();
 
 
@@ -46,9 +58,7 @@ public class TableModelGlobal extends DefaultTableModel {
         }
 
 
-
         tableResults.setModel(this);
-
 
 
         tableResults.setRowSorter(rowSorter);
@@ -59,7 +69,6 @@ public class TableModelGlobal extends DefaultTableModel {
         }
 
         tableResults.setPreferredScrollableViewportSize(dim);
-
         tableResults.packAll();
 
 

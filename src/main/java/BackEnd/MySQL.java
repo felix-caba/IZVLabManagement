@@ -113,9 +113,7 @@ public class MySQL implements SQLBroadcaster{
             url = DB_URL + ip + "/" + configuration.getBdName()+"?allowLoadLocalInfile=true";
 
             DriverManager.setLoginTimeout(3);
-
             connection = DriverManager.getConnection(url, user, password);
-
 
         } catch (SQLException e) {
             sendBroadcast(e.getMessage());

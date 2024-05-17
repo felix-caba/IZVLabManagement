@@ -9,11 +9,13 @@ import BackEnd.Extra.TableChange;
 import BackEnd.Tablas.UsuarioTableModel;
 import BackEnd.Usuario;
 import com.formdev.flatlaf.FlatClientProperties;
+import com.mysql.cj.xdevapi.Table;
 
 import javax.swing.*;
 import javax.swing.table.TableColumn;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 public class BusquedaUser extends JFrame implements Themeable {
@@ -34,6 +36,9 @@ public class BusquedaUser extends JFrame implements Themeable {
 
         UsuarioTableModel tableModel = new UsuarioTableModel(usuarios, new ArrayList<>());
 
+
+
+
         table1.setModel(tableModel);
         initComponents();
 
@@ -49,18 +54,11 @@ public class BusquedaUser extends JFrame implements Themeable {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                int lastUserId = 0;
+                int lastID = usuarios.isEmpty() ? 0 : usuarios.get(usuarios.size() - 1).getId();
+                int newID = lastID + 1;
 
-                if (!usuarios.isEmpty()) {
-
-                    lastUserId = usuarios.get(usuarios.size() - 1).getId();
-
-                }
-
-                Usuario nuevoUsuario = new Usuario("", "", false,lastUserId + 1);
-
+                Usuario nuevoUsuario = new Usuario("", "", false,newID);
                 tableModel.addUsuario(nuevoUsuario);
-
                 tableModel.getChanges().add(new TableChange(TableChange.ChangeType.INSERT, nuevoUsuario));
 
 
@@ -77,6 +75,7 @@ public class BusquedaUser extends JFrame implements Themeable {
                     tableModel.removeUsuario(selectedRow);
                    // tableModel.getChanges().add(new TableChange(TableChange.ChangeType.DELETE, usuarios.get(selectedRow)));
                 }
+
             }
         });
 
@@ -89,21 +88,26 @@ public class BusquedaUser extends JFrame implements Themeable {
                 UsuarioDAOImpl usuarioDAO = UsuarioDAOImpl.getInstance();
 
                 for (TableChange change : changes) {
+
+                    System.out.println(change.getChangeType());
+
                     switch (change.getChangeType()) {
                         case INSERT:
+                            System.out.println("Inserting");
                             usuarioDAO.insert(change.getUsuario());
                             break;
                         case UPDATE:
+                            System.out.println("Updating");
                             usuarioDAO.update(change.getUsuario());
                             break;
                         case DELETE:
+                            System.out.println("Deleting");
                             usuarioDAO.delete(change.getUsuario());
                             break;
                     }
                 }
-
+                changes.clear();
             }
-
         });
 
     }
@@ -120,7 +124,7 @@ public class BusquedaUser extends JFrame implements Themeable {
         setResizable(false);
         setLocationRelativeTo(null);
 
-        TableColumn adminColumn = table1.getColumnModel().getColumn(3); // Cambia el número 3 por el índice de la columna "Es Admin?"
+        TableColumn adminColumn = table1.getColumnModel().getColumn(3);
         JComboBox<String> comboBox = new JComboBox<>(new String[]{"true", "false"});
         adminColumn.setCellEditor(new DefaultCellEditor(comboBox));
 

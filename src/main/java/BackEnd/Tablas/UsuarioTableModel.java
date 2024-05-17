@@ -102,9 +102,11 @@ import java.util.ArrayList;
 
 
         public void addUsuario(Usuario usuario) {
+
             usuarios.add(usuario);
             changes.add(new TableChange(TableChange.ChangeType.INSERT, usuario));
             fireTableRowsInserted(usuarios.size() - 1, usuarios.size() - 1);
+
         }
 
         public void removeUsuario(int rowIndex) {

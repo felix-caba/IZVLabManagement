@@ -7,23 +7,38 @@ package FrontEnd;
 import BackEnd.Configuration.ConfigurationIZV;
 import BackEnd.Configuration.ScreenSize;
 import BackEnd.DAO.Impl.ProductoDAOImpl;
-import BackEnd.Extra.ParseRiesgos;
-import BackEnd.Extra.RIESGOS;
-import BackEnd.Extra.TYPE;
-import BackEnd.Extra.TableChange;
+import BackEnd.DAO.Impl.SitioDAOImpl;
+import BackEnd.DAO.Impl.UsuarioDAOImpl;
+import BackEnd.Extra.*;
 import BackEnd.Producto;
 import BackEnd.Productos.Auxiliar;
 import BackEnd.Productos.Material;
 import BackEnd.Productos.Reactivo;
-import BackEnd.Tablas.TableModelGlobal;
+import BackEnd.Sitio;
+import BackEnd.Sitios.Localizacion;
+import BackEnd.Sitios.Ubicacion;
+import BackEnd.Tablas.GenericTableModel;
+import BackEnd.Usuario;
 import com.formdev.flatlaf.FlatClientProperties;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import org.jdesktop.swingx.JXLabel;
 import org.jdesktop.swingx.JXTable;
 
 import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.*;
+import javax.swing.text.Document;
+import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -37,13 +52,54 @@ public class BusquedaProducto extends JFrame implements Themeable {
     private JButton addButton;
     private JButton deleteButton;
     private JTextField filterField;
+    private JButton printButton;
     public boolean isButtonPressed = false;
     public boolean isAdmin;
-    private TYPE typeProduct;
-    private ArrayList<Producto> searchResults;
-    private ArrayList<TableChange> tableChanges = new ArrayList<TableChange>();
+    private final TYPE typeProduct;
+    private ArrayList searchResults;
+    private Document document;
 
-    public BusquedaProducto(ArrayList<Producto> searchResults, boolean isAdmin, TYPE typeProduct) {
+
+
+    @SuppressWarnings({"unchecked, rawtypes, unchecked cast", "Unchecked cast"})
+
+    public BusquedaProducto(ArrayList searchResults, boolean isAdmin, TYPE typeProduct) {
+
+        if (isAdmin) {
+            adminButton.setEnabled(true);
+        }
+
+
+        initComponents();
+
+        GenericTableModel model = new GenericTableModel(searchResults, ConseguirCampos.getColumnNames(searchResults.get(0).getClass()), tableResults);
+        tableResults.setModel(model);
+        TableRowSorter<AbstractTableModel> rowSorter = new TableRowSorter<>(model);
+        tableResults.setRowSorter(rowSorter);
+        filterFunction(rowSorter, filterField);
+
+
+        TableColumnModel columnModel = tableResults.getColumnModel();
+        DefaultTableCellRenderer leftRenderer = new DefaultTableCellRenderer();
+        leftRenderer.setHorizontalAlignment(DefaultTableCellRenderer.LEFT);
+
+
+
+        for (int i = 0; i < tableResults.getColumnCount(); i++) {
+            Class<?> columnClass = tableResults.getColumnClass(i);
+            if (columnClass == Integer.class || columnClass == int.class) {
+                tableResults.getColumnModel().getColumn(i).setCellRenderer(leftRenderer);
+            }
+        }
+
+        for (int indColumna = 0; indColumna < columnModel.getColumnCount(); indColumna++) {
+
+            Class<?> columnClass = model.getColumnClass(indColumna);
+            if (LocalDate.class.isAssignableFrom(columnClass)) {
+                columnModel.getColumn(indColumna).setCellEditor(new LocalDateCellEditor());
+            }
+
+        }
 
 
         this.searchResults = searchResults;
@@ -56,9 +112,19 @@ public class BusquedaProducto extends JFrame implements Themeable {
         deleteButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
         panelRoundSearchResults.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,3%);");
 
-        initComponents();
 
-        DefaultTableModel model = (DefaultTableModel) tableResults.getModel();
+        tableResults.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent listSelectionEvent) {
+                if (!listSelectionEvent.getValueIsAdjusting()) {
+                    if (tableResults.getSelectedRow() != -1 && isAdmin && isButtonPressed) {
+                        deleteButton.setEnabled(true);
+                    } else {
+                        deleteButton.setEnabled(false);
+                    }
+                }
+            }
+        });
 
         adminButton.addActionListener(new ActionListener() {
             @Override
@@ -81,65 +147,184 @@ public class BusquedaProducto extends JFrame implements Themeable {
                 }
             }
         });
-
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                Producto productoNuevo = createNewProduct();
-                searchResults.add(productoNuevo);
-                addProductToRow(productoNuevo);
+
+                Object objetoDeMiLista = searchResults.get(0);
+
+                if (objetoDeMiLista instanceof Producto) {
+
+                    Producto productoNuevo = (Producto) createNewObject();
+                    model.addRow(productoNuevo);
+                    System.out.println(searchResults.size());
+                }
+
+                if (objetoDeMiLista instanceof Usuario) {
+
+                    Usuario usuarioNuevo = (Usuario) createNewObject();
+                    model.addRow(usuarioNuevo);
+
+                }
+
+                if (objetoDeMiLista instanceof Sitio) {
+
+                    Sitio sitioNuevo = (Sitio) createNewObject();
+                    model.addRow(sitioNuevo);
+
+                }
+
+
+                tableResults.changeSelection(searchResults.size(), 0, true, true);
+                tableResults.scrollRectToVisible(tableResults.getCellRect(searchResults.size(), 0, true));
+
             }
         });
-
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
 
                 int selectedRow = tableResults.getSelectedRow();
+                System.out.println(selectedRow);
                 model.removeRow(selectedRow);
-
 
             }
         });
-
         saveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                ArrayList<TableChange> tableChanges = model.getChanges();
+
                 ProductoDAOImpl productoDAO = new ProductoDAOImpl();
-                for (TableChange change : tableChanges) {
-                    switch (change.getChangeType()) {
-                        case INSERT:
-                            System.out.println("INSERT EJECUTADO");
-                            System.out.println(change.getProducto().toString());
-                            productoDAO.insert(change.getProducto());
-                            break;
-                        case UPDATE:
-                            System.out.println("UPDATE EJECUTADO");
-                            System.out.println(change.getProducto().toString());
-                            productoDAO.update(change.getProducto());
-                            break;
-                        case DELETE:
-                            System.out.println("DELETE EJECUTADO");
-                            System.out.println(change.getProducto().toString());
-                            productoDAO.delete(change.getProducto());
-                            break;
+                UsuarioDAOImpl usuarioDAO = UsuarioDAOImpl.getInstance();
+                SitioDAOImpl sitioDAO = new SitioDAOImpl();
+
+                Object newObject = searchResults.get(0);
+
+
+                if (newObject instanceof Producto) {
+                    for (TableChange change : tableChanges) {
+
+                        switch (change.getChangeType()) {
+                            case INSERT:
+                                System.out.println("INSERT EJECUTADO");
+                                productoDAO.insert(change.getProducto());
+                                break;
+                            case UPDATE:
+                                System.out.println("UPDATE EJECUTADO");
+                                productoDAO.update(change.getProducto());
+                                break;
+                            case DELETE:
+                                System.out.println("DELETE EJECUTADO");
+                                productoDAO.delete(change.getProducto());
+                                break;
+                        }
                     }
+                    tableChanges.clear();
                 }
-                tableChanges.clear();
+
+                if (newObject instanceof Usuario) {
+                    for (TableChange change : tableChanges) {
+                        switch (change.getChangeType()) {
+                            case INSERT:
+                                System.out.println("INSERT EJECUTADO");
+                                usuarioDAO.insert(change.getUsuario());
+                                break;
+                            case UPDATE:
+                                System.out.println("UPDATE EJECUTADO");
+                                usuarioDAO.update(change.getUsuario());
+                                break;
+                            case DELETE:
+                                System.out.println("DELETE EJECUTADO");
+                                usuarioDAO.delete(change.getUsuario());
+                                break;
+                        }
+                    }
+                    tableChanges.clear();
+                }
+
+                if (newObject instanceof Sitio) {
+                    for (TableChange change : tableChanges) {
+
+                        System.out.println(tableChanges.size()   );
+
+                        switch (change.getChangeType()) {
+                            case INSERT:
+                                System.out.println("INSERT EJECUTADO");
+                                sitioDAO.insertarSitio(change.getSitio());
+                                break;
+                            case UPDATE:
+                                System.out.println("UPDATE EJECUTADO");
+                                sitioDAO.modificarSitio(change.getSitio());
+                                break;
+                            case DELETE:
+                                System.out.println("DELETE EJECUTADO");
+                                sitioDAO.eliminarSitio(change.getSitio());
+                                break;
+                        }
+                    }
+                    tableChanges.clear();
+                }
+
+
+
+
+
+
+
             }
         });
 
+        printButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+
+                com.itextpdf.text.Document documento = new com.itextpdf.text.Document(PageSize.A4.rotate());
+
+                try {
+
+                    PdfWriter writer = PdfWriter.getInstance(documento, new FileOutputStream("tabla.pdf"));
+                    documento.open();
+                    PdfPTable pdfTable = new PdfPTable(tableResults.getColumnCount());
+
+                    // coger columnas
+                    for (int i = 0; i < tableResults.getColumnCount(); i++) {
+                        pdfTable.addCell(tableResults.getColumnName(i));
+                    }
+
+                    // coger filas
+                    for (int rows = 0; rows < tableResults.getRowCount() - 1; rows++) {
+                        for (int cols = 0; cols < tableResults.getColumnCount(); cols++) {
+
+                            if (tableResults.getModel().getValueAt(rows, cols) == null) {
+                                pdfTable.addCell("");
+                            } else {
+                            pdfTable.addCell(tableResults.getModel().getValueAt(rows, cols).toString());
+                        }}
+                    }
+
+                    documento.add(pdfTable);
+                    documento.close();
+
+                } catch (DocumentException e) {
+
+                    throw new RuntimeException(e);
+
+                } catch (FileNotFoundException e) {
+
+                    throw new RuntimeException(e);
+
+                }
+
+            }
+        });
     }
 
     public void initComponents() {
 
-
-        TableModelGlobal model = new TableModelGlobal(getData(searchResults), getColumnNames(searchResults), tableResults);
-        tableResults.setModel(model);
-
         /*Tamaño de la ventana y posicion*/
         // Set size para ocupar el 70% de la pantalla consigue valores de la pantalla a través de screensize
-
 
         int sizeX = (int) (ScreenSize.getScreenWidth() * 0.7);
         int sizeY = (int) (ScreenSize.getScreenHeight() * 0.7);
@@ -175,49 +360,6 @@ public class BusquedaProducto extends JFrame implements Themeable {
          *
          */
 
-        model.addTableModelListener(new TableModelListener() {
-
-            // Listener de la tabla.
-
-            @Override
-            public void tableChanged(TableModelEvent tableModelEvent) {
-
-                int row = tableModelEvent.getFirstRow();
-                int getType = tableModelEvent.getType();
-
-                if (getType == TableModelEvent.UPDATE) {
-
-                    System.out.println("UPDATE");
-                    tableChanges.add(new TableChange(TableChange.ChangeType.UPDATE, searchResults.get(row)));
-
-                } else if (getType == TableModelEvent.INSERT) {
-
-                    System.out.println("INSERT");
-                    tableChanges.add(new TableChange(TableChange.ChangeType.INSERT, searchResults.get(row)));
-                    tableResults.scrollRectToVisible(tableResults.getCellRect(row+1, 0, true));
-
-                } else if (getType == TableModelEvent.DELETE) {
-
-                    System.out.println("UPDATE");
-                    tableChanges.add(new TableChange(TableChange.ChangeType.DELETE, searchResults.get(row)));
-                    searchResults.remove(row);
-
-                }
-            }
-        });
-
-        tableResults.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent listSelectionEvent) {
-                if (!listSelectionEvent.getValueIsAdjusting()) {
-                    if (tableResults.getSelectedRow() != -1 && isAdmin && isButtonPressed) {
-                        deleteButton.setEnabled(true);
-                    } else {
-                        deleteButton.setEnabled(false);
-                    }
-                }
-            }
-        });
 
         tableResults.addMouseListener(new MouseAdapter() {
             @Override
@@ -253,8 +395,8 @@ public class BusquedaProducto extends JFrame implements Themeable {
                                         ImageIcon iconRiesgo = new ImageIcon("src/main/resources/riesgos/white/" + riesgo.toString() + ".png");
                                         JLabel labelRiesgo = new JLabel(iconRiesgo);
                                         panel.add(labelRiesgo);
-
                                         encontradoAtencion = true; // Marcar que se ha encontrado un riesgo de atención
+
                                     } else {
                                         // Mostrar solo el icono correspondiente al riesgo
                                         ImageIcon icon = new ImageIcon("src/main/resources/riesgos/white/" + riesgo.toString() + ".png");
@@ -263,13 +405,9 @@ public class BusquedaProducto extends JFrame implements Themeable {
                                     }
                                 }
 
-                            } else {
-
-                                for (RIESGOS riesgo : riesgos) {
-
-                                }
-
                             }
+
+
 
 
                         } else {
@@ -280,9 +418,7 @@ public class BusquedaProducto extends JFrame implements Themeable {
                         }
 
 
-
                         JOptionPane.showMessageDialog(null, panel, "Título", JOptionPane.PLAIN_MESSAGE);
-
 
 
 
@@ -293,17 +429,12 @@ public class BusquedaProducto extends JFrame implements Themeable {
             }
         });
 
-        TableColumnModel columnModel = tableResults.getColumnModel();
-        for (int indColumna = 0; indColumna < columnModel.getColumnCount(); indColumna++) {
-            Class<?> columnClass = model.getColumnClass(indColumna);
-            if (LocalDate.class.isAssignableFrom(columnClass)) {
-                // pone el editor de celda fecha
-                columnModel.getColumn(indColumna).setCellEditor(new LocalDateCellEditor());
-            }
-        }
 
-        tableResults.setRowSorter(model.getRowSorter());
-        filterFunc(model.getRowSorter());
+
+
+
+
+        tableResults.packAll();
 
         pack();
 
@@ -312,126 +443,122 @@ public class BusquedaProducto extends JFrame implements Themeable {
     }
 
 
-
-
-
-
-
     // Metodos Actuales
 
-    public String[] getColumnNames(ArrayList<Producto> searchResults) {
+    public Object createNewObject() {
 
-        return searchResults.get(0).getAllAttributesNamesString();
+        Object newObject = searchResults.get(0);
 
-    }
+        System.out.println(newObject.getClass());
 
-    public Object[][] getData(ArrayList<Producto> searchResults) {
+        if (newObject instanceof Producto) {
 
-        Object[][] data = new Object[searchResults.size()][searchResults.get(0).getAllAttributesNamesString().length];
+            ArrayList<Producto> searchResults = (ArrayList<Producto>) this.searchResults;
 
-        for (int i = 0; i < searchResults.size(); i++) {
+            int lastID = searchResults.get(searchResults.size() - 1).getId();
+            int newID = lastID + 1;
 
-            Producto producto = searchResults.get(i);
+            switch (typeProduct) {
 
-            Object[] rowData = new Object[producto.getAllAttributesNamesString().length];
+                case REACTIVOS:
+                    return new Reactivo(newID, 0, null, null, null,
+                            null, null, null, null, 0);
+                case AUXILIARES:
+                    return new Auxiliar(newID, 0, null, null, null, null);
 
-            for (int j = 0; j < producto.getAllAttributesNamesString().length; j++) {
-
-                rowData[j] = producto.getValueForAttribute(producto.getAllAttributesNamesString()[j]);
-
+                case MATERIALES:
+                    return new Material(newID, 0, null, null, null,
+                            null, null, null, null, 0);
             }
-            data[i] = rowData;
-        }
 
-        return data;
-    }
+        } else if (newObject instanceof Sitio) {
 
-    public Producto createNewProduct() {
+            ArrayList<Sitio> searchResults = (ArrayList<Sitio>) this.searchResults;
 
-        int lastID = searchResults.isEmpty() ? 0 : searchResults.get(searchResults.size() - 1).getId();
-        // Sumarle uno a la ID del último producto
-        int newID = lastID + 1;
+            int lastID = searchResults.get(searchResults.size() - 1).getId();
+            int newID = lastID + 1;
 
-        switch (typeProduct) {
+            System.out.println("UBICACION");
 
-            case REACTIVOS:
+            switch (typeProduct) {
+                case LOCALIZACION:
+                    return new Localizacion(newID, "");
+                case UBICACION:
+                    System.out.println("UBICACION");
+                    return new Ubicacion(newID, "", 0, "");
+            }
 
-                return new Reactivo(newID, 0, null, null, null,
-                        null, null, null, null, 0);
+        } else if (newObject instanceof Usuario) {
 
-            case AUXILIARES:
+            ArrayList<Usuario> searchResults = (ArrayList<Usuario>) this.searchResults;
 
-                return new Auxiliar(newID, 0, null, null, null, null);
+            int lastID = searchResults.get(searchResults.size() - 1).getId();
+            int newID = lastID + 1;
 
-            case MATERIALES:
-
-                return new Material(newID, 0, null, null, null,
-                        null, null, null, null, 0);
-
+            return new Usuario("", "", false, newID);
 
         }
 
         return null;
+
     }
 
-    public void addProductToRow(Producto producto) {
-        // Obtener los nombres de los atributos del Producto
-        String[] attributeNames = producto.getAllAttributesNamesString();
 
-        // Crear un array para almacenar los valores de los atributos del Producto
-        Object[] rowData = new Object[attributeNames.length];
 
-        for (int i = 0; i < attributeNames.length; i++) {
 
-            Object attributeValue = producto.getValueForAttribute(attributeNames[i]);
+    public void filterFunction(TableRowSorter rowSorter, JTextField filterField) {
 
-            rowData[i] = attributeValue;
+        filterField.getDocument().addDocumentListener(new DocumentListener() {
 
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                String text = filterField.getText();
+
+                if (text.trim().isEmpty()) {
+                    rowSorter.setRowFilter(null);
+                } else {
+                    rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                }
             }
 
-        DefaultTableModel model = (DefaultTableModel) tableResults.getModel();
-        model.addRow(rowData);
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                String text = filterField.getText();
 
-        }
+                if (text.trim().isEmpty()) {
+                    rowSorter.setRowFilter(null);
+                } else {
+                    rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                }
+            }
 
-    public void filterFunc(TableRowSorter rowSorter){
-       filterField.getDocument().addDocumentListener(new DocumentListener(){
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                throw new UnsupportedOperationException("ETC");
+            }
 
-           @Override
-           public void insertUpdate(DocumentEvent e) {
-               String text = filterField.getText();
-
-               if (text.trim().length() == 0) {
-                   rowSorter.setRowFilter(null);
-               } else {
-                   rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
-               }
-           }
-
-           @Override
-           public void removeUpdate(DocumentEvent e) {
-               String text = filterField.getText();
-
-               if (text.trim().length() == 0) {
-                   rowSorter.setRowFilter(null);
-               } else {
-                   rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
-               }
-           }
-
-           @Override
-           public void changedUpdate(DocumentEvent e) {
-               throw new UnsupportedOperationException("ETC");
-           }
-
-       });
+        });
 
 
     }
 
 
 
-}
+
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
 
 
 

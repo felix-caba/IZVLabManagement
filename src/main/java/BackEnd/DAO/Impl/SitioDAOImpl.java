@@ -40,22 +40,141 @@ public class SitioDAOImpl implements SitioDAO, SQLBroadcaster {
 
         sql.connect();
 
+        if (sitio instanceof Localizacion) {
+
+            insertarLocalizacion((Localizacion) sitio);
+        } else {
+            insertarUbicacion((Ubicacion) sitio);
+        }
+
+        sql.disconnect();
+
     }
+
+    private void insertarLocalizacion(Localizacion localizacion) {
+
+        String query = "INSERT INTO localizacion (nombre) VALUES (?)";
+
+        try {
+
+            PreparedStatement ps = sql.getConnection().prepareStatement(query);
+            ps.setString(1, localizacion.getNombre());
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            sendBroadcast(e.getMessage());
+        }
+
+    }
+
+    private void insertarUbicacion(Ubicacion ubicacion) {
+
+        String query = "INSERT INTO ubicacion (nombre, localizacion_ID) VALUES (?, ?)";
+
+
+
+        try {
+
+            PreparedStatement ps = sql.getConnection().prepareStatement(query);
+            ps.setString(1, ubicacion.getNombre());
+            ps.setInt(2, ubicacion.getLocalizacionID());
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            sendBroadcast(e.getMessage());
+        }
+
+    }
+
+
 
     @Override
     public void modificarSitio(Sitio sitio) {
             sql.connect();
 
+            if (sitio instanceof Localizacion) {
+                modificarLocalizacion((Localizacion) sitio);
+            } else {
+                modificarUbicacion((Ubicacion) sitio);
+            }
 
+            sql.disconnect();
+    }
+
+    private void modificarLocalizacion(Localizacion localizacion) {
+
+        String query = "UPDATE localizacion SET nombre = ? WHERE id = ?";
+        try {
+            PreparedStatement ps = sql.getConnection().prepareStatement(query);
+            ps.setString(1, localizacion.getNombre());
+            ps.setInt(2, localizacion.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            sendBroadcast(e.getMessage());
+        }
 
     }
+
+    private void modificarUbicacion(Ubicacion ubicacion) {
+        String query = "UPDATE ubicacion SET nombre = ?, localizacion_ID = ? WHERE id = ?";
+        try {
+            PreparedStatement ps = sql.getConnection().prepareStatement(query);
+            ps.setString(1, ubicacion.getNombre());
+            ps.setInt(2, ubicacion.getLocalizacionID());
+            ps.setInt(3, ubicacion.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            sendBroadcast(e.getMessage());
+        }
+    }
+
+
+
+
+
 
     @Override
     public void eliminarSitio(Sitio sitio) {
+
             sql.connect();
 
+            if (sitio instanceof Localizacion) {
+                eliminarLocalizacion((Localizacion) sitio);
+            } else {
+                eliminarUbicacion((Ubicacion) sitio);
+            }
+            sql.disconnect();
+    }
+
+    private void eliminarLocalizacion(Localizacion localizacion) {
+
+        String query = "DELETE FROM localizacion WHERE id = ?";
+
+        try {
+            PreparedStatement ps = sql.getConnection().prepareStatement(query);
+            ps.setInt(1, localizacion.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            sendBroadcast(e.getMessage());
+        }
 
     }
+
+    private void eliminarUbicacion(Ubicacion ubicacion) {
+
+        String query = "DELETE FROM ubicacion WHERE id = ?";
+
+        try {
+            PreparedStatement ps = sql.getConnection().prepareStatement(query);
+            ps.setInt(1, ubicacion.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            sendBroadcast(e.getMessage());
+        }
+
+    }
+
+
 
     @Override
     public ArrayList<Sitio> getSitios(TYPE type) {
