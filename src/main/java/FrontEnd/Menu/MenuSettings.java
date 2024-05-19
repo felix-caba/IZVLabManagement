@@ -2,10 +2,17 @@
  * @AUTHOR Felix
  */
 
-package FrontEnd;
+/*
+ * @AUTHOR Felix
+ */
+
+package FrontEnd.Menu;
 
 import BackEnd.Configuration.ConfigurationIZV;
 import BackEnd.Extra.Checker;
+import FrontEnd.Auxiliares.LoadingFrame;
+import FrontEnd.ElementosSwing.PanelRound;
+import FrontEnd.Themeable;
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatLaf;
 
@@ -13,7 +20,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SettingMenu extends JFrame implements Themeable, Validable{
+public class MenuSettings extends JFrame implements Themeable{
     private JPanel panelSettings;
     private PanelRound panelSettingsRound;
     private JLabel configLabelBDName;
@@ -28,7 +35,7 @@ public class SettingMenu extends JFrame implements Themeable, Validable{
     private final LoadingFrame dialog = LoadingFrame.getInstance();
 
 
-    public SettingMenu() {
+    public MenuSettings() {
 
         saveButton.setName("saveButton");
         backButton.setName("backButton");
@@ -76,7 +83,7 @@ public class SettingMenu extends JFrame implements Themeable, Validable{
 
                     setIcons(dialog);
 
-                    setIcons(SettingMenu.this);
+                    setIcons(MenuSettings.this);
 
 
             }

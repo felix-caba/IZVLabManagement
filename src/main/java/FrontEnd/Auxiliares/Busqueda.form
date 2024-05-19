@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="FrontEnd.Auxiliares.Busqueda">
+  <grid id="27dc6" binding="panelSearchMenu" layout-manager="FormLayout">
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:6dlu:noGrow"/>
+    <rowspec value="center:d:grow"/>
+    <rowspec value="top:2dlu:noGrow"/>
+    <rowspec value="center:d:grow"/>
+    <rowspec value="top:4dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <rowspec value="top:10dlu:noGrow"/>
+    <rowspec value="center:max(d;4px):noGrow"/>
+    <colspec value="fill:max(d;4px):noGrow"/>
+    <colspec value="left:10dlu:noGrow"/>
+    <colspec value="fill:d:grow"/>
+    <colspec value="left:5dlu:noGrow"/>
+    <colspec value="fill:max(d;4px):grow"/>
+    <colspec value="left:4dlu:noGrow"/>
+    <colspec value="fill:max(d;4px):grow"/>
+    <colspec value="left:4dlu:noGrow"/>
+    <colspec value="fill:d:grow"/>
+    <colspec value="left:12dlu:noGrow"/>
+    <colspec value="fill:max(d;4px):noGrow"/>
+    <constraints>
+      <xy x="20" y="20" width="512" height="505"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="8fa7b" class="FrontEnd.ElementosSwing.PanelRound" binding="panelRoundSearchResults" layout-manager="FormLayout">
+        <rowspec value="center:max(d;4px):noGrow"/>
+        <rowspec value="top:10dlu:noGrow"/>
+        <rowspec value="center:d:grow"/>
+        <rowspec value="top:10dlu:noGrow"/>
+        <rowspec value="center:max(d;4px):noGrow"/>
+        <colspec value="fill:max(d;4px):noGrow"/>
+        <colspec value="left:10dlu:noGrow"/>
+        <colspec value="fill:d:grow"/>
+        <colspec value="left:10dlu:noGrow"/>
+        <colspec value="fill:max(d;4px):noGrow"/>
+        <constraints>
+          <grid row="4" column="2" row-span="1" col-span="7" vsize-policy="3" hsize-policy="3" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-vert="false"/>
+        </constraints>
+        <properties>
+          <roundBottomLeft value="50"/>
+          <roundBottomRight value="50"/>
+          <roundTopLeft value="50"/>
+          <roundTopRight value="50"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <scrollpane id="f4576" binding="scrollPane">
+            <constraints>
+              <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+              <forms defaultalign-horz="false" defaultalign-vert="false"/>
+            </constraints>
+            <properties>
+              <doubleBuffered value="true"/>
+              <horizontalScrollBarPolicy value="32"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="66afc" class="org.jdesktop.swingx.JXTable" binding="tableResults">
+                <constraints/>
+                <properties>
+                  <autoCreateRowSorter value="false"/>
+                  <autoResizeMode value="0"/>
+                  <cellSelectionEnabled value="true"/>
+                  <columnMargin value="0"/>
+                  <doubleBuffered value="true"/>
+                  <editable value="false"/>
+                  <horizontalScrollEnabled value="true"/>
+                </properties>
+                <clientProperties>
+                  <terminateEditOnFocusLost class="java.lang.Boolean" value="true"/>
+                </clientProperties>
+              </component>
+            </children>
+          </scrollpane>
+        </children>
+      </grid>
+      <component id="7a45d" class="javax.swing.JButton" binding="adminButton" default-binding="true">
+        <constraints>
+          <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <enabled value="false"/>
+          <label value="Edición"/>
+          <text value="Edición"/>
+        </properties>
+      </component>
+      <component id="d33b7" class="javax.swing.JButton" binding="saveButton">
+        <constraints>
+          <grid row="6" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <enabled value="false"/>
+          <text value="Guardar"/>
+        </properties>
+      </component>
+      <component id="233ac" class="javax.swing.JButton" binding="addButton">
+        <constraints>
+          <grid row="6" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <enabled value="false"/>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="278d1" class="javax.swing.JButton" binding="deleteButton">
+        <constraints>
+          <grid row="6" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <enabled value="false"/>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="e2280" class="javax.swing.JTextField" binding="filterField">
+        <constraints>
+          <grid row="2" column="3" row-span="1" col-span="5" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="62a99" class="javax.swing.JButton" binding="printButton">
+        <constraints>
+          <grid row="2" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <forms defaultalign-horz="false"/>
+        </constraints>
+        <properties>
+          <text value="Imprimir"/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+</form>

@@ -2,7 +2,11 @@
  * @AUTHOR Felix
  */
 
-package FrontEnd;
+/*
+ * @AUTHOR Felix
+ */
+
+package FrontEnd.ElementosSwing;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

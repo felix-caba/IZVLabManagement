@@ -4,8 +4,16 @@
  * @AUTHOR Felix
  */
 
-package FrontEnd;
+/*
+ * @AUTHOR Felix
+ */
 
+package FrontEnd.Menu;
+
+import FrontEnd.Auxiliares.LoginPanel;
+import FrontEnd.ElementosSwing.JPanelBackground;
+import FrontEnd.ElementosSwing.PanelRound;
+import FrontEnd.Themeable;
 import com.formdev.flatlaf.FlatClientProperties;
 
 import javax.swing.*;
@@ -50,7 +58,7 @@ public class MenuDeInicio extends JFrame implements Themeable {
         configLoginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new SettingMenu().setVisible(true);
+                new MenuSettings().setVisible(true);
                 dispose();
 
             }

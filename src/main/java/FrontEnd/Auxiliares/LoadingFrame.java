@@ -2,8 +2,14 @@
  * @AUTHOR Felix
  */
 
-package FrontEnd;
+/*
+ * @AUTHOR Felix
+ */
 
+package FrontEnd.Auxiliares;
+
+import FrontEnd.ElementosSwing.PanelRound;
+import FrontEnd.Themeable;
 import com.formdev.flatlaf.FlatClientProperties;
 
 import javax.swing.*;

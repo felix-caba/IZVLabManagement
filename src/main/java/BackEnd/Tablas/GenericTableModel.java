@@ -6,22 +6,12 @@ package BackEnd.Tablas;
 
 import BackEnd.Configuration.ScreenSize;
 import BackEnd.Extra.TableChange;
-import BackEnd.Producto;
-import FrontEnd.LocalDateCellEditor;
 import org.jdesktop.swingx.JXTable;
 
 import java.awt.*;
 import java.lang.reflect.Field;
-import java.sql.SQLOutput;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.*;
 
 public class GenericTableModel<T> extends AbstractTableModel {

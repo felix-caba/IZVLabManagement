@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="FrontEnd.SettingMenu">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="FrontEnd.Menu.MenuSettings">
   <grid id="27dc6" binding="panelSettings" layout-manager="FormLayout">
     <rowspec value="center:15dlu:noGrow"/>
     <rowspec value="top:d:grow"/>
@@ -18,7 +18,7 @@
     <properties/>
     <border type="none"/>
     <children>
-      <grid id="14e6b" class="FrontEnd.PanelRound" binding="panelSettingsRound" layout-manager="FormLayout">
+      <grid id="14e6b" class="FrontEnd.ElementosSwing.PanelRound" binding="panelSettingsRound" layout-manager="FormLayout">
         <rowspec value="center:max(d;4px):noGrow"/>
         <rowspec value="top:10dlu:noGrow"/>
         <rowspec value="center:d:noGrow"/>

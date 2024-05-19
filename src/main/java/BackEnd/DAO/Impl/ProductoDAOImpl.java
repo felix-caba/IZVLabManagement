@@ -21,7 +21,6 @@ import BackEnd.Productos.Auxiliar;
 import BackEnd.Productos.Material;
 import BackEnd.Productos.Reactivo;
 import BackEnd.SQLBroadcaster;
-import FrontEnd.LoadingFrame;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;

@@ -4,19 +4,30 @@
  */
 
 import BackEnd.Configuration.ConfigurationIZV;
-import FrontEnd.MenuDeBusqueda;
-import FrontEnd.MenuDeInicio;
+import BackEnd.Extra.PortScanner;
+import BackEnd.NetworkScanner.MySQLPortScanner;
+import FrontEnd.Menu.MenuDeInicio;
 
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.*;
+import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class LabStart {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, InterruptedException {
+
+
+        String miIp = PortScanner.getThisIP();
+        System.out.println(miIp);
+        PortScanner.getServers(miIp);
+
+
 
         try {
 
