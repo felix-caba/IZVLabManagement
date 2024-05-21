@@ -23,11 +23,6 @@ public class LabStart {
     public static void main(String[] args) throws IOException, InterruptedException {
 
 
-        String miIp = PortScanner.getThisIP();
-        System.out.println(miIp);
-        PortScanner.getServers(miIp);
-
-
 
         try {
 

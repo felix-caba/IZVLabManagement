@@ -12,6 +12,7 @@ import java.awt.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.*;
 import javax.swing.table.*;
 
 public class GenericTableModel<T> extends AbstractTableModel {
@@ -29,11 +30,11 @@ public class GenericTableModel<T> extends AbstractTableModel {
         int sizeX = (int) (ScreenSize.getScreenWidth() * 0.7);
         int sizeY = (int) (ScreenSize.getScreenHeight() * 0.7);
         Dimension dim = new Dimension(sizeX, sizeY);
-
         tableResults.setPreferredScrollableViewportSize(dim);
 
 
     }
+
 
     @Override
     public int getRowCount() {
@@ -120,6 +121,12 @@ public class GenericTableModel<T> extends AbstractTableModel {
         return Object.class;
 
     }
+
+
+
+
+
+
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {

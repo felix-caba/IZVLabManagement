@@ -64,8 +64,10 @@ public class LoginPanel extends JFrame implements Themeable {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
 
+
                 dialog.setVisible(true);
                 loginWorker(dialog).execute();
+
 
             }
 

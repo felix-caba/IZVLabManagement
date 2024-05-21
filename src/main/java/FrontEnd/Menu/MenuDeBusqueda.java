@@ -13,6 +13,8 @@ import BackEnd.DAO.Impl.SitioDAOImpl;
 import BackEnd.DAO.Impl.UsuarioDAOImpl;
 import BackEnd.Extra.TYPE;
 import BackEnd.MySQL;
+import BackEnd.Sitios.Localizacion;
+import BackEnd.Sitios.Ubicacion;
 import FrontEnd.Auxiliares.Busqueda;
 import FrontEnd.Auxiliares.LoadingFrame;
 import FrontEnd.ElementosSwing.PanelRound;
@@ -25,6 +27,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.lang.Thread.sleep;
 
@@ -139,6 +143,7 @@ public class MenuDeBusqueda extends JFrame implements Themeable {
             // ? Por que no sé que tipo de dato voy a usar.
 
             private ArrayList<?> result;
+            private HashMap<Localizacion, ArrayList<Ubicacion> > hashMapSitio = new HashMap<>();
 
             final ProductoDAOImpl productoDAO = new ProductoDAOImpl();
             final SitioDAOImpl sitioDAO = new SitioDAOImpl();
@@ -148,13 +153,21 @@ public class MenuDeBusqueda extends JFrame implements Themeable {
             protected Void doInBackground() throws Exception {
 
                 if (type == TYPE.USUARIOS) {
+
                      result = usuarioDAO.select();
+
                 } else if (type == TYPE.LOCALIZACION || type == TYPE.UBICACION) {
 
                       result = sitioDAO.getSitios(type);
 
                 } else {
+
                     result = productoDAO.selectPType(type);
+
+                    hashMapSitio = sitioDAO.getSitioHash();
+
+
+
                 }
                 return null;
             }
@@ -169,15 +182,16 @@ public class MenuDeBusqueda extends JFrame implements Themeable {
                     if (isAdmin) {
                         if ((type) == TYPE.USUARIOS) {
                             hasOpened = true;
-                            new Busqueda(result, isAdmin, type).setVisible(true);
+                            System.out.println(hashMapSitio);
+                            new Busqueda(result, isAdmin, type, null).setVisible(true);
                         }
                         if (type == TYPE.LOCALIZACION || type == TYPE.UBICACION) {
                             hasOpened = true;
-                            new Busqueda(result, isAdmin, type).setVisible(true);
+                            new Busqueda(result, isAdmin, type, null).setVisible(true);
                         }
                         if (type == TYPE.REACTIVOS || type == TYPE.AUXILIARES || type == TYPE.MATERIALES) {
                             hasOpened = true;
-                            new Busqueda(result, isAdmin, type).setVisible(true);
+                            new Busqueda(result, isAdmin, type, hashMapSitio).setVisible(true);
                         }
                     } else {
                         if (type == TYPE.USUARIOS || type == TYPE.LOCALIZACION || type == TYPE.UBICACION) {
@@ -185,7 +199,7 @@ public class MenuDeBusqueda extends JFrame implements Themeable {
 
                         } else {
                             hasOpened = true;
-                            new Busqueda(result, isAdmin, type).setVisible(true);
+                            new Busqueda(result, isAdmin, type, null).setVisible(true);
                         }
                     }
 

@@ -19,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SitioDAOImpl implements SitioDAO, SQLBroadcaster {
 
@@ -171,6 +172,54 @@ public class SitioDAOImpl implements SitioDAO, SQLBroadcaster {
         } catch (SQLException e) {
             sendBroadcast(e.getMessage());
         }
+
+    }
+
+
+
+    public HashMap<Localizacion, ArrayList<Ubicacion>> getSitioHash(){
+
+
+        sql.connect();
+
+        HashMap<Localizacion, ArrayList<Ubicacion>> sitios = new HashMap<>();
+
+
+        try {
+
+
+            ArrayList<Sitio> localizaciones = new ArrayList<>(getLocalizaciones());
+            ArrayList<Sitio> ubicaciones = new ArrayList<>(getUbicaciones());
+
+            for (Sitio localizacion : localizaciones) {
+
+                ArrayList<Ubicacion> ubicacionesLocalizacion = new ArrayList<>();
+
+                for (Sitio ubicacion : ubicaciones) {
+
+                    if (((Ubicacion) ubicacion).getLocalizacionID() == localizacion.getId()) {
+                        ubicacionesLocalizacion.add((Ubicacion) ubicacion);
+                    }
+
+                }
+
+                sitios.put((Localizacion) localizacion, ubicacionesLocalizacion);
+
+            }
+
+
+        } catch (SQLException e) {
+
+            sendBroadcast(e.getMessage());
+
+        }
+
+
+        return sitios;
+
+
+
+
 
     }
 

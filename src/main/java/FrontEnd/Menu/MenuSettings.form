@@ -45,6 +45,10 @@
         <colspec value="fill:120dlu:noGrow"/>
         <colspec value="left:10dlu:noGrow"/>
         <colspec value="fill:max(d;4px):noGrow"/>
+        <colspec value="left:4dlu:noGrow"/>
+        <colspec value="fill:d:noGrow"/>
+        <colspec value="left:10dlu:noGrow"/>
+        <colspec value="fill:max(d;4px):noGrow"/>
         <constraints>
           <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
           <forms defaultalign-horz="false" defaultalign-vert="false"/>
@@ -91,7 +95,9 @@
               </grid>
               <forms defaultalign-horz="false"/>
             </constraints>
-            <properties/>
+            <properties>
+              <editable value="false"/>
+            </properties>
           </component>
           <component id="8f126" class="javax.swing.JTextField" binding="bdNameField">
             <constraints>
@@ -161,14 +167,25 @@
             </constraints>
             <properties/>
           </component>
-          <component id="e679c" class="javax.swing.JTextField" binding="textField2" default-binding="true">
+          <component id="8794f" class="javax.swing.JButton" binding="avanzadoButton" default-binding="true">
+            <constraints>
+              <grid row="13" column="10" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+              <forms defaultalign-horz="false" defaultalign-vert="false"/>
+            </constraints>
+            <properties>
+              <text value="Avanzado"/>
+            </properties>
+          </component>
+          <component id="6bc53" class="javax.swing.JPasswordField" binding="textField2">
             <constraints>
               <grid row="11" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                 <preferred-size width="150" height="-1"/>
               </grid>
               <forms defaultalign-horz="false"/>
             </constraints>
-            <properties/>
+            <properties>
+              <echoChar value="*"/>
+            </properties>
           </component>
         </children>
       </grid>

@@ -45,6 +45,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Busqueda extends JFrame implements Themeable {
     private JPanel panelSearchMenu;
@@ -65,7 +67,7 @@ public class Busqueda extends JFrame implements Themeable {
 
     @SuppressWarnings({"unchecked, rawtypes, unchecked cast", "Unchecked cast"})
 
-    public Busqueda(ArrayList searchResults, boolean isAdmin, TYPE typeProduct) {
+    public Busqueda(ArrayList searchResults, boolean isAdmin, TYPE typeProduct, HashMap<Localizacion, ArrayList<Ubicacion>> map) {
 
         if (isAdmin) {
             adminButton.setEnabled(true);
@@ -75,7 +77,6 @@ public class Busqueda extends JFrame implements Themeable {
             dispose();
         }
 
-
         initComponents();
 
         GenericTableModel model = new GenericTableModel(searchResults, ConseguirCampos.getColumnNames(searchResults.get(0).getClass()), tableResults);
@@ -83,13 +84,9 @@ public class Busqueda extends JFrame implements Themeable {
         TableRowSorter<AbstractTableModel> rowSorter = new TableRowSorter<>(model);
         tableResults.setRowSorter(rowSorter);
         filterFunction(rowSorter, filterField);
-
-
         TableColumnModel columnModel = tableResults.getColumnModel();
         DefaultTableCellRenderer leftRenderer = new DefaultTableCellRenderer();
         leftRenderer.setHorizontalAlignment(DefaultTableCellRenderer.LEFT);
-
-
 
         for (int i = 0; i < tableResults.getColumnCount(); i++) {
             Class<?> columnClass = tableResults.getColumnClass(i);
@@ -101,11 +98,67 @@ public class Busqueda extends JFrame implements Themeable {
         for (int indColumna = 0; indColumna < columnModel.getColumnCount(); indColumna++) {
 
             Class<?> columnClass = model.getColumnClass(indColumna);
+
             if (LocalDate.class.isAssignableFrom(columnClass)) {
                 columnModel.getColumn(indColumna).setCellEditor(new LocalDateCellEditor());
             }
 
+
+            if (map != null) {
+
+                JComboBox comboBox = new JComboBox<>();
+
+                if (model.getColumnName(indColumna).equalsIgnoreCase("localizacion")) {
+                    System.out.println("ENTRA EN LOCALIZACION");
+                    comboBox.removeAllItems(); // Limpiar el comboBox antes de agregar nuevos elementos
+                    for (Localizacion localizacion : map.keySet()) {
+                        comboBox.addItem(localizacion.getNombre());
+                    }
+                    TableColumn column = tableResults.getColumnModel().getColumn(indColumna);
+                    column.setCellEditor(new DefaultCellEditor(comboBox));
+                    // Agregar un listener al comboBox para manejar la selección y mostrar los campos correspondientes
+                    comboBox.addActionListener(new ActionListener() {
+                        public void actionPerformed(ActionEvent e) {
+                            JComboBox<String> combo = (JComboBox<String>) e.getSource();
+                            String selectedLocalizacionNombre = (String) combo.getSelectedItem();
+                            if (selectedLocalizacionNombre != null) {
+                                // Buscar la localización correspondiente al nombre seleccionado
+                                for (Localizacion localizacion : map.keySet()) {
+                                    if (localizacion.getNombre().equals(selectedLocalizacionNombre)) {
+                                        // Obtener las ubicaciones correspondientes a la localización seleccionada
+                                        ArrayList<Ubicacion> ubicaciones = map.get(localizacion);
+                                        if (ubicaciones != null) {
+                                            // Limpiar el comboBox y agregar las ubicaciones correspondientes
+                                            comboBox.removeAllItems();
+                                            for (Ubicacion ubicacion : ubicaciones) {
+                                                comboBox.addItem(ubicacion.getNombre());
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+// check if the column name is Ubicacion
+
+                if (model.getColumnName(indColumna).equalsIgnoreCase("ubicacion")) {
+                    System.out.println("ENTRA EN UBICACION");
+                    // No es necesario repetir la lógica aquí, ya que se manejará cuando se seleccione una localización en el otro comboBox
+                    // Puedes dejar este bloque vacío o manejarlo de otra manera si es necesario
+                }
+
+
+            }
+
+
+
+
         }
+
+
 
 
         this.searchResults = searchResults;
@@ -279,21 +332,14 @@ public class Busqueda extends JFrame implements Themeable {
 
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-
                 int respuesta = -1;
 
                 while (respuesta < 0 || respuesta > 4) {
 
                     try {
-
                         respuesta = Integer.parseInt(JOptionPane.showInputDialog("Especifica el tamaño de la página a crear (4, 3, 2, 1, 0)"));
-
-
                     } catch (NumberFormatException e) {
-
                         dialog.onFail("Introduce un número válido");
-
-
                     }
                 }
 
@@ -342,16 +388,12 @@ public class Busqueda extends JFrame implements Themeable {
 
                     documento.add(pdfTable);
                     documento.close();
-
                 } catch (DocumentException | FileNotFoundException e) {
                     dialog.onFail(e.getMessage());
                 }
-
             }
         });
-
         tableResults.packAll();
-
 
     }
 
@@ -366,8 +408,6 @@ public class Busqueda extends JFrame implements Themeable {
         int sizeYMax = (ScreenSize.getScreenHeight());
         Dimension dim = new Dimension(sizeX, sizeY);
         Dimension dimMax = new Dimension(sizeXMax, sizeYMax);
-
-
 
         setSize(dim);
         setMinimumSize(dim);
@@ -445,8 +485,6 @@ public class Busqueda extends JFrame implements Themeable {
         setLocationRelativeTo(null);
 
     }
-
-    // Metodos Actuales
 
     public Object createNewObject() {
 
@@ -542,7 +580,6 @@ public class Busqueda extends JFrame implements Themeable {
 
     }
 
-
     private void displayRiesgosIcons(RIESGOS[] riesgos,  String color, JPanel panel) {
 
         boolean encontradoAtencion = false;
@@ -562,6 +599,8 @@ public class Busqueda extends JFrame implements Themeable {
         JLabel label = new JLabel(icon);
         panel.add(label);
     }
+
+
 
 
 

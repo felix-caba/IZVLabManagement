@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="panelConfigAv" layout-manager="FormLayout">
     <rowspec value="center:max(d;4px):noGrow"/>
     <rowspec value="top:10dlu:noGrow"/>
-    <rowspec value="center:378px:grow"/>
+    <rowspec value="center:d:grow"/>
     <rowspec value="top:10dlu:noGrow"/>
     <rowspec value="center:max(d;4px):noGrow"/>
     <colspec value="fill:max(d;4px):noGrow"/>
@@ -12,7 +12,7 @@
     <colspec value="left:10dlu:noGrow"/>
     <colspec value="fill:max(d;4px):noGrow"/>
     <constraints>
-      <xy x="20" y="20" width="852" height="503"/>
+      <xy x="20" y="20" width="852" height="518"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -21,17 +21,17 @@
         <rowspec value="center:max(d;4px):noGrow"/>
         <rowspec value="top:8dlu:noGrow"/>
         <rowspec value="center:d:noGrow"/>
-        <rowspec value="top:4dlu:noGrow"/>
-        <rowspec value="center:32px:noGrow"/>
-        <rowspec value="top:8dlu:noGrow"/>
-        <rowspec value="center:283px:grow"/>
-        <rowspec value="top:23dlu:noGrow"/>
+        <rowspec value="top:10dlu:noGrow"/>
+        <rowspec value="fill:d:grow"/>
+        <rowspec value="top:15dlu:noGrow"/>
+        <rowspec value="center:max(d;4px):noGrow"/>
+        <rowspec value="fill:d:grow"/>
         <rowspec value="center:d:noGrow"/>
-        <rowspec value="top:8dlu:noGrow"/>
+        <rowspec value="top:15dlu:noGrow"/>
         <rowspec value="center:max(d;4px):noGrow"/>
         <colspec value="fill:max(d;4px):noGrow"/>
         <colspec value="left:8dlu:noGrow"/>
-        <colspec value="fill:d:grow"/>
+        <colspec value="fill:d:noGrow"/>
         <colspec value="left:4dlu:noGrow"/>
         <colspec value="fill:d:grow"/>
         <colspec value="left:8dlu:noGrow"/>
@@ -40,7 +40,12 @@
           <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
           <forms defaultalign-vert="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <roundBottomLeft value="50"/>
+          <roundBottomRight value="50"/>
+          <roundTopLeft value="50"/>
+          <roundTopRight value="50"/>
+        </properties>
         <border type="none"/>
         <children>
           <component id="943d8" class="javax.swing.JLabel" binding="labelIP">
@@ -61,36 +66,14 @@
             </constraints>
             <properties/>
           </component>
-          <component id="6f076" class="javax.swing.JLabel" binding="labelPort">
-            <constraints>
-              <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-              <forms defaultalign-horz="false"/>
-            </constraints>
-            <properties>
-              <text value="Introduce el puerto (3306)"/>
-            </properties>
-          </component>
-          <component id="ef39f" class="javax.swing.JTextField" binding="fieldPort">
-            <constraints>
-              <grid row="4" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-                <preferred-size width="150" height="-1"/>
-              </grid>
-              <forms defaultalign-horz="false"/>
-            </constraints>
-            <properties/>
-          </component>
           <grid id="381f4" class="FrontEnd.ElementosSwing.PanelRound" binding="panelRound2" default-binding="true" layout-manager="FormLayout">
             <rowspec value="center:max(d;4px):noGrow"/>
             <rowspec value="top:10dlu:noGrow"/>
-            <rowspec value="center:18px:noGrow"/>
+            <rowspec value="center:d:noGrow"/>
             <rowspec value="top:10dlu:noGrow"/>
             <rowspec value="center:max(d;4px):noGrow"/>
             <rowspec value="top:4dlu:noGrow"/>
-            <rowspec value="center:d:grow"/>
-            <rowspec value="top:4dlu:noGrow"/>
-            <rowspec value="center:max(d;4px):grow"/>
-            <rowspec value="top:4dlu:noGrow"/>
-            <rowspec value="center:d:grow"/>
+            <rowspec value="center:min(d;100dlu):grow"/>
             <rowspec value="top:10dlu:noGrow"/>
             <rowspec value="center:max(d;4px):noGrow"/>
             <colspec value="fill:max(d;4px):noGrow"/>
@@ -101,10 +84,15 @@
             <colspec value="left:10dlu:noGrow"/>
             <colspec value="fill:max(d;4px):noGrow"/>
             <constraints>
-              <grid row="6" column="2" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="8" fill="2" indent="0" use-parent-layout="false"/>
+              <grid row="4" column="2" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="8" fill="2" indent="0" use-parent-layout="false"/>
               <forms defaultalign-horz="false" defaultalign-vert="false"/>
             </constraints>
-            <properties/>
+            <properties>
+              <roundBottomLeft value="50"/>
+              <roundBottomRight value="50"/>
+              <roundTopLeft value="50"/>
+              <roundTopRight value="50"/>
+            </properties>
             <border type="none"/>
             <children>
               <component id="3bc14" class="javax.swing.JLabel">
@@ -113,39 +101,12 @@
                   <forms defaultalign-horz="false"/>
                 </constraints>
                 <properties>
-                  <text value="Escaneo automático de Redes"/>
-                </properties>
-              </component>
-              <component id="ea41e" class="javax.swing.JButton" binding="mostrarDireccionesSQLEnButton" default-binding="true">
-                <constraints>
-                  <grid row="6" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                  <forms defaultalign-horz="false"/>
-                </constraints>
-                <properties>
-                  <text value="Mostrar direcciones SQL en esta clase"/>
-                </properties>
-              </component>
-              <component id="ba9a6" class="javax.swing.JButton" binding="seleccionarIPButton1" default-binding="true">
-                <constraints>
-                  <grid row="10" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                  <forms/>
-                </constraints>
-                <properties>
-                  <text value="Seleccionar IP"/>
-                </properties>
-              </component>
-              <component id="1cc18" class="javax.swing.JButton" binding="mostrarDireccionesSQLEnButton1" default-binding="true">
-                <constraints>
-                  <grid row="8" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                  <forms/>
-                </constraints>
-                <properties>
-                  <text value="Mostrar direcciones SQL en el centro"/>
+                  <text value="Escaneo automático de Redes dentro de esta clase"/>
                 </properties>
               </component>
               <scrollpane id="f0451">
                 <constraints>
-                  <grid row="6" column="2" row-span="5" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <grid row="6" column="2" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                   <forms defaultalign-horz="false" defaultalign-vert="false"/>
                 </constraints>
                 <properties/>
@@ -157,6 +118,15 @@
                   </component>
                 </children>
               </scrollpane>
+              <component id="ea41e" class="javax.swing.JButton" binding="mostrarDireccionesSQLEnButton" default-binding="true">
+                <constraints>
+                  <grid row="6" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <forms defaultalign-horz="false"/>
+                </constraints>
+                <properties>
+                  <text value="Refrescar"/>
+                </properties>
+              </component>
             </children>
           </grid>
           <component id="a20f3" class="javax.swing.JButton" binding="guardarButton" default-binding="true">

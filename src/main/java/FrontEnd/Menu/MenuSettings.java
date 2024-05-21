@@ -10,6 +10,7 @@ package FrontEnd.Menu;
 
 import BackEnd.Configuration.ConfigurationIZV;
 import BackEnd.Extra.Checker;
+import FrontEnd.Auxiliares.ConfigAvanzada;
 import FrontEnd.Auxiliares.LoadingFrame;
 import FrontEnd.ElementosSwing.PanelRound;
 import FrontEnd.Themeable;
@@ -30,7 +31,8 @@ public class MenuSettings extends JFrame implements Themeable{
     private JTextField bdNameField;
     private JComboBox comboTheme;
     private JTextField textField1;
-    private JTextField textField2;
+    private JPasswordField textField2;
+    private JButton avanzadoButton;
     private JLabel temaLabel;
     private final LoadingFrame dialog = LoadingFrame.getInstance();
 
@@ -101,6 +103,17 @@ public class MenuSettings extends JFrame implements Themeable{
 
             }
 
+        });
+        avanzadoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                dispose();
+                new ConfigAvanzada().setVisible(true);
+
+
+
+            }
         });
     }
 

@@ -15,9 +15,8 @@ public class MySQLPortScanner {
 
 
 
-
-
     public static void main(String[] args) throws IOException, InterruptedException {
+
         String subnet = getSubnet();
 
         System.out.println("Subnet: " + subnet);
