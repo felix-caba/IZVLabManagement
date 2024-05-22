@@ -84,9 +84,9 @@ public class Busqueda extends JFrame implements Themeable {
         TableRowSorter<AbstractTableModel> rowSorter = new TableRowSorter<>(model);
         tableResults.setRowSorter(rowSorter);
         filterFunction(rowSorter, filterField);
-        TableColumnModel columnModel = tableResults.getColumnModel();
         DefaultTableCellRenderer leftRenderer = new DefaultTableCellRenderer();
         leftRenderer.setHorizontalAlignment(DefaultTableCellRenderer.LEFT);
+
 
         for (int i = 0; i < tableResults.getColumnCount(); i++) {
             Class<?> columnClass = tableResults.getColumnClass(i);
@@ -95,70 +95,11 @@ public class Busqueda extends JFrame implements Themeable {
             }
         }
 
-        for (int indColumna = 0; indColumna < columnModel.getColumnCount(); indColumna++) {
-
-            Class<?> columnClass = model.getColumnClass(indColumna);
-
-            if (LocalDate.class.isAssignableFrom(columnClass)) {
-                columnModel.getColumn(indColumna).setCellEditor(new LocalDateCellEditor());
-            }
-
-
-            if (map != null) {
-
-                JComboBox comboBox = new JComboBox<>();
-
-                if (model.getColumnName(indColumna).equalsIgnoreCase("localizacion")) {
-                    System.out.println("ENTRA EN LOCALIZACION");
-                    comboBox.removeAllItems(); // Limpiar el comboBox antes de agregar nuevos elementos
-                    for (Localizacion localizacion : map.keySet()) {
-                        comboBox.addItem(localizacion.getNombre());
-                    }
-                    TableColumn column = tableResults.getColumnModel().getColumn(indColumna);
-                    column.setCellEditor(new DefaultCellEditor(comboBox));
-                    // Agregar un listener al comboBox para manejar la selección y mostrar los campos correspondientes
-                    comboBox.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            JComboBox<String> combo = (JComboBox<String>) e.getSource();
-                            String selectedLocalizacionNombre = (String) combo.getSelectedItem();
-                            if (selectedLocalizacionNombre != null) {
-                                // Buscar la localización correspondiente al nombre seleccionado
-                                for (Localizacion localizacion : map.keySet()) {
-                                    if (localizacion.getNombre().equals(selectedLocalizacionNombre)) {
-                                        // Obtener las ubicaciones correspondientes a la localización seleccionada
-                                        ArrayList<Ubicacion> ubicaciones = map.get(localizacion);
-                                        if (ubicaciones != null) {
-                                            // Limpiar el comboBox y agregar las ubicaciones correspondientes
-                                            comboBox.removeAllItems();
-                                            for (Ubicacion ubicacion : ubicaciones) {
-                                                comboBox.addItem(ubicacion.getNombre());
-                                            }
-                                        }
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }
-
-// check if the column name is Ubicacion
-
-                if (model.getColumnName(indColumna).equalsIgnoreCase("ubicacion")) {
-                    System.out.println("ENTRA EN UBICACION");
-                    // No es necesario repetir la lógica aquí, ya que se manejará cuando se seleccione una localización en el otro comboBox
-                    // Puedes dejar este bloque vacío o manejarlo de otra manera si es necesario
-                }
-
-
-            }
-
-
-
-
+        if (map != null) {
+            setSitiosComboBox(model, map);
         }
 
-
+        setDateComboBox(model);
 
 
         this.searchResults = searchResults;
@@ -170,7 +111,6 @@ public class Busqueda extends JFrame implements Themeable {
         addButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
         deleteButton.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,15%);");
         panelRoundSearchResults.putClientProperty(FlatClientProperties.STYLE, "background: lighten(@background,3%);");
-
 
         tableResults.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -485,7 +425,6 @@ public class Busqueda extends JFrame implements Themeable {
         setLocationRelativeTo(null);
 
     }
-
     public Object createNewObject() {
 
         Object newObject = searchResults.get(0);
@@ -579,7 +518,6 @@ public class Busqueda extends JFrame implements Themeable {
 
 
     }
-
     private void displayRiesgosIcons(RIESGOS[] riesgos,  String color, JPanel panel) {
 
         boolean encontradoAtencion = false;
@@ -593,19 +531,77 @@ public class Busqueda extends JFrame implements Themeable {
             addIconToPanel(basePath + riesgo.toString().toLowerCase() + ".png", panel);
         }
     }
-
     private void addIconToPanel(String iconPath, JPanel panel) {
         ImageIcon icon = new ImageIcon(iconPath);
         JLabel label = new JLabel(icon);
         panel.add(label);
     }
 
+    public void setSitiosComboBox(TableModel model, HashMap<Localizacion, ArrayList<Ubicacion>> map) {
 
+        TableColumnModel columnModel = tableResults.getColumnModel();
 
+        JComboBox<String> comboBoxLocalizacion = new JComboBox<>();
+        JComboBox<String> comboBoxUbicacion = new JComboBox<>();
 
+        for (Map.Entry<Localizacion, ArrayList<Ubicacion>> entry : map.entrySet()) {
+            comboBoxLocalizacion.addItem(entry.getKey().getNombre());
+        }
 
+        // Set the combo box editors for the table columns
+        for (int indColumna = 0; indColumna < columnModel.getColumnCount(); indColumna++) {
+            String columnName = model.getColumnName(indColumna);
+
+            if (columnName.equalsIgnoreCase("localizacion")) {
+                columnModel.getColumn(indColumna).setCellEditor(new DefaultCellEditor(comboBoxLocalizacion));
+            } else if (columnName.equalsIgnoreCase("ubicacion")) {
+                columnModel.getColumn(indColumna).setCellEditor(new DefaultCellEditor(comboBoxUbicacion));
+            }
+        }
+
+        comboBoxLocalizacion.addActionListener(e -> {
+            String selectedLocalizacion = (String) comboBoxLocalizacion.getSelectedItem();
+            comboBoxUbicacion.removeAllItems();
+
+            if (selectedLocalizacion != null) {
+                for (Map.Entry<Localizacion, ArrayList<Ubicacion>> entry : map.entrySet()) {
+                    if (entry.getKey().getNombre().equals(selectedLocalizacion)) {
+                        for (Ubicacion ubicacion : entry.getValue()) {
+                            comboBoxUbicacion.addItem(ubicacion.getNombre());
+                        }
+                        break;
+                    }
+                }
+            }
+        });
+    }
+    public void setDateComboBox(TableModel model){
+
+        TableColumnModel columnModel = tableResults.getColumnModel();
+
+        for (int indColumna = 0; indColumna < columnModel.getColumnCount(); indColumna++) {
+
+            Class<?> columnClass = model.getColumnClass(indColumna);
+
+            if (LocalDate.class.isAssignableFrom(columnClass)) {
+                columnModel.getColumn(indColumna).setCellEditor(new LocalDateCellEditor());
+            }
 
     }
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 

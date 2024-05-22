@@ -139,7 +139,6 @@ public class ConfigAvanzada extends JFrame implements Themeable {
                 String IP_LOCAL = PortScanner.getThisIP();
 
                 try {
-
                     listaIP.clear();
                     ArrayList<IPAddress> nuevasIPs = PortScanner.getServers(IP_LOCAL);
                     listaIP.addAll(nuevasIPs);
@@ -148,7 +147,6 @@ public class ConfigAvanzada extends JFrame implements Themeable {
                 } catch (InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
-
                 return null;
             }
 
@@ -159,9 +157,6 @@ public class ConfigAvanzada extends JFrame implements Themeable {
                     IPTableModel model = new IPTableModel(listaIP);
                     table1.setModel(model);
                 }
-
-
-
 
             }
 

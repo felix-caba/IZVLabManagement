@@ -71,7 +71,6 @@ public class GenericTableModel<T> extends AbstractTableModel {
 
         try {
 
-
             Field field = getField(item.getClass(), columnNames[columnIndex]);
             field.setAccessible(true);
             field.set(item, aValue);

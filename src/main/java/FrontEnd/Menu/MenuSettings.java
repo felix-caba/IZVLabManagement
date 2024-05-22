@@ -10,6 +10,7 @@ package FrontEnd.Menu;
 
 import BackEnd.Configuration.ConfigurationIZV;
 import BackEnd.Extra.Checker;
+import BackEnd.Extra.Encriptador;
 import FrontEnd.Auxiliares.ConfigAvanzada;
 import FrontEnd.Auxiliares.LoadingFrame;
 import FrontEnd.ElementosSwing.PanelRound;
@@ -42,10 +43,8 @@ public class MenuSettings extends JFrame implements Themeable{
         saveButton.setName("saveButton");
         backButton.setName("backButton");
 
-
         panelSettingsRound.putClientProperty( FlatClientProperties.STYLE,
                 "background: lighten(@background,3%);");
-
 
         initComponents();
         setIcons(this);
@@ -62,8 +61,8 @@ public class MenuSettings extends JFrame implements Themeable{
 
                     if (!ipBDField.getText().isEmpty() && areValuesCorrect()) {
                         configurationIZV.setIp(ipBDField.getText());
-
                     }
+
                     if (!bdNameField.getText().isEmpty()) {
                         configurationIZV.setBdName(bdNameField.getText());
                     }
@@ -72,6 +71,9 @@ public class MenuSettings extends JFrame implements Themeable{
                         configurationIZV.setUser(textField1.getText());
                     }
 
+                    if (!textField2.getText().isEmpty()) {
+                        configurationIZV.setPassword(textField2.getText());
+                    }
 
                     configurationIZV.setAppearance(comboTheme.getSelectedItem().toString());
 

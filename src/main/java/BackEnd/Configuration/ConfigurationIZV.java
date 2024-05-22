@@ -20,13 +20,9 @@ public class ConfigurationIZV {
     private String user;
     private String password;
 
-
-
     private static ConfigurationIZV instance = null;
 
     private ConfigurationIZV() {
-
-
 
     }
 
@@ -56,7 +52,11 @@ public class ConfigurationIZV {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        try {
+            this.password = Encriptador.encriptar(password, Encriptador.claveSecreta);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     // Carga el archivo de configuracion, no la configuracion.
@@ -78,6 +78,7 @@ public class ConfigurationIZV {
 
             System.out.println("No se ha podido cargar la configuración. " +
                     "Revisa la existencia del archivo izvlab.config");
+
         }
 
 
@@ -93,22 +94,16 @@ public class ConfigurationIZV {
             user = properties.getProperty("user");
             password = properties.getProperty("password");
 
-        System.out.println(password);
-
     }
 
     // Set values
 
     public void setIp(String ip) {
-
         properties.setProperty("ip", ip);
-
     }
 
     public void setAppearance(String appearance) {
-
         properties.setProperty("appearance", appearance);
-
     }
 
     public void setBdName(String bdName) {
@@ -117,33 +112,21 @@ public class ConfigurationIZV {
 
     }
 
-
-
-
-
-
-
     // Guarda la configuracion en un archivo, posteriormente la carga.
     public void saveConfiguration() {
 
-
-
         try {
+
+            System.out.println(password);
             properties.store(new FileWriter("src/main/java/BackEnd/Configuration/izvlab.config"), "ConfigurationIZV file");
         } catch (IOException e) {
             System.out.println("No se ha podido guardar la configuración. " +
                     "Revisa la existencia del archivo izvlab.config");
         }
 
-
         loadConfiguration();
 
-
-
-
     }
-
-
 
 
     public String getIp() {
@@ -163,17 +146,12 @@ public class ConfigurationIZV {
     }
 
     public String getPassword() {
-
         try {
-
             return Encriptador.desencriptar(password, Encriptador.claveSecreta);
-
         } catch (Exception e) {
             System.out.println(e);
         }
-
         return null;
-
     }
 
     public String getPasswordUnencrypted() {

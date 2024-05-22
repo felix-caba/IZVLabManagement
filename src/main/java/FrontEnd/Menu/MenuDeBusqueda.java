@@ -163,10 +163,7 @@ public class MenuDeBusqueda extends JFrame implements Themeable {
                 } else {
 
                     result = productoDAO.selectPType(type);
-
                     hashMapSitio = sitioDAO.getSitioHash();
-
-
 
                 }
                 return null;
@@ -175,14 +172,12 @@ public class MenuDeBusqueda extends JFrame implements Themeable {
             @Override
             protected void done() {
 
-
                 if (result != null) {
-
 
                     if (isAdmin) {
                         if ((type) == TYPE.USUARIOS) {
+
                             hasOpened = true;
-                            System.out.println(hashMapSitio);
                             new Busqueda(result, isAdmin, type, null).setVisible(true);
                         }
                         if (type == TYPE.LOCALIZACION || type == TYPE.UBICACION) {
@@ -204,7 +199,9 @@ public class MenuDeBusqueda extends JFrame implements Themeable {
                     }
 
                     if (hasOpened) {
+
                         frame.onSucess("Carga completada");
+
                     }
 
                 }
