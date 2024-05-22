@@ -100,10 +100,7 @@ public class MenuDeInicio extends JFrame implements Themeable {
     private void createUIComponents() {
 
         try {
-
-            panelLogin = new JPanelBackground("src/main/resources/photos/fondoLogin.png");
-
-
+               panelLogin = new JPanelBackground("src/main/resources/photos/fondoLogin.png");
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -5,6 +5,7 @@
 package BackEnd.Tablas;
 
 import BackEnd.Configuration.ScreenSize;
+import BackEnd.Extra.CapitalizedColumnNameFormatter;
 import BackEnd.Extra.TableChange;
 import org.jdesktop.swingx.JXTable;
 
@@ -48,7 +49,8 @@ public class GenericTableModel<T> extends AbstractTableModel {
 
     @Override
     public String getColumnName(int columnIndex) {
-        return columnNames[columnIndex];
+        CapitalizedColumnNameFormatter formatter = new CapitalizedColumnNameFormatter();
+        return formatter.valueToString(columnNames[columnIndex]);
     }
 
     @Override

@@ -134,6 +134,12 @@
       <item class="FrontEnd.LoadingNigger" icon="/com/intellij/uiDesigner/icons/panel.svg" removable="true" auto-create-binding="true" can-attach-label="false" is-container="true">
         <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="0" />
       </item>
+      <item class="FrontEnd.ElementosSwing.JPanelBackground" icon="/com/intellij/uiDesigner/icons/panel.svg" removable="true" auto-create-binding="true" can-attach-label="false" is-container="true">
+        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="0" />
+      </item>
+      <item class="org.japura.gui.CheckComboBox" icon="" removable="true" auto-create-binding="true" can-attach-label="false">
+        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="0" />
+      </item>
     </group>
     <group name="SwingFel">
       <item class="org.jdesktop.swingx.JXTable" icon="/com/intellij/uiDesigner/icons/table.svg" removable="true" auto-create-binding="true" can-attach-label="false">

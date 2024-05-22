@@ -65,6 +65,12 @@
             <version>5.5.13.3</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.japura</groupId>
+            <artifactId>japura-gui</artifactId>
+            <version>7.5.2</version>
+        </dependency>
+
 
 
 

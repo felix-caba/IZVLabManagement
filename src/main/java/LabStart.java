@@ -6,6 +6,7 @@
 import BackEnd.Configuration.ConfigurationIZV;
 import BackEnd.Extra.PortScanner;
 import BackEnd.NetworkScanner.MySQLPortScanner;
+import FrontEnd.Menu.MenuDeBusqueda;
 import FrontEnd.Menu.MenuDeInicio;
 
 import javax.swing.*;
@@ -40,7 +41,11 @@ public class LabStart {
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {
-                new MenuDeInicio().setVisible(true);
+                try {
+                    new MenuDeInicio().setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
         });
@@ -76,6 +81,10 @@ public class LabStart {
         UIManager.put( "TextComponent.arc", 75 );
         UIManager.put( "ComboBox.selectionArc", 75 );
         UIManager.put( "Component.arc", 75 );
+        UIManager.put( "ProgressBar.arc", 75 );
+        UIManager.put("List.arc", 75);
+        UIManager.put("ScrollPane.List.arc", 75);
+
     }
 
 }

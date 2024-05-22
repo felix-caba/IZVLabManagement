@@ -82,8 +82,6 @@ public class MySQL implements SQLBroadcaster{
 
 
 
-
-
     public static MySQL getInstance() {
 
         user = ConfigurationIZV.getInstance().getUser();

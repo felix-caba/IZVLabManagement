@@ -75,6 +75,8 @@ public class MenuSettings extends JFrame implements Themeable{
                         configurationIZV.setPassword(textField2.getText());
                     }
 
+
+
                     configurationIZV.setAppearance(comboTheme.getSelectedItem().toString());
 
                     ConfigurationIZV.getInstance().saveConfiguration();

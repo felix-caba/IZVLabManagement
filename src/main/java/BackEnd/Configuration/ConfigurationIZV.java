@@ -48,12 +48,19 @@ public class ConfigurationIZV {
     }
 
     public void setUser(String user) {
-        this.user = user;
+        properties.setProperty("user", user);
     }
 
     public void setPassword(String password) {
         try {
-            this.password = Encriptador.encriptar(password, Encriptador.claveSecreta);
+
+
+            if (password.equals(properties.getProperty("password"))){
+                return;
+            }
+
+            properties.setProperty("password",   Encriptador.encriptar(password, Encriptador.claveSecreta));
+
         } catch (Exception e) {
             System.out.println(e);
         }
@@ -88,6 +95,7 @@ public class ConfigurationIZV {
     // Carga la configuracion en las variables de la clase.
     public void loadConfiguration() {
 
+
             ip = properties.getProperty("ip");
             bdName = properties.getProperty("bdName");
             appearance = properties.getProperty("appearance");
@@ -116,8 +124,6 @@ public class ConfigurationIZV {
     public void saveConfiguration() {
 
         try {
-
-            System.out.println(password);
             properties.store(new FileWriter("src/main/java/BackEnd/Configuration/izvlab.config"), "ConfigurationIZV file");
         } catch (IOException e) {
             System.out.println("No se ha podido guardar la configuración. " +

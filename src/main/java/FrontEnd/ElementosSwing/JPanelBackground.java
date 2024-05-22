@@ -26,7 +26,14 @@ public class JPanelBackground extends JPanel {
 
     }
 
+    public void setBackgroundImage(String imagePath) throws IOException {
+        backgroundImage = ImageIO.read(new File(imagePath));
+        repaint();
+    }
 
+    public BufferedImage getBackgroundImage() {
+        return backgroundImage;
+    }
 
     @Override
     protected void paintComponent(Graphics g) {

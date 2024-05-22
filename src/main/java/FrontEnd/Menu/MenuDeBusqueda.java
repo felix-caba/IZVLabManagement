@@ -17,6 +17,7 @@ import BackEnd.Sitios.Localizacion;
 import BackEnd.Sitios.Ubicacion;
 import FrontEnd.Auxiliares.Busqueda;
 import FrontEnd.Auxiliares.LoadingFrame;
+import FrontEnd.ElementosSwing.JPanelBackground;
 import FrontEnd.ElementosSwing.PanelRound;
 import FrontEnd.Themeable;
 import com.formdev.flatlaf.FlatClientProperties;
@@ -26,6 +27,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,6 +54,8 @@ public class MenuDeBusqueda extends JFrame implements Themeable {
 
         MySQL sql = MySQL.getInstance();
         sql.addPropertyChangeListener(dialog);
+
+
 
         this.isAdmin = isAdmin;
         this.username = username;
@@ -128,12 +132,19 @@ public class MenuDeBusqueda extends JFrame implements Themeable {
         /*Tamaño de la ventana y posicion*/
         setMinimumSize(new Dimension(400, 300));
         setResizable(false);
-        setLocationRelativeTo(null);
+
         setTitle("Login Window");
         properties();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(panelMenuGeneral);
+
+        panelRoundMenuGeneralPreg.putClientProperty( FlatClientProperties.STYLE,
+                "background: fade(@background,70%);");
+        panelRoundMenuGeneral.putClientProperty( FlatClientProperties.STYLE,
+                "background: fade(@background,70%);");
+
         pack();
+        setLocationRelativeTo(null);
     }
 
     public SwingWorker<Void, Void> loadingWorker(LoadingFrame frame, TYPE type) {
@@ -229,4 +240,14 @@ public class MenuDeBusqueda extends JFrame implements Themeable {
             importarButton.setName("loadButton");
         }
 
+    private void createUIComponents() {
+
+        try {
+            panelMenuGeneral = new JPanelBackground("src/main/resources/photos/fondoMenuGeneral.png");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 }

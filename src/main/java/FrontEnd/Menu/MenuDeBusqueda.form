@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="FrontEnd.Menu.MenuDeBusqueda">
-  <grid id="27dc6" binding="panelMenuGeneral" layout-manager="FormLayout">
+  <grid id="27dc6" binding="panelMenuGeneral" custom-create="true" layout-manager="FormLayout">
     <rowspec value="center:max(d;4px):noGrow"/>
     <rowspec value="top:10dlu:noGrow"/>
     <rowspec value="center:d:grow"/>
@@ -43,6 +43,7 @@
           <forms defaultalign-vert="false"/>
         </constraints>
         <properties>
+          <opaque value="false"/>
           <roundBottomLeft value="50"/>
           <roundBottomRight value="50"/>
           <roundTopLeft value="50"/>
@@ -83,7 +84,7 @@
         <rowspec value="center:max(d;4px):noGrow"/>
         <rowspec value="top:10dlu:noGrow"/>
         <rowspec value="center:d:grow"/>
-        <rowspec value="top:5dlu:noGrow"/>
+        <rowspec value="top:10dlu:noGrow"/>
         <rowspec value="center:max(d;4px):noGrow"/>
         <colspec value="fill:max(d;4px):noGrow"/>
         <colspec value="left:10dlu:noGrow"/>
@@ -99,6 +100,7 @@
           <forms defaultalign-vert="false"/>
         </constraints>
         <properties>
+          <opaque value="false"/>
           <roundBottomLeft value="50"/>
           <roundBottomRight value="50"/>
           <roundTopLeft value="50"/>

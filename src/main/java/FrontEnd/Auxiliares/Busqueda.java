@@ -80,6 +80,7 @@ public class Busqueda extends JFrame implements Themeable {
         initComponents();
 
         GenericTableModel model = new GenericTableModel(searchResults, ConseguirCampos.getColumnNames(searchResults.get(0).getClass()), tableResults);
+
         tableResults.setModel(model);
         TableRowSorter<AbstractTableModel> rowSorter = new TableRowSorter<>(model);
         tableResults.setRowSorter(rowSorter);
@@ -87,6 +88,7 @@ public class Busqueda extends JFrame implements Themeable {
         DefaultTableCellRenderer leftRenderer = new DefaultTableCellRenderer();
         leftRenderer.setHorizontalAlignment(DefaultTableCellRenderer.LEFT);
 
+        tableResults.packAll();
 
         for (int i = 0; i < tableResults.getColumnCount(); i++) {
             Class<?> columnClass = tableResults.getColumnClass(i);
@@ -181,12 +183,15 @@ public class Busqueda extends JFrame implements Themeable {
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+                int[] selectedRows = tableResults.getSelectedRows();
 
-                int selectedRow = tableResults.getSelectedRow();
-                System.out.println(selectedRow);
-                model.removeRow(selectedRow);
-
+                if (selectedRows.length > 0) {
+                    for (int i = selectedRows.length - 1; i >= 0; i--) {
+                        model.removeRow(selectedRows[i]);
+                    }
+                }
             }
+
         });
         saveButton.addActionListener(new ActionListener() {
             @Override
@@ -272,69 +277,15 @@ public class Busqueda extends JFrame implements Themeable {
 
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                int respuesta = -1;
 
-                while (respuesta < 0 || respuesta > 4) {
+                Impresion ventanaImpresion = new Impresion(tableResults);
+                ventanaImpresion.setVisible(true);
 
-                    try {
-                        respuesta = Integer.parseInt(JOptionPane.showInputDialog("Especifica el tamaño de la página a crear (4, 3, 2, 1, 0)"));
-                    } catch (NumberFormatException e) {
-                        dialog.onFail("Introduce un número válido");
-                    }
-                }
 
-                com.itextpdf.text.Document documento = null;
 
-                switch (respuesta) {
-                    case 4:
-                        documento = new com.itextpdf.text.Document(PageSize.A4.rotate());
-                        break;
-                    case 3:
-                        documento = new com.itextpdf.text.Document(PageSize.A3.rotate());
-                        break;
-                    case 2:
-                         documento = new com.itextpdf.text.Document(PageSize.A2.rotate());
-                        break;
-                    case 1:
-                        documento = new com.itextpdf.text.Document(PageSize.A1.rotate());
-                        break;
-                    case 0:
-                        documento = new com.itextpdf.text.Document(PageSize.A0.rotate());
-                        break;
-                }
 
-                try {
 
-                    PdfWriter writer = PdfWriter.getInstance(documento, new FileOutputStream("tabla.pdf"));
-                    documento.open();
-                    PdfPTable pdfTable = new PdfPTable(tableResults.getColumnCount());
-
-                    // coger columnas
-                    for (int i = 0; i < tableResults.getColumnCount(); i++) {
-                        pdfTable.addCell(tableResults.getColumnName(i));
-                    }
-
-                    // coger filas
-                    for (int rows = 0; rows < tableResults.getRowCount() - 1; rows++) {
-                        for (int cols = 0; cols < tableResults.getColumnCount(); cols++) {
-
-                            if (tableResults.getModel().getValueAt(rows, cols) == null) {
-                                pdfTable.addCell("");
-                            } else {
-                                pdfTable.addCell(tableResults.getModel().getValueAt(rows, cols).toString());
-                            }
-                        }
-                    }
-
-                    documento.add(pdfTable);
-                    documento.close();
-                } catch (DocumentException | FileNotFoundException e) {
-                    dialog.onFail(e.getMessage());
-                }
-            }
-        });
-        tableResults.packAll();
-
+    }});
     }
 
     public void initComponents() {
@@ -361,12 +312,17 @@ public class Busqueda extends JFrame implements Themeable {
         adminButton.setName("adminButton");
         addButton.setName("addButton");
         deleteButton.setName("deleteButton");
+        printButton.setName("printButton");
 
         setIcons(this);
 
         if (isAdmin) {
             adminButton.setEnabled(true);
         }
+
+
+
+
 
         /*
          *
@@ -382,7 +338,7 @@ public class Busqueda extends JFrame implements Themeable {
                     int row = tableResults.rowAtPoint(e.getPoint());
                     int column = tableResults.columnAtPoint(e.getPoint());
                     String columnName = tableResults.getColumnName(column);
-                    if (columnName.equals("riesgos")) {
+                    if (columnName.equalsIgnoreCase("riesgos")) {
 
                         Object cellValue = tableResults.getValueAt(row, column);
 
@@ -400,7 +356,6 @@ public class Busqueda extends JFrame implements Themeable {
                                 displayRiesgosIcons(riesgos, "black", panel);
                             }
 
-
                         }
 
                         JOptionPane.showMessageDialog(null, panel, "Riesgos del reactivo", JOptionPane.PLAIN_MESSAGE);
@@ -416,13 +371,13 @@ public class Busqueda extends JFrame implements Themeable {
 
 
 
-
-
-
         pack();
 
 
+
         setLocationRelativeTo(null);
+
+
 
     }
     public Object createNewObject() {

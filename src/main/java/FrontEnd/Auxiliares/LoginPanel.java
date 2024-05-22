@@ -11,6 +11,7 @@ package FrontEnd.Auxiliares;
 import BackEnd.DAO.Impl.UsuarioDAOImpl;
 import BackEnd.MySQL;
 import BackEnd.Usuario;
+import FrontEnd.ElementosSwing.JPanelBackground;
 import FrontEnd.Menu.MenuDeBusqueda;
 import FrontEnd.Menu.MenuDeInicio;
 import FrontEnd.ElementosSwing.PanelRound;
@@ -22,6 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class LoginPanel extends JFrame implements Themeable {
@@ -42,6 +44,9 @@ public class LoginPanel extends JFrame implements Themeable {
 
         panelWindowLoginIn.putClientProperty( FlatClientProperties.STYLE,
                 "background: lighten(@background,3%);");
+
+        panelWindowLoginIn.putClientProperty( FlatClientProperties.STYLE,
+                "background: fade(@background,70%);");
 
         loginButton.setName("loginButton");
         backButton.setName("backButton");
@@ -86,11 +91,12 @@ public class LoginPanel extends JFrame implements Themeable {
         /*Tamaño de la ventana y posicion*/
         setMinimumSize(new java.awt.Dimension(400, 300));
         setResizable(false);
-        setLocationRelativeTo(null);
+
         setTitle("Login Window");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setContentPane(panelWindowLogin);
         pack();
+        setLocationRelativeTo(null);
 
     }
 
@@ -149,4 +155,11 @@ public class LoginPanel extends JFrame implements Themeable {
 
 }
 
+    private void createUIComponents() {
+        try {
+            panelWindowLogin = new JPanelBackground("src/main/resources/photos/fondoConfiguracionAvanzada.png");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

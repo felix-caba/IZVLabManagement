@@ -3,8 +3,8 @@
   <grid id="27dc6" binding="panelSearchMenu" layout-manager="FormLayout">
     <rowspec value="center:max(d;4px):noGrow"/>
     <rowspec value="top:6dlu:noGrow"/>
-    <rowspec value="center:d:grow"/>
-    <rowspec value="top:2dlu:noGrow"/>
+    <rowspec value="center:30px:grow"/>
+    <rowspec value="top:10dlu:noGrow"/>
     <rowspec value="center:d:grow"/>
     <rowspec value="top:4dlu:noGrow"/>
     <rowspec value="center:max(d;4px):noGrow"/>
