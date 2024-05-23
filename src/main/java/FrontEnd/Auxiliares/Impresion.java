@@ -188,7 +188,6 @@ public class Impresion extends JFrame implements Themeable {
         // Convertir la lista a un array de String
         String[] selectedColumnsArray = new String[selectedColumns.size()];
         selectedColumnsArray = selectedColumns.toArray(selectedColumnsArray);
-
         return selectedColumnsArray;
     }
 
@@ -239,25 +238,22 @@ public class Impresion extends JFrame implements Themeable {
         PdfPTable tabla = new PdfPTable(columnCount);
 
         for (int i = 0; i < columnCount; i++) {
+            System.out.println(selectedColumns[i]);
             tabla.addCell(selectedColumns[i]);
         }
 
-        for (int i = 0; i < selectedRows.length; i++) {
-            for (int j = 0; j < columnCount; j++) {
-
-                if (tableImpresion.getValueAt(selectedRows[i], j) == null) {
-                    tabla.addCell("");
-                } else tabla.addCell(tableImpresion.getValueAt(selectedRows[i], j).toString());
-
-
+        for (int row : selectedRows) {
+            // Iterar sobre las columnas seleccionadas
+            for (String column : selectedColumns) {
+                int columnIndex = tableImpresion.getColumnModel().getColumnIndex(column);
+                Object cellValue = tableImpresion.getValueAt(row, columnIndex);
+                tabla.addCell(cellValue != null ? cellValue.toString() : "");
             }
         }
 
 
-
             documento.add(tabla);
             documento.close();
-
 
     }
 

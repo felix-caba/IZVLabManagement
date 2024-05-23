@@ -44,6 +44,7 @@ public class ConfigAvanzada extends JFrame implements Themeable {
                 "background: lighten(@background,3%);");
         panelRound2.putClientProperty( FlatClientProperties.STYLE,
                 "background: lighten(@background,6%);");
+
         loginWorker().execute();
         listaIP = new ArrayList<>();
 
@@ -139,6 +140,7 @@ public class ConfigAvanzada extends JFrame implements Themeable {
                 String IP_LOCAL = PortScanner.getThisIP();
 
                 try {
+
                     listaIP.clear();
                     ArrayList<IPAddress> nuevasIPs = PortScanner.getServers(IP_LOCAL);
                     listaIP.addAll(nuevasIPs);

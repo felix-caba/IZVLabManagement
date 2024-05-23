@@ -182,12 +182,9 @@ public class MenuDeBusqueda extends JFrame implements Themeable {
 
             @Override
             protected void done() {
-
                 if (result != null) {
-
                     if (isAdmin) {
                         if ((type) == TYPE.USUARIOS) {
-
                             hasOpened = true;
                             new Busqueda(result, isAdmin, type, null).setVisible(true);
                         }
@@ -202,7 +199,6 @@ public class MenuDeBusqueda extends JFrame implements Themeable {
                     } else {
                         if (type == TYPE.USUARIOS || type == TYPE.LOCALIZACION || type == TYPE.UBICACION) {
                             frame.onFail("No tienes permisos para acceder a esta sección");
-
                         } else {
                             hasOpened = true;
                             new Busqueda(result, isAdmin, type, null).setVisible(true);

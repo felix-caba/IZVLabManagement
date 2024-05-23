@@ -5,10 +5,8 @@
 
 import BackEnd.Configuration.ConfigurationIZV;
 import BackEnd.Extra.PortScanner;
-import BackEnd.NetworkScanner.MySQLPortScanner;
 import FrontEnd.Menu.MenuDeBusqueda;
 import FrontEnd.Menu.MenuDeInicio;
-
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;

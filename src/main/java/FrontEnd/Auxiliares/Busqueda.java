@@ -174,7 +174,6 @@ public class Busqueda extends JFrame implements Themeable {
 
                 }
 
-
                 tableResults.changeSelection(searchResults.size(), 0, true, true);
                 tableResults.scrollRectToVisible(tableResults.getCellRect(searchResults.size(), 0, true));
 
@@ -184,7 +183,6 @@ public class Busqueda extends JFrame implements Themeable {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 int[] selectedRows = tableResults.getSelectedRows();
-
                 if (selectedRows.length > 0) {
                     for (int i = selectedRows.length - 1; i >= 0; i--) {
                         model.removeRow(selectedRows[i]);
@@ -356,6 +354,8 @@ public class Busqueda extends JFrame implements Themeable {
                                 displayRiesgosIcons(riesgos, "black", panel);
                             }
 
+
+
                         }
 
                         JOptionPane.showMessageDialog(null, panel, "Riesgos del reactivo", JOptionPane.PLAIN_MESSAGE);
@@ -503,15 +503,16 @@ public class Busqueda extends JFrame implements Themeable {
             comboBoxLocalizacion.addItem(entry.getKey().getNombre());
         }
 
-        // Set the combo box editors for the table columns
         for (int indColumna = 0; indColumna < columnModel.getColumnCount(); indColumna++) {
             String columnName = model.getColumnName(indColumna);
 
-            if (columnName.equalsIgnoreCase("localizacion")) {
+            if (columnName.equalsIgnoreCase("localizacion") || columnName.equalsIgnoreCase("nombre localizacion")) {
+                System.out.println(indColumna);
                 columnModel.getColumn(indColumna).setCellEditor(new DefaultCellEditor(comboBoxLocalizacion));
             } else if (columnName.equalsIgnoreCase("ubicacion")) {
                 columnModel.getColumn(indColumna).setCellEditor(new DefaultCellEditor(comboBoxUbicacion));
             }
+
         }
 
         comboBoxLocalizacion.addActionListener(e -> {
